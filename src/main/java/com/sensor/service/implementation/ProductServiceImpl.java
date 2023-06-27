@@ -26,8 +26,8 @@ import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.helpers.FileHelper;
 import com.sensor.mapper.ProductMapper;
-import com.sensor.persistence.entity.Product;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.Product;
+import com.sensor.entity.User;
 import com.sensor.service.ProductService;
 
 @Service

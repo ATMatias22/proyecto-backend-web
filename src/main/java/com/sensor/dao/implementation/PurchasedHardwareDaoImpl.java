@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IPurchasedHardwareDao;
-import com.sensor.persistence.entity.PurchasedHardware;
+import com.sensor.entity.PurchasedHardware;
 import com.sensor.repository.PurchasedHardwareCrudRepository;
 
 

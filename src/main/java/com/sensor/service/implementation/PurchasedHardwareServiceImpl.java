@@ -13,8 +13,8 @@ import com.sensor.dao.IUserDao;
 import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.PurchasedHardwareMapper;
-import com.sensor.persistence.entity.PurchasedHardware;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.PurchasedHardware;
+import com.sensor.entity.User;
 import com.sensor.service.PurchasedHardwareService;
 
 @Service

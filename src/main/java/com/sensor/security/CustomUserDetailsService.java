@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IUserDao;
-import com.sensor.persistence.entity.Role;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.Role;
+import com.sensor.entity.User;
 
 
 @Service

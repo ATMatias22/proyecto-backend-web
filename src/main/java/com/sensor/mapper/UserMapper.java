@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.sensor.dao.IRoleDao;
 import com.sensor.dto.UserDTO;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.User;
 import com.sensor.security.JWTAuthResponseDTO;
 
 @Mapper(componentModel = "spring")

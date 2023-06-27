@@ -12,7 +12,7 @@ import com.sensor.dao.IContactMessageDao;
 import com.sensor.dto.contact.request.ContactMessageDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.ContactMessageMapper;
-import com.sensor.persistence.entity.ContactMessage;
+import com.sensor.entity.ContactMessage;
 import com.sensor.service.ContactMessageService;
 
 @Service

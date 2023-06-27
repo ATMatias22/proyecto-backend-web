@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import com.sensor.dto.sale.request.SaleDTO;
-import com.sensor.persistence.entity.Sale;
+import com.sensor.entity.Sale;
 
 @Mapper(componentModel = "spring")
 public interface SaleMapper {

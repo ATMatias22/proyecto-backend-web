@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.sensor.persistence.entity.Role;
+import com.sensor.entity.Role;
 
 public interface RoleCrudRepository extends CrudRepository<Role, Long> {
 

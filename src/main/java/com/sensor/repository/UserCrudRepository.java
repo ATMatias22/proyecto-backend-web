@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.User;
 
 public interface UserCrudRepository extends CrudRepository<User,Long>{
 	

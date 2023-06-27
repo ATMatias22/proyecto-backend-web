@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.ISaleDao;
-import com.sensor.persistence.entity.Sale;
+import com.sensor.entity.Sale;
 import com.sensor.repository.SaleCrudRepository;
 
 

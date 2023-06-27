@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.ICommentDao;
-import com.sensor.persistence.entity.Comment;
+import com.sensor.entity.Comment;
 import com.sensor.repository.CommentCrudRepository;
 
 @Repository

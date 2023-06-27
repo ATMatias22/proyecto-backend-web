@@ -3,7 +3,7 @@ package com.sensor.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.User;
 
 public interface IUserDao {
 

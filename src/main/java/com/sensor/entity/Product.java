@@ -1,4 +1,4 @@
-package com.sensor.persistence.entity;
+package com.sensor.entity;
 
 import java.util.Calendar;
 

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IContactMessageDao;
-import com.sensor.persistence.entity.ContactMessage;
+import com.sensor.entity.ContactMessage;
 import com.sensor.repository.ContactMessageCrudRepository;
 
 @Repository

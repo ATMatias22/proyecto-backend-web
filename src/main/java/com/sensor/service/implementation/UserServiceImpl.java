@@ -12,7 +12,7 @@ import com.sensor.dao.IUserDao;
 import com.sensor.dto.UserDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.UserMapper;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.User;
 import com.sensor.service.UserService;
 
 @Service

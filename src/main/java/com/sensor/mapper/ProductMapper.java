@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import com.sensor.dto.product.request.ProductDTO;
-import com.sensor.persistence.entity.Product;
+import com.sensor.entity.Product;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {

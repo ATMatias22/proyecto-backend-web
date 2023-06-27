@@ -3,7 +3,7 @@ package com.sensor.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.sensor.persistence.entity.PurchasedHardware;
+import com.sensor.entity.PurchasedHardware;
 
 public interface IPurchasedHardwareDao {
 	

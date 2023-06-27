@@ -14,9 +14,9 @@ import com.sensor.dao.IUserDao;
 import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.CommentMapper;
-import com.sensor.persistence.entity.Comment;
-import com.sensor.persistence.entity.Product;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.Comment;
+import com.sensor.entity.Product;
+import com.sensor.entity.User;
 import com.sensor.service.CommentService;
 
 

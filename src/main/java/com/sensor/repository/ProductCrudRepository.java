@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sensor.persistence.entity.Product;
+import com.sensor.entity.Product;
 
 public interface ProductCrudRepository extends CrudRepository<Product, Long> {
 

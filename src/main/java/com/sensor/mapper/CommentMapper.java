@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import com.sensor.dto.comment.request.CommentDTO;
-import com.sensor.persistence.entity.Comment;
+import com.sensor.entity.Comment;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {

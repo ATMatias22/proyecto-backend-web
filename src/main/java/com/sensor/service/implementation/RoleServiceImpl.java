@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IRoleDao;
-import com.sensor.persistence.entity.Role;
+import com.sensor.entity.Role;
 import com.sensor.service.RoleService;
 
 @Service

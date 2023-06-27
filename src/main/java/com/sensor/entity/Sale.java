@@ -1,4 +1,4 @@
-package com.sensor.persistence.entity;
+package com.sensor.entity;
 
 import java.util.Calendar;
 
@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -21,45 +20,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "sale")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-	
-
+public class Sale {
 	@Id
-	@Column(name = "id_user")
+	@Column(name = "id_sale")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long idSale;
+
+	@Column(name = "quantity")
+	private Long quantity;
+	
+	@Column(name = "fk_user")
 	private Long userId;
-
-	@Column(name = "name")
-	private String name;
-
-	@Column(name = "last_name")
-	private String lastName;
-	
-	@Column(name = "email")
-	private String email;
-	
-	@Column(name = "country")
-	private String country;
-	
-	@Column(name = "fk_role")
-	private Long roleId;
 	
 	@ManyToOne
-	@JoinColumn(name="fk_role", insertable = false, updatable = false)
-	private Role role;
-		
+	@JoinColumn(name="fk_user", insertable = false, updatable = false)
+	private User user;
 	
-	@Column(name = "dates_birth")
-	@Temporal(TemporalType.DATE)
-	@JsonFormat(pattern="yyyy-MM-dd",timezone="America/Argentina/Buenos_Aires")
-	private Calendar datesBirth;
 	
-	@Column(name = "password")
-	private String password;
+	@Column(name = "fk_product")
+	private Long productId;
+	
+	@ManyToOne
+	@JoinColumn(name="fk_product", insertable = false, updatable = false)
+	private Product product;
 	
 
 	@Column(insertable=false, updatable = false)
@@ -72,6 +59,7 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
 	private Calendar updated;
+	
 	
 
 }
