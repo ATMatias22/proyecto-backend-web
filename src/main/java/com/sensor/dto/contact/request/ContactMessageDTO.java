@@ -1,4 +1,4 @@
-package com.sensor.dto;
+package com.sensor.dto.contact.request;
 
 import java.util.Calendar;
 

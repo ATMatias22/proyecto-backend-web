@@ -1,4 +1,4 @@
-package com.sensor.dto;
+package com.sensor.dto.purchasedHardware.request;
 
 import java.util.Calendar;
 import java.util.Date;

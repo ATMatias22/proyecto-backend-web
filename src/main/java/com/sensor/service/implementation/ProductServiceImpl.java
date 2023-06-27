@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensor.dao.IProductDao;
 import com.sensor.dao.IUserDao;
-import com.sensor.dto.ProductDTO;
+import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.helpers.FileHelper;
 import com.sensor.mapper.ProductMapper;

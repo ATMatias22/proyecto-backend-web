@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sensor.dto.ProductDTO;
+import com.sensor.dto.product.request.ProductDTO;
 
 public interface ProductService {
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.sensor.dao.ICommentDao;
 import com.sensor.dao.IProductDao;
 import com.sensor.dao.IUserDao;
-import com.sensor.dto.CommentDTO;
+import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.CommentMapper;
 import com.sensor.persistence.entity.Comment;

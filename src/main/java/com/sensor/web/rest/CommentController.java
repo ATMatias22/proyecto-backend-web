@@ -1,6 +1,5 @@
 package com.sensor.web.rest;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sensor.dto.CommentDTO;
-import com.sensor.mapper.CommentMapper;
-import com.sensor.persistence.entity.Comment;
+import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.service.CommentService;
 
 @RestController

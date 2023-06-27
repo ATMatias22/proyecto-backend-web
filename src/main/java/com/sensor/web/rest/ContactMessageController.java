@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sensor.dto.ContactMessageDTO;
+import com.sensor.dto.contact.request.ContactMessageDTO;
 import com.sensor.service.ContactMessageService;
 
 @RestController

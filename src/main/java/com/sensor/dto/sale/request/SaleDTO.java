@@ -1,4 +1,4 @@
-package com.sensor.dto;
+package com.sensor.dto.sale.request;
 
 import java.util.Date;
 

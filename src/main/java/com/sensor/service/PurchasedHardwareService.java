@@ -1,10 +1,8 @@
 package com.sensor.service;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.sensor.dto.PurchasedHardwareDTO;
-import com.sensor.persistence.entity.PurchasedHardware;
+import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
 
 public interface PurchasedHardwareService {
 	

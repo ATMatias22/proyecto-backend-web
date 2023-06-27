@@ -2,7 +2,7 @@ package com.sensor.service;
 
 import java.util.List;
 
-import com.sensor.dto.CommentDTO;
+import com.sensor.dto.comment.request.CommentDTO;
 
 public interface CommentService {
 

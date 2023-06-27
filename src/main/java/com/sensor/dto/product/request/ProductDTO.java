@@ -1,4 +1,4 @@
-package com.sensor.dto;
+package com.sensor.dto.product.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

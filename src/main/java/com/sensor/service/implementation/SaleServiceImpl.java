@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.sensor.dao.IProductDao;
 import com.sensor.dao.ISaleDao;
 import com.sensor.dao.IUserDao;
-import com.sensor.dto.SaleDTO;
+import com.sensor.dto.sale.request.SaleDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.SaleMapper;
 import com.sensor.persistence.entity.Product;

@@ -1,9 +1,8 @@
 package com.sensor.service;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.sensor.dto.ContactMessageDTO;
+import com.sensor.dto.contact.request.ContactMessageDTO;
 
 public interface ContactMessageService {
 

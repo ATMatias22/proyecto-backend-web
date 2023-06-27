@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sensor.dto.ProductDTO;
+import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.service.ProductService;
 
 @RestController
