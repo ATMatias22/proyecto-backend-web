@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sensor.entity.Product;
 
-public interface ProductCrudRepository extends CrudRepository<Product, Long> {
+public interface IProductRepository extends CrudRepository<Product, Long> {
 
 	public Optional<Product> findByName(String name);
 

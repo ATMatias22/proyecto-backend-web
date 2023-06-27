@@ -8,32 +8,32 @@ import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IContactMessageDao;
 import com.sensor.entity.ContactMessage;
-import com.sensor.repository.ContactMessageCrudRepository;
+import com.sensor.repository.IContactMessageRepository;
 
 @Repository
 public class ContactMessageDaoImpl implements IContactMessageDao {
 	
 	@Autowired
-	private ContactMessageCrudRepository contactMessageCrudRepository;
+	private IContactMessageRepository IContactMessageRepository;
 
 	@Override
 	public List<ContactMessage> getAll() {
-		return (List<ContactMessage>) contactMessageCrudRepository.findAll();
+		return (List<ContactMessage>) IContactMessageRepository.findAll();
 	}
 
 	@Override
 	public Optional<ContactMessage> getContactMessage(Long contactMessageId) {
-		return contactMessageCrudRepository.findById(contactMessageId);
+		return IContactMessageRepository.findById(contactMessageId);
 	}
 
 	@Override
 	public ContactMessage save(ContactMessage contactMessage) {
-		return contactMessageCrudRepository.save(contactMessage);
+		return IContactMessageRepository.save(contactMessage);
 	}
 
 	@Override
 	public void delete(Long contactMessageId) {
-		contactMessageCrudRepository.deleteById(contactMessageId);
+		IContactMessageRepository.deleteById(contactMessageId);
 		
 	}
 

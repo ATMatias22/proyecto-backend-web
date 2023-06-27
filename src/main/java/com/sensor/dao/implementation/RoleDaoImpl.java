@@ -8,28 +8,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.entity.Role;
-import com.sensor.repository.RoleCrudRepository;
+import com.sensor.repository.IRoleRepository;
 
 
 @Repository
 public class RoleDaoImpl implements IRoleDao {
 
 	@Autowired
-	public RoleCrudRepository roleCrudRepository;
+	public IRoleRepository IRoleRepository;
 	
 	@Override
 	public List<Role> getAll() {
-		return (List<Role>) roleCrudRepository.findAll();
+		return (List<Role>) IRoleRepository.findAll();
 	}
 
 	@Override
 	public Optional<Role> getRole(Long roleId) {
-		return roleCrudRepository.findById(roleId);
+		return IRoleRepository.findById(roleId);
 	}
 
 	@Override
 	public Optional<Role> getRoleByName(String name) {
-		return roleCrudRepository.findByName(name);
+		return IRoleRepository.findByName(name);
 
 	}
 	

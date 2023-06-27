@@ -8,44 +8,44 @@ import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IProductDao;
 import com.sensor.entity.Product;
-import com.sensor.repository.ProductCrudRepository;
+import com.sensor.repository.IProductRepository;
 
 @Repository
 public class ProductDaoImpl implements IProductDao {
 
 	
 	@Autowired
-	private ProductCrudRepository productCrudRepository;
+	private IProductRepository IProductRepository;
 	
 
 	@Override
 	public Product save(Product product) {
-		return productCrudRepository.save(product);
+		return IProductRepository.save(product);
 	}
 
 	@Override
 	public void delete(Long productId) {
-		productCrudRepository.updateProductForDisabled(productId);
+		IProductRepository.updateProductForDisabled(productId);
 	}
 
 	@Override
 	public Optional<Product> getProductByName(String name) {
-		return productCrudRepository.findByName(name);
+		return IProductRepository.findByName(name);
 	}
 
 	@Override
 	public List<Product> getAllEnabled() {
-		return (List<Product>) productCrudRepository.findByEnabledTrue();
+		return (List<Product>) IProductRepository.findByEnabledTrue();
 	}
 
 	@Override
 	public Optional<Product> getProductEnabled(Long productId) {
-		return productCrudRepository.findByEnabledTrueAndProductId(productId);
+		return IProductRepository.findByEnabledTrueAndProductId(productId);
 	}
 
 	@Override
 	public Optional<Product> getLastProduct() {
-		return productCrudRepository.findTopByOrderByProductIdDesc();
+		return IProductRepository.findTopByOrderByProductIdDesc();
 	}
 	
 

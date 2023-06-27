@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.ISaleDao;
 import com.sensor.entity.Sale;
-import com.sensor.repository.SaleCrudRepository;
+import com.sensor.repository.ISaleRepository;
 
 
 @Repository
@@ -16,32 +16,32 @@ public class SaleDaoImpl implements ISaleDao {
 
 	
 	@Autowired
-	private SaleCrudRepository saleCrudRepository;
+	private ISaleRepository ISaleRepository;
 	
 	@Override
 	public List<Sale> getAll() {
-		return (List<Sale>) saleCrudRepository.findAll();
+		return (List<Sale>) ISaleRepository.findAll();
 
 	}
 
 	@Override
 	public Optional<Sale> getSale(Long saleId) {
-		return saleCrudRepository.findById(saleId);
+		return ISaleRepository.findById(saleId);
 	}
 
 	@Override
 	public Sale save(Sale sale) {
-		return saleCrudRepository.save(sale);
+		return ISaleRepository.save(sale);
 	}
 
 	@Override
 	public void delete(Long saleId) {
-		saleCrudRepository.deleteById(saleId);
+		ISaleRepository.deleteById(saleId);
 	}
 
 	@Override
 	public List<Sale> getAllByUserId(Long userId) {
-		return saleCrudRepository.findByUserId(userId);
+		return ISaleRepository.findByUserId(userId);
 	}
 
 }

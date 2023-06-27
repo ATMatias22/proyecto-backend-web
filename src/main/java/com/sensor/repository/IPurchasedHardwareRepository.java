@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.sensor.entity.PurchasedHardware;
 
-public interface PurchasedHardwareCrudRepository extends CrudRepository<PurchasedHardware, Long> {
+public interface IPurchasedHardwareRepository extends CrudRepository<PurchasedHardware, Long> {
 
 	
 	

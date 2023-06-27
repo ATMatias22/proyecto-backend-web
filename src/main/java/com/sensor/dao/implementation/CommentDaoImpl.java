@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.ICommentDao;
 import com.sensor.entity.Comment;
-import com.sensor.repository.CommentCrudRepository;
+import com.sensor.repository.ICommentRepository;
 
 @Repository
 public class CommentDaoImpl implements ICommentDao {
 
 	@Autowired
-	private CommentCrudRepository commentCrudRepository;
+	private ICommentRepository commentRepository;
 
 	@Override
 	public List<Comment> getAll() {

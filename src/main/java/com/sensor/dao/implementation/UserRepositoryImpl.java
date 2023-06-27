@@ -8,33 +8,33 @@ import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IUserDao;
 import com.sensor.entity.User;
-import com.sensor.repository.UserCrudRepository;
+import com.sensor.repository.IUserRepository;
 
 @Repository
 public class UserRepositoryImpl implements IUserDao {
 
 	@Autowired
-	private UserCrudRepository userCrudRepository;
+	private IUserRepository IUserRepository;
 	
 	@Override
 	public List<User> getAll() {
-		return (List<User>) userCrudRepository.findAll();
+		return (List<User>) IUserRepository.findAll();
 	}
 
 	@Override
 	public Optional<User> getUser(Long userId) {
-		return userCrudRepository.findById(userId);
+		return IUserRepository.findById(userId);
 	}
 
 	@Override
 	public Optional<User> getUserByEmail(String email) {
-		return userCrudRepository.findByEmail(email);
+		return IUserRepository.findByEmail(email);
 
 	}
 
 	@Override
 	public User save(User user) {
-		return userCrudRepository.save(user);
+		return IUserRepository.save(user);
 	}
 
 }

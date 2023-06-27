@@ -8,35 +8,35 @@ import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IPurchasedHardwareDao;
 import com.sensor.entity.PurchasedHardware;
-import com.sensor.repository.PurchasedHardwareCrudRepository;
+import com.sensor.repository.IPurchasedHardwareRepository;
 
 
 @Repository
 public class PurchasedHardwareDaoImpl implements IPurchasedHardwareDao {
 
 	@Autowired
-	private PurchasedHardwareCrudRepository purchasedHardwareCrudRepository;
+	private IPurchasedHardwareRepository IPurchasedHardwareRepository;
 	
 	
 	
 	@Override
 	public List<PurchasedHardware> getAll() {
-		return (List<PurchasedHardware>) purchasedHardwareCrudRepository.findAll();
+		return (List<PurchasedHardware>) IPurchasedHardwareRepository.findAll();
 	}
 
 	@Override
 	public Optional<PurchasedHardware> getPurchasedHardware(Long purchasedHardwareId) {
-		return purchasedHardwareCrudRepository.findById(purchasedHardwareId);
+		return IPurchasedHardwareRepository.findById(purchasedHardwareId);
 	}
 
 	@Override
 	public PurchasedHardware save(PurchasedHardware purchasedHardware) {
-		return purchasedHardwareCrudRepository.save(purchasedHardware);
+		return IPurchasedHardwareRepository.save(purchasedHardware);
 	}
 
 	@Override
 	public void delete(Long purchasedHardwareId) {
-		 purchasedHardwareCrudRepository.deleteById(purchasedHardwareId);
+		 IPurchasedHardwareRepository.deleteById(purchasedHardwareId);
 
 	}
 

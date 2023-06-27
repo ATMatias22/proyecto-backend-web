@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.sensor.entity.User;
 
-public interface UserCrudRepository extends CrudRepository<User,Long>{
+public interface IUserRepository extends CrudRepository<User,Long>{
 	
 	public Optional<User> findByEmail(String email);
 
