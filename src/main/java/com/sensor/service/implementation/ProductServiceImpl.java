@@ -28,10 +28,10 @@ import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
 import com.sensor.entity.Product;
 import com.sensor.entity.User;
-import com.sensor.service.ProductService;
+import com.sensor.service.IProductService;
 
 @Service
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements IProductService {
 
 	@Autowired
 	private IUserDao IUserDao;

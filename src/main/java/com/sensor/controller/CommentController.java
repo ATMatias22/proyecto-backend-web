@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.dto.comment.request.CommentDTO;
-import com.sensor.service.CommentService;
+import com.sensor.service.ICommentService;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -24,37 +24,37 @@ import com.sensor.service.CommentService;
 public class CommentController {
 
 	@Autowired
-	private CommentService commentService;
+	private ICommentService ICommentService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<List<CommentDTO>> getAll() {
-		return new ResponseEntity<>(commentService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(ICommentService.getAll(), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{commentId}")
 	public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
-		return new ResponseEntity<>(commentService.getComment(commentId), HttpStatus.OK);
+		return new ResponseEntity<>(ICommentService.getComment(commentId), HttpStatus.OK);
 	}
 
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<CommentDTO>> getCommentsForAProduct(@PathVariable("productId") Long productId) {
 
-		return new ResponseEntity<>(commentService.getAllCommentsForAProduct(productId), HttpStatus.OK);
+		return new ResponseEntity<>(ICommentService.getAllCommentsForAProduct(productId), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity save(@RequestBody CommentDTO commentDTO) {
-		commentService.save(commentDTO);
+		ICommentService.save(commentDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{commentId}")
 	public ResponseEntity delete(@PathVariable("commentId") Long commentId) {
-		commentService.delete(commentId);
+		ICommentService.delete(commentId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 

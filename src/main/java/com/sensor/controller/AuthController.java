@@ -18,7 +18,7 @@ import com.sensor.dto.LoginDTO;
 import com.sensor.dto.UserDTO;
 import com.sensor.security.JWTAuthResponseDTO;
 import com.sensor.security.JwtService;
-import com.sensor.service.UserService;
+import com.sensor.service.IUserService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,7 +29,7 @@ public class AuthController {
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
-	private UserService userService;
+	private IUserService IUserService;
 
 	@Autowired
 	private JwtService jwtService;
@@ -50,7 +50,7 @@ public class AuthController {
 
 			String token = jwtService.createToken(authentication);
 
-			UserDTO userDTO = userService.getUserByEmail(loginDTO.getEmail());
+			UserDTO userDTO = IUserService.getUserByEmail(loginDTO.getEmail());
 			userDTO.setJwt(new JWTAuthResponseDTO(token));
 
 			return ResponseEntity.ok(userDTO);
@@ -73,7 +73,7 @@ public class AuthController {
 
 			String token = jwtService.createToken(authentication);
 
-			UserDTO userDTO = userService.getUserByEmail(loginDTO.getEmail());
+			UserDTO userDTO = IUserService.getUserByEmail(loginDTO.getEmail());
 			userDTO.setJwt(new JWTAuthResponseDTO(token));
 
 			return ResponseEntity.ok(userDTO);
@@ -86,7 +86,7 @@ public class AuthController {
 	@PostMapping("/register")
 	public ResponseEntity registerUser(@RequestBody UserDTO userDTO) {
 
-		userService.save(userDTO);
+		IUserService.save(userDTO);
 
 		return new ResponseEntity(HttpStatus.CREATED);
 

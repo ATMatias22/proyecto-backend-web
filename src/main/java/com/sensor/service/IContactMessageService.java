@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sensor.dto.contact.request.ContactMessageDTO;
 
-public interface ContactMessageService {
+public interface IContactMessageService {
 
 	List<ContactMessageDTO> getAll();
 

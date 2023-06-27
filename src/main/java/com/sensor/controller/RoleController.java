@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.entity.Role;
-import com.sensor.service.RoleService;
+import com.sensor.service.IRoleService;
 
 @RestController
 @RequestMapping("/api/role")
@@ -20,7 +20,7 @@ import com.sensor.service.RoleService;
 public class RoleController {
 	
 	@Autowired
-	private RoleService typeUserService;
+	private IRoleService typeUserService;
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Role>> getAll() {

@@ -17,10 +17,10 @@ import com.sensor.mapper.SaleMapper;
 import com.sensor.entity.Product;
 import com.sensor.entity.Sale;
 import com.sensor.entity.User;
-import com.sensor.service.SaleService;
+import com.sensor.service.ISaleService;
 
 @Service
-public class SaleServiceImpl implements SaleService{
+public class SaleServiceImpl implements ISaleService {
 
 	
 	@Autowired

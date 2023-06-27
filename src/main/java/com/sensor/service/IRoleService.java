@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.sensor.entity.Role;
 
-public interface RoleService {
+public interface IRoleService {
 	
 	List<Role> getAll();
 

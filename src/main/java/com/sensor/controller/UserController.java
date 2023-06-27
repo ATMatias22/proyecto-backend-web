@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.dto.UserDTO;
-import com.sensor.service.UserService;
+import com.sensor.service.IUserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,7 +21,7 @@ import com.sensor.service.UserService;
 public class UserController {
 	
 	@Autowired
-	private UserService userSerivce;
+	private IUserService userSerivce;
 	
 
 	@GetMapping("/all")

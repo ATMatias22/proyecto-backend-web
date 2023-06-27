@@ -17,11 +17,11 @@ import com.sensor.mapper.CommentMapper;
 import com.sensor.entity.Comment;
 import com.sensor.entity.Product;
 import com.sensor.entity.User;
-import com.sensor.service.CommentService;
+import com.sensor.service.ICommentService;
 
 
 @Service
-public class CommentServiceImpl implements CommentService {
+public class CommentServiceImpl implements ICommentService {
 
 	@Autowired
 	private ICommentDao ICommentDao;

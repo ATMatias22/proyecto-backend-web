@@ -13,10 +13,10 @@ import com.sensor.dto.contact.request.ContactMessageDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.ContactMessageMapper;
 import com.sensor.entity.ContactMessage;
-import com.sensor.service.ContactMessageService;
+import com.sensor.service.IContactMessageService;
 
 @Service
-public class ContactMessageServiceImpl implements ContactMessageService{
+public class ContactMessageServiceImpl implements IContactMessageService {
 	
 	@Autowired
 	private IContactMessageDao IContactMessageDao;

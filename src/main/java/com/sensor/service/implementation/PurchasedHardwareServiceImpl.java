@@ -15,10 +15,10 @@ import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.PurchasedHardwareMapper;
 import com.sensor.entity.PurchasedHardware;
 import com.sensor.entity.User;
-import com.sensor.service.PurchasedHardwareService;
+import com.sensor.service.IPurchasedHardwareService;
 
 @Service
-public class PurchasedHardwareServiceImpl implements PurchasedHardwareService {
+public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 
 	@Autowired
 	private IPurchasedHardwareDao IPurchasedHardwareDao;

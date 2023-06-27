@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
 
-public interface PurchasedHardwareService {
+public interface IPurchasedHardwareService {
 	
 
 	List<PurchasedHardwareDTO> getAll();

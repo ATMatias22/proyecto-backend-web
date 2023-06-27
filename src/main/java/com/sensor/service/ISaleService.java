@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sensor.dto.sale.request.SaleDTO;
 
-public interface SaleService {
+public interface ISaleService {
 
 	List<SaleDTO> getAll();
 

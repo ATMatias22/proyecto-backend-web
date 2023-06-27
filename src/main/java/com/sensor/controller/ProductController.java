@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sensor.dto.product.request.ProductDTO;
-import com.sensor.service.ProductService;
+import com.sensor.service.IProductService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -28,7 +28,7 @@ import com.sensor.service.ProductService;
 public class ProductController {
 
 	@Autowired
-	private ProductService productService;
+	private IProductService productService;
 
 
 	@GetMapping("/all")

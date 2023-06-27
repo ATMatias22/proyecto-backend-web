@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.dto.contact.request.ContactMessageDTO;
-import com.sensor.service.ContactMessageService;
+import com.sensor.service.IContactMessageService;
 
 @RestController
 @RequestMapping("/api/contactmessages")
@@ -24,31 +24,31 @@ import com.sensor.service.ContactMessageService;
 public class ContactMessageController {
 	
 	@Autowired
-	private ContactMessageService contactMessageService;
+	private IContactMessageService IContactMessageService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<List<ContactMessageDTO>> getAll() {
-		return new ResponseEntity<>(contactMessageService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(IContactMessageService.getAll(), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{contactMessageId}")
 	public ResponseEntity<ContactMessageDTO> getContactMessage(
 			@PathVariable("contactMessageId") Long contactMessageId) {
-		return new ResponseEntity<ContactMessageDTO>(contactMessageService.getContactMessage(contactMessageId), HttpStatus.OK);
+		return new ResponseEntity<ContactMessageDTO>(IContactMessageService.getContactMessage(contactMessageId), HttpStatus.OK);
 	}
 	
 	@PostMapping
 	public ResponseEntity save(@RequestBody ContactMessageDTO contactMessageDTO) {
-		contactMessageService.save(contactMessageDTO);
+		IContactMessageService.save(contactMessageDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{contactMessageId}")
 	public ResponseEntity delete(@PathVariable("contactMessageId") Long contactMessageId) {
-		contactMessageService.delete(contactMessageId);
+		IContactMessageService.delete(contactMessageId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

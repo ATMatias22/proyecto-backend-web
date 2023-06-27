@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sensor.dto.comment.request.CommentDTO;
 
-public interface CommentService {
+public interface ICommentService {
 
 	List<CommentDTO> getAll();
 

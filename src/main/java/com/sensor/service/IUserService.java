@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sensor.dto.UserDTO;
 
-public interface UserService {
+public interface IUserService {
 
 	List<UserDTO> getAll();
 

@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sensor.dto.product.request.ProductDTO;
 
-public interface ProductService {
+public interface IProductService {
 
 	void save(String productDTOJSON, MultipartFile file);
 

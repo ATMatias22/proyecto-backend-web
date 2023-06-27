@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.dto.sale.request.SaleDTO;
-import com.sensor.service.SaleService;
+import com.sensor.service.ISaleService;
 
 
 
@@ -26,13 +26,13 @@ import com.sensor.service.SaleService;
 public class SaleController {
 
 	@Autowired
-	private SaleService saleService;
+	private ISaleService ISaleService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<List<SaleDTO>> getAll() {
 		
-		return new ResponseEntity<>(saleService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(ISaleService.getAll(), HttpStatus.OK);
 	}
 	
 	
@@ -41,13 +41,13 @@ public class SaleController {
 	@GetMapping("/user/{email}")
 	public ResponseEntity<List<SaleDTO>> getAllSaleByUser(@PathVariable("email") String email) {
 		
-		return new ResponseEntity<>(saleService.getAllByUserId(email), HttpStatus.OK);
+		return new ResponseEntity<>(ISaleService.getAllByUserId(email), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("isAuthenticated() and #saleDTO.email == authentication.principal.username")
 	@PostMapping
 	public ResponseEntity save(@RequestBody SaleDTO saleDTO) {
-		saleService.save(saleDTO);
+		ISaleService.save(saleDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
@@ -56,14 +56,14 @@ public class SaleController {
 	@GetMapping("/{saleId}")
 	public ResponseEntity<SaleDTO> getProduct(
 			@PathVariable("saleId") Long saleId) {
-		return new ResponseEntity<SaleDTO>(saleService.getSale(saleId), HttpStatus.OK);
+		return new ResponseEntity<SaleDTO>(ISaleService.getSale(saleId), HttpStatus.OK);
 	}
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{saleId}")
 	public ResponseEntity delete(@PathVariable("saleId") Long saleId) {
-		saleService.delete(saleId);
+		ISaleService.delete(saleId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

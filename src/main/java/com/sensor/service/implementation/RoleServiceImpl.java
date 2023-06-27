@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IRoleDao;
 import com.sensor.entity.Role;
-import com.sensor.service.RoleService;
+import com.sensor.service.IRoleService;
 
 @Service
-public class RoleServiceImpl implements RoleService{
+public class RoleServiceImpl implements IRoleService {
 	
 	@Autowired
 	private IRoleDao IRoleDao;
