@@ -24,7 +24,7 @@ import com.sensor.dao.IProductDao;
 import com.sensor.dao.IUserDao;
 import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.exception.BlogAppException;
-import com.sensor.helpers.FileHelper;
+import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
 import com.sensor.entity.Product;
 import com.sensor.entity.User;
