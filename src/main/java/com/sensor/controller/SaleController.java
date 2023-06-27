@@ -1,4 +1,4 @@
-package com.sensor.web.rest;
+package com.sensor.controller;
 
 import java.util.List;
 

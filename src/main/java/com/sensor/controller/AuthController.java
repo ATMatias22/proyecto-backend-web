@@ -1,4 +1,4 @@
-package com.sensor.web.rest;
+package com.sensor.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
