@@ -1,13 +1,11 @@
-package com.sensor.DAO;
+package com.sensor.dao;
 
 import java.util.List;
 
 import java.util.Optional;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.sensor.persistence.entity.Product;
-public interface ProductRepository {
+public interface IProductDao {
 	
 	List<Product> getAllEnabled();
 	

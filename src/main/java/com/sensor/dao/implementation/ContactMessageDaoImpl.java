@@ -1,4 +1,4 @@
-package com.sensor.DAO.implementation;
+package com.sensor.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,12 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sensor.DAO.ContactMessageRepository;
+import com.sensor.dao.IContactMessageDao;
 import com.sensor.persistence.entity.ContactMessage;
 import com.sensor.repository.ContactMessageCrudRepository;
 
 @Repository
-public class ContactMessageRepositoryImpl implements ContactMessageRepository{
+public class ContactMessageDaoImpl implements IContactMessageDao {
 	
 	@Autowired
 	private ContactMessageCrudRepository contactMessageCrudRepository;

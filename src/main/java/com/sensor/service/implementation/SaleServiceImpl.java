@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.sensor.DAO.ProductRepository;
-import com.sensor.DAO.SaleRepository;
-import com.sensor.DAO.UserRepository;
+import com.sensor.dao.IProductDao;
+import com.sensor.dao.ISaleDao;
+import com.sensor.dao.IUserDao;
 import com.sensor.dto.SaleDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.SaleMapper;
@@ -24,23 +24,23 @@ public class SaleServiceImpl implements SaleService{
 
 	
 	@Autowired
-	private UserRepository userRepository;
+	private IUserDao IUserDao;
 	@Autowired
-	private ProductRepository productRepository;
+	private IProductDao IProductDao;
 	@Autowired
-	private SaleRepository saleRepository;
+	private ISaleDao ISaleDao;
 	
 	@Autowired
 	private SaleMapper saleMapper;
 	
 	@Override
 	public List<SaleDTO> getAll() {
-		return saleRepository.getAll().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+		return ISaleDao.getAll().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 	@Override
 	public SaleDTO getSale(Long saleId) {
-		Optional<Sale> opt = saleRepository.getSale(saleId);
+		Optional<Sale> opt = ISaleDao.getSale(saleId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
@@ -50,27 +50,27 @@ public class SaleServiceImpl implements SaleService{
 	
 	@Override
 	public List<SaleDTO> getAllByUserId(String email) {
-		Optional<User> user =userRepository.getUserByEmail(email);
+		Optional<User> user = IUserDao.getUserByEmail(email);
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
 		}
 		
 		
-		return saleRepository.getAllByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+		return ISaleDao.getAllByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 
 	@Override
 	public void save(SaleDTO saleDTO) {
 		
-		Optional<Product> product = productRepository.getProductEnabled(saleDTO.getProductId());
+		Optional<Product> product = IProductDao.getProductEnabled(saleDTO.getProductId());
 
 		if (product.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
 		}
 		
-		Optional<User> user =userRepository.getUserByEmail(saleDTO.getEmail());
+		Optional<User> user = IUserDao.getUserByEmail(saleDTO.getEmail());
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
@@ -78,18 +78,18 @@ public class SaleServiceImpl implements SaleService{
 		
 		saleDTO.setUserId(user.get().getUserId());
 		
-		saleRepository.save(saleMapper.toSale(saleDTO));
+		ISaleDao.save(saleMapper.toSale(saleDTO));
 	}
 
 	@Override
 	public void delete(Long saleId) {
-		Optional<Sale> opt = saleRepository.getSale(saleId);
+		Optional<Sale> opt = ISaleDao.getSale(saleId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
 		}
 		
-		saleRepository.delete(saleId);	
+		ISaleDao.delete(saleId);
 	}
 
 	

@@ -1,11 +1,11 @@
-package com.sensor.DAO;
+package com.sensor.dao;
 
 import java.util.List;
 import java.util.Optional;
 
 import com.sensor.persistence.entity.Role;
 
-public interface RoleRepository {
+public interface IRoleDao {
 
 	List<Role> getAll();
 

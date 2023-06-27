@@ -1,11 +1,11 @@
-package com.sensor.DAO;
+package com.sensor.dao;
 
 import java.util.List;
 import java.util.Optional;
 
 import com.sensor.persistence.entity.PurchasedHardware;
 
-public interface PurchasedHardwareRepository {
+public interface IPurchasedHardwareDao {
 	
 	
 	List<PurchasedHardware> getAll();

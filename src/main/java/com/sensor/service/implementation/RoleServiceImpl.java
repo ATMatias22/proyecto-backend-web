@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sensor.DAO.RoleRepository;
+import com.sensor.dao.IRoleDao;
 import com.sensor.persistence.entity.Role;
 import com.sensor.service.RoleService;
 
@@ -14,22 +14,22 @@ import com.sensor.service.RoleService;
 public class RoleServiceImpl implements RoleService{
 	
 	@Autowired
-	private RoleRepository roleRepository; 
+	private IRoleDao IRoleDao;
 
 	@Override
 	public List<Role> getAll() {
-		return roleRepository.getAll();
+		return IRoleDao.getAll();
 	}
 
 	@Override
 	public Optional<Role> getRole(Long roleId) {
-		Optional<Role> opt = roleRepository.getRole(roleId);
+		Optional<Role> opt = IRoleDao.getRole(roleId);
 		return opt;
 	}
 
 	@Override
 	public Optional<Role> getRoleByName(String name) {
-		return roleRepository.getRoleByName(name);
+		return IRoleDao.getRoleByName(name);
 	}
 
 }

@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.sensor.DAO.CommentRepository;
-import com.sensor.DAO.ProductRepository;
-import com.sensor.DAO.UserRepository;
+import com.sensor.dao.ICommentDao;
+import com.sensor.dao.IProductDao;
+import com.sensor.dao.IUserDao;
 import com.sensor.dto.CommentDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.CommentMapper;
@@ -24,25 +24,25 @@ import com.sensor.service.CommentService;
 public class CommentServiceImpl implements CommentService {
 
 	@Autowired
-	private CommentRepository commentRepository;
+	private ICommentDao ICommentDao;
 
 	@Autowired
-	private ProductRepository productRepository;
+	private IProductDao IProductDao;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private IUserDao IUserDao;
 	
 	@Autowired
 	private CommentMapper commentMapper;
 
 	@Override
 	public List<CommentDTO> getAll() {
-		return commentRepository.getAll().stream().map((comment) -> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
+		return ICommentDao.getAll().stream().map((comment) -> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
 	}
 
 	@Override
 	public CommentDTO getComment(Long commentId) {
-		Optional<Comment> opt = commentRepository.getComment(commentId);
+		Optional<Comment> opt = ICommentDao.getComment(commentId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el comentario: " + commentId);
@@ -53,42 +53,42 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public List<CommentDTO> getAllCommentsForAProduct(Long productId) {
 		
-		Optional<Product> product = productRepository.getProductEnabled(productId);
+		Optional<Product> product = IProductDao.getProductEnabled(productId);
 
 		if (product.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
 					"No existe el producto con id : " + productId);
 		}
 		
-		return commentRepository.getAllCommentsForAProduct(productId).stream().map((comment)-> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
+		return ICommentDao.getAllCommentsForAProduct(productId).stream().map((comment)-> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
 	}
 
 
 	@Override
 	public void save(CommentDTO commentDTO) {
-		Optional<Product> product = productRepository.getProductEnabled(commentDTO.getIdProduct());
+		Optional<Product> product = IProductDao.getProductEnabled(commentDTO.getIdProduct());
 		
 		if (product.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
 					"No existe el producto con id : " + commentDTO.getIdProduct());
 		}
-		User user = userRepository.getUserByEmail(commentDTO.getEmail()).get();
+		User user = IUserDao.getUserByEmail(commentDTO.getEmail()).get();
 		
 		commentDTO.setIdUser(user.getUserId());
 		
-		commentRepository.save(commentMapper.toComment(commentDTO));
+		ICommentDao.save(commentMapper.toComment(commentDTO));
 
 	}
 
 	@Override
 	public void delete(Long commentId) {
-		Optional<Comment> opt = commentRepository.getComment(commentId);
+		Optional<Comment> opt = ICommentDao.getComment(commentId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el comentario con id : " + commentId);
 		}
 
-		commentRepository.delete(commentId);
+		ICommentDao.delete(commentId);
 	}
 
 

@@ -1,18 +1,17 @@
-package com.sensor.DAO.implementation;
+package com.sensor.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.sensor.DAO.ProductRepository;
+import com.sensor.dao.IProductDao;
 import com.sensor.persistence.entity.Product;
 import com.sensor.repository.ProductCrudRepository;
 
 @Repository
-public class ProductRepositoryImpl implements ProductRepository {
+public class ProductDaoImpl implements IProductDao {
 
 	
 	@Autowired

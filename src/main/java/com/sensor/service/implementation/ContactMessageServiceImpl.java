@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.sensor.DAO.ContactMessageRepository;
+import com.sensor.dao.IContactMessageDao;
 import com.sensor.dto.ContactMessageDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.ContactMessageMapper;
@@ -19,19 +19,19 @@ import com.sensor.service.ContactMessageService;
 public class ContactMessageServiceImpl implements ContactMessageService{
 	
 	@Autowired
-	private ContactMessageRepository contactMessageRepository;
+	private IContactMessageDao IContactMessageDao;
 	
 	@Autowired
 	private ContactMessageMapper contactMessageMapper;
 
 	@Override
 	public List<ContactMessageDTO> getAll() {
-		return contactMessageRepository.getAll().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
+		return IContactMessageDao.getAll().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
 	}
 
 	@Override
 	public ContactMessageDTO getContactMessage(Long contactMessageId) {
-		Optional<ContactMessage> opt = contactMessageRepository.getContactMessage(contactMessageId);
+		Optional<ContactMessage> opt = IContactMessageDao.getContactMessage(contactMessageId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
@@ -41,17 +41,17 @@ public class ContactMessageServiceImpl implements ContactMessageService{
 
 	@Override
 	public void save(ContactMessageDTO contactMessageDTO) {
-		contactMessageRepository.save(contactMessageMapper.toContactMessage(contactMessageDTO));		
+		IContactMessageDao.save(contactMessageMapper.toContactMessage(contactMessageDTO));
 	}
 
 	@Override
 	public void delete(Long contactMessageId) {
-		Optional<ContactMessage> opt = contactMessageRepository.getContactMessage(contactMessageId);
+		Optional<ContactMessage> opt = IContactMessageDao.getContactMessage(contactMessageId);
 		
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
 		}
-		contactMessageRepository.delete(contactMessageId);
+		IContactMessageDao.delete(contactMessageId);
 	}
 	
 

@@ -1,4 +1,4 @@
-package com.sensor.DAO.implementation;
+package com.sensor.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sensor.DAO.PurchasedHardwareRepository;
+import com.sensor.dao.IPurchasedHardwareDao;
 import com.sensor.persistence.entity.PurchasedHardware;
 import com.sensor.repository.PurchasedHardwareCrudRepository;
 
 
 @Repository
-public class PurchasedHardwareRepositoryImpl implements PurchasedHardwareRepository{
+public class PurchasedHardwareDaoImpl implements IPurchasedHardwareDao {
 
 	@Autowired
 	private PurchasedHardwareCrudRepository purchasedHardwareCrudRepository;

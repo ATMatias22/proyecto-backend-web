@@ -1,12 +1,11 @@
-package com.sensor.DAO;
+package com.sensor.dao;
 
 import java.util.List;
 import java.util.Optional;
 
 import com.sensor.persistence.entity.ContactMessage;
-import com.sensor.persistence.entity.Product;
 
-public interface ContactMessageRepository {
+public interface IContactMessageDao {
 
 	List<ContactMessage> getAll();
 

@@ -1,4 +1,4 @@
-package com.sensor.DAO.implementation;
+package com.sensor.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,12 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sensor.DAO.CommentRepository;
+import com.sensor.dao.ICommentDao;
 import com.sensor.persistence.entity.Comment;
 import com.sensor.repository.CommentCrudRepository;
 
 @Repository
-public class CommentRepositoryImpl implements CommentRepository {
+public class CommentDaoImpl implements ICommentDao {
 
 	@Autowired
 	private CommentCrudRepository commentCrudRepository;

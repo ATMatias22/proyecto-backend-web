@@ -1,4 +1,4 @@
-package com.sensor.DAO.implementation;
+package com.sensor.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sensor.DAO.SaleRepository;
+import com.sensor.dao.ISaleDao;
 import com.sensor.persistence.entity.Sale;
 import com.sensor.repository.SaleCrudRepository;
 
 
 @Repository
-public class SaleRepositoryImpl implements SaleRepository{
+public class SaleDaoImpl implements ISaleDao {
 
 	
 	@Autowired
