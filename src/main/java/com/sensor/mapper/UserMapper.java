@@ -6,9 +6,9 @@ import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.sensor.DAO.RoleRepository;
+import com.sensor.dao.IRoleDao;
 import com.sensor.dto.UserDTO;
-import com.sensor.persistence.entity.User;
+import com.sensor.entity.User;
 import com.sensor.security.JWTAuthResponseDTO;
 
 @Mapper(componentModel = "spring")
@@ -16,7 +16,7 @@ public abstract class UserMapper {
 	
 	
 	@Autowired
-	public RoleRepository roleRepository;
+	public IRoleDao IRoleDao;
 	
 	@Autowired
 	public PasswordEncoder passwordEncoder;
@@ -28,7 +28,7 @@ public abstract class UserMapper {
 		@Mapping(source = "country", target = "country"),
 		@Mapping(source = "datesBirth", target = "datesBirth"),
 		@Mapping( target = "password", expression="java(passwordEncoder.encode(userDTO.getPassword()))"),
-		@Mapping( target = "roleId", expression="java(roleRepository.getRoleByName(\"ROLE_USER\").get().getIdRole())"),
+		@Mapping( target = "roleId", expression="java(IRoleDao.getRoleByName(\"ROLE_USER\").get().getIdRole())"),
 		@Mapping( target = "created", ignore = true),
 		@Mapping( target = "updated", ignore = true),
 		@Mapping( target = "userId", ignore = true),

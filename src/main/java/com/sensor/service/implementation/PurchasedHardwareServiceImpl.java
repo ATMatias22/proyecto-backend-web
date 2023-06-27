@@ -8,23 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.sensor.DAO.PurchasedHardwareRepository;
-import com.sensor.DAO.UserRepository;
-import com.sensor.dto.PurchasedHardwareDTO;
+import com.sensor.dao.IPurchasedHardwareDao;
+import com.sensor.dao.IUserDao;
+import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.PurchasedHardwareMapper;
-import com.sensor.persistence.entity.PurchasedHardware;
-import com.sensor.persistence.entity.User;
-import com.sensor.service.PurchasedHardwareService;
+import com.sensor.entity.PurchasedHardware;
+import com.sensor.entity.User;
+import com.sensor.service.IPurchasedHardwareService;
 
 @Service
-public class PurchasedHardwareServiceImpl implements PurchasedHardwareService {
+public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 
 	@Autowired
-	private PurchasedHardwareRepository purchasedHardwareRepository;
+	private IPurchasedHardwareDao IPurchasedHardwareDao;
 
 	@Autowired
-	private UserRepository userRepository;
+	private IUserDao IUserDao;
 	
 	@Autowired
 	private PurchasedHardwareMapper purchasedHardwareMapper;
@@ -32,12 +32,12 @@ public class PurchasedHardwareServiceImpl implements PurchasedHardwareService {
 	
 	@Override
 	public List<PurchasedHardwareDTO> getAll() {
-		return purchasedHardwareRepository.getAll().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
+		return IPurchasedHardwareDao.getAll().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
 	}
 
 	@Override
 	public PurchasedHardwareDTO getPurchasedHardware(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = purchasedHardwareRepository.getPurchasedHardware(purchasedHardwareId);
+		Optional<PurchasedHardware> opt = IPurchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
@@ -49,39 +49,39 @@ public class PurchasedHardwareServiceImpl implements PurchasedHardwareService {
 	@Override
 	public void save(PurchasedHardwareDTO purchasedHardwareDTO) {
 
-		Optional<User> user = userRepository.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = IUserDao.getUser(purchasedHardwareDTO.getUserId());
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
-		purchasedHardwareRepository.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
+		IPurchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
 	}
 
 	@Override
 	public void delete(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = purchasedHardwareRepository.getPurchasedHardware(purchasedHardwareId);
+		Optional<PurchasedHardware> opt = IPurchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con id : " + purchasedHardwareId);
 		}
 
-		purchasedHardwareRepository.delete(purchasedHardwareId);
+		IPurchasedHardwareDao.delete(purchasedHardwareId);
 	}
 
 
 	@Override
 	public void modify(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
 		
-		Optional<User> user = userRepository.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = IUserDao.getUser(purchasedHardwareDTO.getUserId());
 		
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
 		
-		purchasedHardwareRepository.save(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
+		IPurchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
 		
 	}
 

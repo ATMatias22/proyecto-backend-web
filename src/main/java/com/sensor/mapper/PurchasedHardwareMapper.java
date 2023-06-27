@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import com.sensor.dto.PurchasedHardwareDTO;
-import com.sensor.persistence.entity.PurchasedHardware;
+import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
+import com.sensor.entity.PurchasedHardware;
 
 @Mapper(componentModel = "spring")
 public interface PurchasedHardwareMapper {

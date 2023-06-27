@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import com.sensor.dto.ContactMessageDTO;
-import com.sensor.persistence.entity.ContactMessage;
+import com.sensor.dto.contact.request.ContactMessageDTO;
+import com.sensor.entity.ContactMessage;
 
 
 @Mapper(componentModel = "spring")
