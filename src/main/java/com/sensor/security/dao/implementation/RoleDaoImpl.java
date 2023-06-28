@@ -7,7 +7,7 @@ import com.sensor.security.dao.IRoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sensor.entity.Role;
+import com.sensor.security.entity.Role;
 import com.sensor.security.repository.IRoleRepository;
 
 

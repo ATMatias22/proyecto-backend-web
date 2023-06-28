@@ -2,6 +2,7 @@ package com.sensor.security.controller;
 
 import java.util.List;
 
+import com.sensor.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userSerivce;
+
+	@Autowired
+	private UserMapper userMapper;
 	
 
 	@GetMapping("/all")
@@ -41,7 +45,7 @@ public class UserController {
 	@GetMapping("/email/{email}")
 	public ResponseEntity<UserDTO> getUserByEmail(
 			@PathVariable("email") String email) {
-		return new ResponseEntity<UserDTO>(userSerivce.getUserByEmail(email), HttpStatus.OK);
+		return new ResponseEntity<UserDTO>(userMapper.toUserDTO(userSerivce.getUserByEmail(email)), HttpStatus.OK);
 	}
 
 }

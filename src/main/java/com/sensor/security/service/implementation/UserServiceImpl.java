@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,11 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private IUserDao IUserDao;
 	
-	@Autowired
 	private UserMapper userMapper;
+
+	public UserServiceImpl(@Lazy UserMapper userMapper) {
+		this.userMapper = userMapper;
+	}
 
 	@Override
 	public List<UserDTO> getAll() {
@@ -54,13 +58,13 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public UserDTO getUserByEmail(String email) {
+	public User getUserByEmail(String email) {
 		Optional<User> opt = IUserDao.getUserByEmail(email);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
 		}
-		return userMapper.toUserDTO(opt.get());
+		return opt.get();
 	}
 
 

@@ -63,7 +63,7 @@ public class JwtProvider {
 
 	public boolean validateToken(String token) throws JwtException{
 		try {
-			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
 			return true;
 		} catch (SignatureException ex) {
 			//Firma JWT no valida

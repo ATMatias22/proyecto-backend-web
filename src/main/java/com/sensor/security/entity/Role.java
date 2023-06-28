@@ -1,4 +1,4 @@
-package com.sensor.entity;
+package com.sensor.security.entity;
 
 import java.util.Calendar;
 

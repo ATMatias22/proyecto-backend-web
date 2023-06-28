@@ -18,27 +18,27 @@ public class CommentDaoImpl implements ICommentDao {
 
 	@Override
 	public List<Comment> getAll() {
-		return (List<Comment>) commentCrudRepository.findAll();
+		return (List<Comment>) commentRepository.findAll();
 	}
 
 	@Override
 	public Optional<Comment> getComment(Long commentId) {
-		return commentCrudRepository.findById(commentId);
+		return commentRepository.findById(commentId);
 	}
 
 	@Override
 	public Comment save(Comment comment) {
-		return commentCrudRepository.save(comment);
+		return commentRepository.save(comment);
 	}
 
 	@Override
 	public void delete(Long commentId) {
-		commentCrudRepository.deleteById(commentId);
+		commentRepository.deleteById(commentId);
 	}
 
 	@Override
 	public List<Comment> getAllCommentsForAProduct(Long productId) {
-		return commentCrudRepository.findByProductId(productId);
+		return commentRepository.findByProductId(productId);
 	}
 
 }

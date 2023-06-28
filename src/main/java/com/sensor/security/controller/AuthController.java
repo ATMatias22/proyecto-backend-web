@@ -1,5 +1,6 @@
 package com.sensor.security.controller;
 
+import com.sensor.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,10 @@ public class AuthController {
 	@Autowired
 	private JwtProvider jwtProvider;
 
+	@Autowired
+	private UserMapper userMapper;
+
+
 	@PostMapping("/login")
 	public ResponseEntity<UserDTO> authenticateUser(@RequestBody LoginDTO loginDTO) {
 		
@@ -50,7 +55,7 @@ public class AuthController {
 
 			String token = jwtProvider.createToken(authentication);
 
-			UserDTO userDTO = IUserService.getUserByEmail(loginDTO.getEmail());
+			UserDTO userDTO = userMapper.toUserDTO(IUserService.getUserByEmail(loginDTO.getEmail()));
 			userDTO.setJwt(new JWTAuthResponseDTO(token));
 
 			return ResponseEntity.ok(userDTO);
@@ -73,7 +78,7 @@ public class AuthController {
 
 			String token = jwtProvider.createToken(authentication);
 
-			UserDTO userDTO = IUserService.getUserByEmail(loginDTO.getEmail());
+			UserDTO userDTO = userMapper.toUserDTO(IUserService.getUserByEmail(loginDTO.getEmail()));
 			userDTO.setJwt(new JWTAuthResponseDTO(token));
 
 			return ResponseEntity.ok(userDTO);

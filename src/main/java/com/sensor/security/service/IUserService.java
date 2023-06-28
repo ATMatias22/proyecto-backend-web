@@ -3,6 +3,7 @@ package com.sensor.security.service;
 import java.util.List;
 
 import com.sensor.dto.UserDTO;
+import com.sensor.security.entity.User;
 
 public interface IUserService {
 
@@ -12,5 +13,5 @@ public interface IUserService {
 
 	void save(UserDTO userDTO);
 	
-	UserDTO getUserByEmail(String email);
+	User getUserByEmail(String email);
 }

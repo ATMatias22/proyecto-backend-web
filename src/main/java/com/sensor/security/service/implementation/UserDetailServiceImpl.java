@@ -3,6 +3,8 @@ package com.sensor.security.service.implementation;
 import com.sensor.exception.GeneralException;
 import com.sensor.exception.constants.ExceptionMessage;
 import com.sensor.security.MainUser;
+import com.sensor.security.exception.UnabledAccountException;
+import com.sensor.security.service.IConfirmationTokenService;
 import com.sensor.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	
 	@Autowired
 	private IUserService userService;
+
+	@Autowired
+	IConfirmationTokenService confirmationTokenService;
 	
 	
 	@Override
@@ -35,7 +40,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 			throw new UnabledAccountException(HttpStatus.UNAUTHORIZED, ExceptionMessage.UNABLED_ACCOUNT);
 		}
 
-		return MainUser.build(usuario);
+		return MainUser.build(user);
 	}
 	
 

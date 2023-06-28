@@ -28,11 +28,11 @@ public abstract class UserMapper {
 		@Mapping(source = "country", target = "country"),
 		@Mapping(source = "datesBirth", target = "datesBirth"),
 		@Mapping( target = "password", expression="java(passwordEncoder.encode(userDTO.getPassword()))"),
-		@Mapping( target = "roleId", expression="java(IRoleDao.getRoleByName(\"ROLE_USER\").get().getIdRole())"),
 		@Mapping( target = "created", ignore = true),
 		@Mapping( target = "updated", ignore = true),
 		@Mapping( target = "userId", ignore = true),
-		@Mapping( target = "role", ignore = true),
+		@Mapping( target = "enabled", ignore = true),
+		@Mapping( target = "roles", ignore = true),
 	})
 	public abstract User toUser(UserDTO userDTO);
 	

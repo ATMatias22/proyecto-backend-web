@@ -1,6 +1,6 @@
 package com.sensor.security;
 
-import com.sensor.entity.Role;
+import com.sensor.security.entity.Role;
 import com.sensor.security.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
