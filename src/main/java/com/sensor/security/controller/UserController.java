@@ -1,8 +1,10 @@
 package com.sensor.security.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.sensor.mapper.UserMapper;
+import com.sensor.security.dto.user.response.RegisteredUserResponse;
+import com.sensor.security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sensor.dto.UserDTO;
 import com.sensor.security.service.IUserService;
 
 @RestController
@@ -30,22 +31,25 @@ public class UserController {
 
 	@GetMapping("/all")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<UserDTO>> getAll() {
-		return new ResponseEntity<>(userSerivce.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<RegisteredUserResponse>> getAll() {
+		List<RegisteredUserResponse> registeredUsers = userSerivce.getAllUsers().stream().map( user -> userMapper.userEntityToRegisteredUserResponse(user)).collect(Collectors.toList());
+		return new ResponseEntity<>(registeredUsers, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<UserDTO> getUser(
+	public ResponseEntity<RegisteredUserResponse> getAnyUserById(
 			@PathVariable("userId") Long userId) {
-		return new ResponseEntity<UserDTO>(userSerivce.getUser(userId), HttpStatus.OK);
+		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserById(userId));
+		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("isAuthenticated() and #email == authentication.principal.username")
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/email/{email}")
-	public ResponseEntity<UserDTO> getUserByEmail(
-			@PathVariable("email") String email) {
-		return new ResponseEntity<UserDTO>(userMapper.toUserDTO(userSerivce.getUserByEmail(email)), HttpStatus.OK);
+	public ResponseEntity<RegisteredUserResponse> getUserLoggedIn() {
+		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserLoggedIn());
+		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
+
 	}
 
 }

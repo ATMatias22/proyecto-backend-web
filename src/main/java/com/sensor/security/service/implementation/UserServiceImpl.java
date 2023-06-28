@@ -2,17 +2,18 @@ package com.sensor.security.service.implementation;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.sensor.exception.GeneralException;
+import com.sensor.security.MainUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sensor.security.dao.IUserDao;
-import com.sensor.dto.UserDTO;
 import com.sensor.exception.BlogAppException;
-import com.sensor.mapper.UserMapper;
 import com.sensor.security.entity.User;
 import com.sensor.security.service.IUserService;
 
@@ -20,51 +21,51 @@ import com.sensor.security.service.IUserService;
 public class UserServiceImpl implements IUserService {
 
 	@Autowired
-	private IUserDao IUserDao;
-	
-	private UserMapper userMapper;
+	private IUserDao userDao;
 
-	public UserServiceImpl(@Lazy UserMapper userMapper) {
-		this.userMapper = userMapper;
+	private PasswordEncoder passwordEncoder;
+
+	public UserServiceImpl(@Lazy PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
-	public List<UserDTO> getAll() {
-		return IUserDao.getAll().stream().map((user)-> userMapper.toUserDTO(user)).collect(Collectors.toList());
+	public List<User> getAllUsers() {
+		return this.userDao.getAll();
 	}
 
 	@Override
-	public UserDTO getUser(Long userId) {
+	public User getUserById(Long userId) {
+		return  this.userDao.getUser(userId).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario con id: "+userId));
 
-		Optional<User> opt = IUserDao.getUser(userId);
-
-		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + userId);
-		}
-		
-		return userMapper.toUserDTO(opt.get());
 	}
 
 	@Override
-	public void save(UserDTO userDTO) {
-
-		Optional<User> opt = IUserDao.getUserByEmail(userDTO.getEmail());
-
-		if (!opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "Ya existe usuario con email: " + userDTO.getEmail());
-		}
-
-		IUserDao.save(userMapper.toUser(userDTO));
+	public void saveUser(User user) {
+		userDao.getUserByEmail(user.getEmail()).ifPresent(u -> {
+			if(!u.getEnabled()){
+				throw new GeneralException(HttpStatus.BAD_REQUEST,  u.getEmail() + " ya fue registrado verifique su casilla de mails para confirmar");
+			}
+			throw new GeneralException(HttpStatus.BAD_REQUEST, "El email " + u.getEmail() + " ya existe");
+		});
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		userDao.saveUser(user);
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
-		Optional<User> opt = IUserDao.getUserByEmail(email);
+		return userDao.getUserByEmail(email).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el usuario con email: " + email));
+	}
 
-		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
-		}
-		return opt.get();
+	@Override
+	public User getUserLoggedIn() {
+		MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return  this.userDao.getUser(mu.getId()).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario logueado por favor inicie sesion de vuelta"));
+	}
+
+	@Override
+	public Integer enableUser(String email) {
+		return userDao.enableUser(email);
 	}
 
 

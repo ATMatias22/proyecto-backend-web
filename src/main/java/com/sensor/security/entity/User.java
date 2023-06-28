@@ -1,6 +1,7 @@
 package com.sensor.security.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class User {
 	private String name;
 
 	@Column(name="lastname", length = 50, nullable = false)
-	private String lastName;
+	private String lastname;
 
 	@Column(name="email", length = 150, nullable = false)
 	private String email;
@@ -50,10 +51,10 @@ public class User {
 
 
 	@Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
-	private Calendar created;
+	private LocalDateTime created;
 
 	@Column(name = "update_date", insertable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
-	private Calendar updated;
+	private LocalDateTime updated;
 
 	private Boolean enabled = false;
 

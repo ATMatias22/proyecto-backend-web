@@ -57,6 +57,10 @@ public class MainUser implements UserDetails {
         return true;
     }
 
+    public Long getId() {
+        return Id;
+    }
+
     private static Collection<GrantedAuthority> mappingToGrantedAuthorities(Collection<Role> roles){
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
     }

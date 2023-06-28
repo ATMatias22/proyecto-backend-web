@@ -2,16 +2,19 @@ package com.sensor.security.service;
 
 import java.util.List;
 
-import com.sensor.dto.UserDTO;
 import com.sensor.security.entity.User;
 
 public interface IUserService {
 
-	List<UserDTO> getAll();
+	List<User> getAllUsers();
 
-	UserDTO getUser(Long userId);
+	User getUserById(Long userId);
 
-	void save(UserDTO userDTO);
+	void saveUser(User user);
+
+	Integer enableUser(String email);
 	
 	User getUserByEmail(String email);
+
+	User getUserLoggedIn();
 }

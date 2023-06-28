@@ -1,100 +1,55 @@
 package com.sensor.security.controller;
 
-import com.sensor.mapper.UserMapper;
+import com.sensor.security.dto.user.request.ConfirmRegisterUserRequest;
+import com.sensor.security.dto.user.request.LoginUserRequest;
+import com.sensor.security.jwt.dto.JwtResponse;
+import com.sensor.security.mapper.UserMapper;
+import com.sensor.security.service.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sensor.dto.LoginDTO;
-import com.sensor.dto.UserDTO;
-import com.sensor.security.jwt.dto.JWTAuthResponseDTO;
-import com.sensor.security.jwt.JwtProvider;
-import com.sensor.security.service.IUserService;
+import com.sensor.security.dto.user.request.NewUserRequest;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @CrossOrigin(origins="*")
 public class AuthController {
 
 	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private IUserService IUserService;
-
-	@Autowired
-	private JwtProvider jwtProvider;
+	private IAuthService authService;
 
 	@Autowired
 	private UserMapper userMapper;
 
 
 	@PostMapping("/login")
-	public ResponseEntity<UserDTO> authenticateUser(@RequestBody LoginDTO loginDTO) {
-		
-		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-		
-		System.out.println(authentication);
-
-		String role = authentication.getAuthorities().toArray()[0].toString();
-
-		if (role.equalsIgnoreCase("ROLE_USER")) {
-			
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			String token = jwtProvider.createToken(authentication);
-
-			UserDTO userDTO = userMapper.toUserDTO(IUserService.getUserByEmail(loginDTO.getEmail()));
-			userDTO.setJwt(new JWTAuthResponseDTO(token));
-
-			return ResponseEntity.ok(userDTO);
-
-		} else {
-			throw new BadCredentialsException("Algunas de sus credenciales son incorrectas");
-		}
+	public ResponseEntity<JwtResponse> login(@RequestBody LoginUserRequest loginUser) {
+		String jwt = this.authService.login(this.userMapper.loginUserRequestToUserEntity(loginUser));
+		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
 	@PostMapping("/login-admin")
-	public ResponseEntity<UserDTO> authenticateUserAdmin(@RequestBody LoginDTO loginDTO) {
-
-		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-
-		String role = authentication.getAuthorities().toArray()[0].toString();
-
-		if (role.equalsIgnoreCase("ROLE_ADMIN")) {
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			String token = jwtProvider.createToken(authentication);
-
-			UserDTO userDTO = userMapper.toUserDTO(IUserService.getUserByEmail(loginDTO.getEmail()));
-			userDTO.setJwt(new JWTAuthResponseDTO(token));
-
-			return ResponseEntity.ok(userDTO);
-		} else {
-			throw new BadCredentialsException("Algunas de sus credenciales son incorrectas");
-		}
-
+	public ResponseEntity<JwtResponse> loginAdmin(@RequestBody LoginUserRequest loginUser) {
+		String jwt = this.authService.login(this.userMapper.loginUserRequestToUserEntity(loginUser));
+		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity registerUser(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<Void> register(@RequestBody NewUserRequest newUserRequest) {
+		authService.register(this.userMapper.newUserRequestToUserEntity(newUserRequest));
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 
-		IUserService.save(userDTO);
-
-		return new ResponseEntity(HttpStatus.CREATED);
-
+	@PostMapping(path = "/confirm", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<JwtResponse> confirm(@RequestBody ConfirmRegisterUserRequest cru) {
+		return new ResponseEntity<>(new JwtResponse(authService.confirmToken(cru.getToken())), HttpStatus.OK);
 	}
 
 }

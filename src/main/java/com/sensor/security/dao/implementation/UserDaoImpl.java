@@ -31,10 +31,14 @@ public class UserDaoImpl implements IUserDao {
 		return IUserRepository.findByEmail(email);
 
 	}
+	@Override
+	public User saveUser(User user) {
+		return IUserRepository.save(user);
+	}
 
 	@Override
-	public User save(User user) {
-		return IUserRepository.save(user);
+	public Integer enableUser(String email) {
+		return this.IUserRepository.enableUser(email);
 	}
 
 }

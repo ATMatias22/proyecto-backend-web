@@ -39,7 +39,7 @@ public class JwtProvider {
 	@Value("${app.jwt.expiration-milliseconds}")
 	private Long jwtExpirationInMs;
 
-	public String createToken(Authentication authentication) {
+	public String generateToken(Authentication authentication) {
 		String username = authentication.getName();
 		List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 		
