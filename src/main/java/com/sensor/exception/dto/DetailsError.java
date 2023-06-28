@@ -1,4 +1,4 @@
-package com.sensor.exception;
+package com.sensor.exception.dto;
 
 import java.util.Date;
 

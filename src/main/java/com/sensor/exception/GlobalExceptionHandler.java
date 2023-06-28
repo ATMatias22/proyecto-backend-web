@@ -2,12 +2,20 @@ package com.sensor.exception;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
+import com.sensor.exception.dto.DetailsError;
+import io.jsonwebtoken.JwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -16,6 +24,40 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	private static final String ERROR  = "error";
+
+	@ExceptionHandler(GeneralException.class)
+	public ResponseEntity<HashMap<String, DetailsError>> generalExceptionHandler(GeneralException exception, WebRequest webRequest) {
+
+		logger.info("estoy en GeneralException");
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
+				webRequest.getDescription(false), exception.getStatus().value());
+
+		dataError.put(ERROR, detailsError);
+
+
+		return new ResponseEntity<>(dataError, exception.getStatus());
+	}
+
+
+	@ExceptionHandler(JwtException.class)
+	public ResponseEntity<HashMap<String, DetailsError>> jwtExceptionHandler(JwtException e, WebRequest webRequest) {
+
+		logger.info("estoy en JwtException");
+
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+
+		DetailsError detailsError = new DetailsError(new Date(), e.getMessage(),
+				webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
+
+		dataError.put(ERROR, detailsError);
+
+		return new ResponseEntity<>(dataError, HttpStatus.UNAUTHORIZED);
+	}
 
 	@ExceptionHandler(BlogAppException.class)
 	public ResponseEntity<HashMap<String, DetailsError>> blogExceptionHandler(BlogAppException exception, WebRequest webRequest) {
@@ -32,92 +74,120 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(data, exception.getEstado());
 	}
 
-		
-	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<HashMap<String, DetailsError>> blogAppExceptionHandler(BadCredentialsException exception,
-			WebRequest webRequest) {
-		System.out.println("Estoy aca------------------BadCredentialsException");
 
-		HashMap<String, DetailsError> data = new HashMap<>();
-
-		DetailsError errorDetalles = new DetailsError(new Date(), "Algunas de sus credenciales es incorrecta",
-				webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
-		
-		data.put("error", errorDetalles);
-		
-		return new ResponseEntity<>(data, HttpStatus.UNAUTHORIZED);
-	}
-	
-	
-	
-	@ExceptionHandler(JWTException.class)
-    public ResponseEntity<HashMap<String, DetailsError>> jwtExceptionHandler(JWTException e, WebRequest webRequest ) {
-		
-		HashMap<String, DetailsError> data = new HashMap<>();
-
-		
-		DetailsError errorDetalles = new DetailsError(new Date(), e.getMessage(),
-				webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
-		
-		data.put("error", errorDetalles);
-
-		return new ResponseEntity<>(data, HttpStatus.UNAUTHORIZED);
-    }
-	
-	
 	// tiene q  ver con MyAccessDeniedHandler
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<HashMap<String, DetailsError>> accessDeniedExceptionHandler(AccessDeniedException exception, WebRequest webRequest) {
-		
-		HashMap<String, DetailsError> data = new HashMap<>();
 
-		DetailsError errorDetalles = new DetailsError(new Date(), "Acceso denegado",
+		logger.info("estoy en AccessDeniedException");
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		DetailsError detailsError = new DetailsError(new Date(), "Acceso denegado",
 				webRequest.getDescription(false), HttpStatus.FORBIDDEN.value());
-		
-		data.put("error", errorDetalles);
-		
-		return new ResponseEntity<>(data, HttpStatus.FORBIDDEN);
-	}
-	
-	// tiene q  ver con MyAccessDeniedHandler
-	@ExceptionHandler(AuthenticationException.class)
-	public ResponseEntity<HashMap<String, DetailsError>> authenticationExceptionHandler(AuthenticationException exception, WebRequest webRequest) {
-		
-		HashMap<String, DetailsError> data = new HashMap<>();
 
-		DetailsError errorDetalles = new DetailsError(new Date(), "Algunas de sus credenciales es incorrecta",
-				webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
-		
-		data.put("error", errorDetalles);
+		dataError.put(ERROR, detailsError);
 
-		return new ResponseEntity<>(data, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(dataError, HttpStatus.FORBIDDEN);
 	}
 	
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<HashMap<String, DetailsError>> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException  exception, WebRequest webRequest) {
-		
-		HashMap<String, DetailsError> data = new HashMap<>();
 
+		logger.info("estoy en MethodArgumentTypeMismatchException");
 
-		DetailsError errorDetalles = new DetailsError(new Date(), "Ruta no encontrada",
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		DetailsError detailsError = new DetailsError(new Date(), "Recurso no encontrado",
 				webRequest.getDescription(false), HttpStatus.NOT_FOUND.value());
-		
-		data.put("error", errorDetalles);
 
-		return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+		dataError.put(ERROR, detailsError);
+
+		return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
 	}
 
-	
+	//
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<HashMap<String, DetailsError>> dataIntegrityViolationException(DataIntegrityViolationException  exception, WebRequest webRequest) {
+
+		logger.info("estoy en DataIntegrityViolationException");
+
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		DetailsError detailsError = new DetailsError(new Date(), "No se pudo realizar la accion",
+				webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
+
+		dataError.put(ERROR, detailsError);
+
+		return new ResponseEntity<>(dataError, HttpStatus.BAD_REQUEST);
+	}
+
+
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<HashMap<String, DetailsError>> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException  exception, WebRequest webRequest) {
+
+		logger.info("estoy en HttpRequestMethodNotSupportedException");
+
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+
+		DetailsError detailsError = new DetailsError(new Date(), "Recurso no encontrado",
+				webRequest.getDescription(false), HttpStatus.NOT_FOUND.value());
+
+		dataError.put(ERROR, detailsError);
+
+		return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
+	}
+
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<HashMap<String, DetailsError>> httpMessageNotReadableException(HttpMessageNotReadableException  exception, WebRequest webRequest) {
+
+		logger.info("estoy en HttpMessageNotReadableException");
+
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		DetailsError detailsError = new DetailsError(new Date(), "No se puede guardar este dato",
+				webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
+
+		dataError.put(ERROR, detailsError);
+
+		return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
+	}
+
+
+	//tiene que ver con las validaciones
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	protected ResponseEntity<HashMap<String, DetailsError>> methodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest webRequest) {
+		logger.info("estoy en MethodArgumentNotValidException");
+
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		String errors = exception.getBindingResult().getFieldErrors()
+				.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(". "));
+
+		DetailsError detailsError = new DetailsError(new Date(), errors,
+				webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
+
+		dataError.put(ERROR, detailsError);
+
+
+		return new ResponseEntity<>(dataError, HttpStatus.BAD_REQUEST);
+	}
+
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<HashMap<String, DetailsError>> exceptionHandler(Exception exception, WebRequest webRequest) {
-		
-		HashMap<String, DetailsError> data = new HashMap<>();
 
-		DetailsError errorDetalles = new DetailsError(new Date(), exception.getMessage(),
+		logger.info("estoy en Exception");
+
+
+		HashMap<String, DetailsError> dataError = new HashMap<>();
+
+		DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
 				webRequest.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR.value());
-		
-		data.put("error", errorDetalles);
 
-		return new ResponseEntity<>(data, HttpStatus.INTERNAL_SERVER_ERROR);
+		dataError.put(ERROR, detailsError);
+
+		return new ResponseEntity<>(dataError, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
