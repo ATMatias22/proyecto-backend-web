@@ -22,11 +22,11 @@ public abstract class UserMapper {
 	public PasswordEncoder passwordEncoder;
 	
 	@Mappings({ 
-		@Mapping(source = "name", target = "name"), 
-		@Mapping(source = "lastName", target = "lastName"),
-		@Mapping(source = "email", target = "email"),
-		@Mapping(source = "country", target = "country"),
-		@Mapping(source = "datesBirth", target = "datesBirth"),
+		@Mapping(source = "userDTO.name", target = "name"),
+		@Mapping(source = "userDTO.lastName", target = "lastName"),
+		@Mapping(source = "userDTO.email", target = "email"),
+		@Mapping(source = "userDTO.country", target = "country"),
+		@Mapping(source = "userDTO.datesBirth", target = "dateOfBirth"),
 		@Mapping( target = "password", expression="java(passwordEncoder.encode(userDTO.getPassword()))"),
 		@Mapping( target = "created", ignore = true),
 		@Mapping( target = "updated", ignore = true),
@@ -43,7 +43,7 @@ public abstract class UserMapper {
 		@Mapping(source = "lastName", target = "lastName"),
 		@Mapping(source = "country", target = "country"),
 		@Mapping(source = "email", target = "email"),
-		@Mapping(source = "datesBirth", target = "datesBirth"),
+		@Mapping(source = "dateOfBirth", target = "datesBirth"),
 		@Mapping( target = "jwt", ignore = true),
 		@Mapping( target = "password", ignore = true)
 	})
@@ -56,7 +56,7 @@ public abstract class UserMapper {
 		@Mapping(source = "user.lastName", target = "lastName"),
 		@Mapping(source = "user.country", target = "country"),
 		@Mapping(source = "user.email", target = "email"),
-		@Mapping(source = "user.datesBirth", target = "datesBirth"),
+		@Mapping(source = "user.dateOfBirth", target = "datesBirth"),
 		@Mapping( target = "jwt", source="jwt"),
 		@Mapping( target = "password", ignore = true)
 	})

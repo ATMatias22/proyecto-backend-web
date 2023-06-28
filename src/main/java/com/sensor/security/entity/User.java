@@ -1,13 +1,11 @@
 package com.sensor.security.entity;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
-
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,16 +24,16 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
 
-	@Column(name = "name")
+	@Column(name="name", length = 50, nullable = false)
 	private String name;
 
-	@Column(name = "lastname")
+	@Column(name="lastname", length = 50, nullable = false)
 	private String lastName;
-	
-	@Column(name = "email")
+
+	@Column(name="email", length = 150, nullable = false)
 	private String email;
-	
-	@Column(name = "country")
+
+	@Column(name="country", length = 60, nullable = false)
 	private String country;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -44,27 +42,25 @@ public class User {
 			inverseJoinColumns = @JoinColumn(name = "fk_role"))
 	private Set<Role> roles = new HashSet<>();
 
-	@Column(name = "dates_birth")
-	@Temporal(TemporalType.DATE)
-	@JsonFormat(pattern="yyyy-MM-dd",timezone="America/Argentina/Buenos_Aires")
-	private Calendar datesBirth;
-	
-	@Column(name = "password")
-	private String password;
-	
+	@Column(name = "date_of_birth", nullable = false)
+	private LocalDate dateOfBirth;
 
-	@Column(insertable=false, updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
+	@Column(name="password", length = 75, nullable = false)
+	private String password;
+
+
+	@Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
 	private Calendar created;
 
-	//insertable para que la query de insert no la realice con esta columna
-	@Column(insertable=false, updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
+	@Column(name = "update_date", insertable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
 	private Calendar updated;
 
 	private Boolean enabled = false;
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 	
 
 }
