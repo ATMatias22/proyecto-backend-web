@@ -27,7 +27,7 @@ import com.sensor.exception.BlogAppException;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
 import com.sensor.entity.Product;
-import com.sensor.entity.User;
+import com.sensor.security.entity.User;
 import com.sensor.service.IProductService;
 
 @Service

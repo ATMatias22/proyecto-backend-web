@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private JwtService jwtService;
 
 	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+	private UserDetailServiceImpl userDetailServiceImpl;
 
 	@Autowired
 	@Qualifier("handlerExceptionResolver")
@@ -47,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				String email = jwtService.getEmail(token);
 
-				UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+				UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(email);
 				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				

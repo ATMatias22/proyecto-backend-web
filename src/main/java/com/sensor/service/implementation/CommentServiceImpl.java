@@ -16,7 +16,7 @@ import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.CommentMapper;
 import com.sensor.entity.Comment;
 import com.sensor.entity.Product;
-import com.sensor.entity.User;
+import com.sensor.security.entity.User;
 import com.sensor.service.ICommentService;
 
 

@@ -1,21 +1,15 @@
-package com.sensor.entity;
+package com.sensor.security.entity;
 
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import com.sensor.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +30,7 @@ public class User {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "last_name")
+	@Column(name = "lastname")
 	private String lastName;
 	
 	@Column(name = "email")
@@ -45,14 +39,12 @@ public class User {
 	@Column(name = "country")
 	private String country;
 	
-	@Column(name = "fk_role")
-	private Long roleId;
-	
-	@ManyToOne
-	@JoinColumn(name="fk_role", insertable = false, updatable = false)
-	private Role role;
-		
-	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_roles",
+			joinColumns = @JoinColumn(name = "fk_user"),
+			inverseJoinColumns = @JoinColumn(name = "fk_role"))
+	private Set<Role> roles = new HashSet<>();
+
 	@Column(name = "dates_birth")
 	@Temporal(TemporalType.DATE)
 	@JsonFormat(pattern="yyyy-MM-dd",timezone="America/Argentina/Buenos_Aires")
@@ -72,6 +64,8 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
 	private Calendar updated;
+
+	private Boolean enabled = false;
 	
 
 }

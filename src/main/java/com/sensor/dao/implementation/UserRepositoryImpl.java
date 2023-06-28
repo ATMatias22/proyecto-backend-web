@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.dao.IUserDao;
-import com.sensor.entity.User;
+import com.sensor.security.entity.User;
 import com.sensor.repository.IUserRepository;
 
 @Repository
