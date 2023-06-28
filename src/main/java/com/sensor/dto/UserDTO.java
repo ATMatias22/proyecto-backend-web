@@ -2,7 +2,7 @@ package com.sensor.dto;
 
 import java.util.Calendar;
 
-import com.sensor.security.JWTAuthResponseDTO;
+import com.sensor.security.jwt.dto.JWTAuthResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.sensor.dao;
+package com.sensor.security.dao;
 
 import java.util.List;
 import java.util.Optional;

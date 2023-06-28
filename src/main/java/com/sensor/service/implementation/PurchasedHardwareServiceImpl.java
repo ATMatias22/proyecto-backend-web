@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IPurchasedHardwareDao;
-import com.sensor.dao.IUserDao;
+import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.PurchasedHardwareMapper;

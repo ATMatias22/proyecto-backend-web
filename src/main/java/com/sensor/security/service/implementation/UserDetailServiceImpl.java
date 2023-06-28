@@ -1,23 +1,16 @@
-package com.sensor.security;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
+package com.sensor.security.service.implementation;
 
 import com.sensor.exception.GeneralException;
 import com.sensor.exception.constants.ExceptionMessage;
-import com.sensor.service.IUserService;
+import com.sensor.security.MainUser;
+import com.sensor.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.sensor.dao.IUserDao;
-import com.sensor.entity.Role;
 import com.sensor.security.entity.User;
 
 

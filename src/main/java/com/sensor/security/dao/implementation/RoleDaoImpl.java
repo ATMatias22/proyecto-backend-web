@@ -1,14 +1,14 @@
-package com.sensor.dao.implementation;
+package com.sensor.security.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.sensor.dao.IRoleDao;
+import com.sensor.security.dao.IRoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sensor.entity.Role;
-import com.sensor.repository.IRoleRepository;
+import com.sensor.security.repository.IRoleRepository;
 
 
 @Repository

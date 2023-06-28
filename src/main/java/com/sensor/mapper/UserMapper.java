@@ -6,10 +6,10 @@ import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.sensor.dao.IRoleDao;
+import com.sensor.security.dao.IRoleDao;
 import com.sensor.dto.UserDTO;
 import com.sensor.security.entity.User;
-import com.sensor.security.JWTAuthResponseDTO;
+import com.sensor.security.jwt.dto.JWTAuthResponseDTO;
 
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {

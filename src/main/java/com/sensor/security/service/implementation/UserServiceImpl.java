@@ -1,4 +1,4 @@
-package com.sensor.service.implementation;
+package com.sensor.security.service.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.sensor.dao.IUserDao;
+import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.UserDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.UserMapper;
 import com.sensor.security.entity.User;
-import com.sensor.service.IUserService;
+import com.sensor.security.service.IUserService;
 
 @Service
 public class UserServiceImpl implements IUserService {

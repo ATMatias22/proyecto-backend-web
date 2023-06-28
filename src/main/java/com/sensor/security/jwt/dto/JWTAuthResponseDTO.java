@@ -1,4 +1,4 @@
-package com.sensor.security;
+package com.sensor.security.jwt.dto;
 
 public class JWTAuthResponseDTO {
 	

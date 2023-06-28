@@ -1,4 +1,4 @@
-package com.sensor.service.implementation;
+package com.sensor.security.service.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sensor.dao.IRoleDao;
+import com.sensor.security.dao.IRoleDao;
 import com.sensor.entity.Role;
-import com.sensor.service.IRoleService;
+import com.sensor.security.service.IRoleService;
 
 @Service
 public class RoleServiceImpl implements IRoleService {

@@ -1,4 +1,4 @@
-package com.sensor.controller;
+package com.sensor.security.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.dto.LoginDTO;
 import com.sensor.dto.UserDTO;
-import com.sensor.security.JWTAuthResponseDTO;
-import com.sensor.security.JwtService;
-import com.sensor.service.IUserService;
+import com.sensor.security.jwt.dto.JWTAuthResponseDTO;
+import com.sensor.security.jwt.JwtProvider;
+import com.sensor.security.service.IUserService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,7 +32,7 @@ public class AuthController {
 	private IUserService IUserService;
 
 	@Autowired
-	private JwtService jwtService;
+	private JwtProvider jwtProvider;
 
 	@PostMapping("/login")
 	public ResponseEntity<UserDTO> authenticateUser(@RequestBody LoginDTO loginDTO) {
@@ -48,7 +48,7 @@ public class AuthController {
 			
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			String token = jwtService.createToken(authentication);
+			String token = jwtProvider.createToken(authentication);
 
 			UserDTO userDTO = IUserService.getUserByEmail(loginDTO.getEmail());
 			userDTO.setJwt(new JWTAuthResponseDTO(token));
@@ -71,7 +71,7 @@ public class AuthController {
 		if (role.equalsIgnoreCase("ROLE_ADMIN")) {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			String token = jwtService.createToken(authentication);
+			String token = jwtProvider.createToken(authentication);
 
 			UserDTO userDTO = IUserService.getUserByEmail(loginDTO.getEmail());
 			userDTO.setJwt(new JWTAuthResponseDTO(token));

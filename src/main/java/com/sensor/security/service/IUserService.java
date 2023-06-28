@@ -1,4 +1,4 @@
-package com.sensor.service;
+package com.sensor.security.service;
 
 import java.util.List;
 

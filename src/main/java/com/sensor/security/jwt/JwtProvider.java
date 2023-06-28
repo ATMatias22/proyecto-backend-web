@@ -1,18 +1,17 @@
-package com.sensor.security;
+package com.sensor.security.jwt;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import com.sensor.exception.BlogAppException;
-import com.sensor.exception.JWTException;
+import io.jsonwebtoken.JwtException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,10 +22,13 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
 @Service
-public class JwtService {
+public class JwtProvider {
 
 	private static final String EMAIL_CLAIM = "email";
 	private static final String ROLES_CLAIM = "roles";
+
+	private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+
 
 	@Value("${app.jwt-secret}")
 	private String jwtSecret;
@@ -59,25 +61,35 @@ public class JwtService {
 		return claims.get(EMAIL_CLAIM).toString();
 	}
 
-	public boolean validarToken(String token) throws JWTException{
+	public boolean validateToken(String token) throws JwtException{
 		try {
-			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 			return true;
 		} catch (SignatureException ex) {
 			//Firma JWT no valida
-			throw new JWTException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente");
+			logger.error("firma no valida");
+			throw new JwtException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente, firma no valida");
+
 		} catch (MalformedJwtException ex) {
 			//Token JWT no valida
-			throw new JWTException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente");
+			logger.error("Token mal formado");
+			throw new JwtException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente, Token mal formado");
+
 		} catch (ExpiredJwtException ex) {
 			//expiro el JWT
-			throw new JWTException("Se expiro el inicio de sesion, por favor inicie sesion nuevamente");
+			logger.error("Token expirado");
+			throw new JwtException("Se expiro el inicio de sesion, por favor inicie sesion nuevamente, Token expirado");
+
 		} catch (UnsupportedJwtException ex) {
 			//Token JWT no compatible
-			throw new JWTException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente");
+			logger.error("Token no soportado");
+			throw new JwtException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente, Token no soportado");
+
 		} catch (IllegalArgumentException ex) {
 			//La cadena claims JWT esta vacia
-			throw new JWTException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente");
+			logger.error("Token vacio");
+			throw new JwtException("Problemas con el inicio de sesion, por favor inicie sesion nuevamente, Token vacio");
+
 		}
 	}
 

@@ -1,4 +1,4 @@
-package com.sensor.repository;
+package com.sensor.security.repository;
 
 import java.util.Optional;
 

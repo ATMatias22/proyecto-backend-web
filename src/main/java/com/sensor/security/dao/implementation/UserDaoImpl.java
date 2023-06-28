@@ -1,4 +1,4 @@
-package com.sensor.dao.implementation;
+package com.sensor.security.dao.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,12 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sensor.dao.IUserDao;
+import com.sensor.security.dao.IUserDao;
 import com.sensor.security.entity.User;
-import com.sensor.repository.IUserRepository;
+import com.sensor.security.repository.IUserRepository;
 
 @Repository
-public class UserRepositoryImpl implements IUserDao {
+public class UserDaoImpl implements IUserDao {
 
 	@Autowired
 	private IUserRepository IUserRepository;

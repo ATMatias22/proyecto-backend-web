@@ -1,16 +1,16 @@
-package com.sensor.dao;
+package com.sensor.security.service;
 
 import java.util.List;
 import java.util.Optional;
 
 import com.sensor.entity.Role;
 
-public interface IRoleDao {
-
+public interface IRoleService {
+	
 	List<Role> getAll();
 
 	Optional<Role> getRole(Long roleId);
 
 	Optional<Role> getRoleByName(String name);
-	
+
 }

@@ -1,4 +1,4 @@
-package com.sensor.security;
+package com.sensor.security.jwt;
 
 import java.io.IOException;
 
@@ -7,22 +7,28 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sensor.exception.GeneralException;
+import com.sensor.security.service.implementation.UserDetailServiceImpl;
+import io.jsonwebtoken.JwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import com.sensor.exception.JWTException;
+public class JwtTokenFilter extends OncePerRequestFilter {
 
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+	private static final Logger log = LoggerFactory.getLogger(JwtTokenFilter.class);
 
 	@Autowired
-	private JwtService jwtService;
+	private JwtProvider jwtProvider;
 
 	@Autowired
 	private UserDetailServiceImpl userDetailServiceImpl;
@@ -34,44 +40,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		log.info("Estoy en filter");
 
 		try {
 			
-			String token = obtenerJWTdeLaSolicitud(request);
-			System.out.println("pase por aca 1");
+			String token = getJwtFromRequest(request);
 
 			// validamos el token
-			if (StringUtils.hasText(token) && jwtService.validarToken(token)) {
-				System.out.println("pase por aca 2");
+			if (token != null && jwtProvider.validateToken(token)) {
 
-				String email = jwtService.getEmail(token);
+				String email = jwtProvider.getEmail(token);
 
 				UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(email);
 				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				
-				authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				// establecemos la seguridad
-				System.out.println("pase por aca 3");
-
-				//esto hace que no pase por el entry point
 				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 			}
 			
-			System.out.println("pase por aca 4");
-
 			filterChain.doFilter(request, response);
 
-		} catch (JWTException e) {
-			System.out.println("pase por filter JWTException");
-			resolver.resolveException(request, response, null, e);
+		}catch (JwtException | AuthenticationException ja){
+			log.info(ja.getMessage());
+			resolver.resolveException(request, response, null, new JwtException("Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
+		}catch (GeneralException ex){
+			log.info(ex.getMessage());
+			resolver.resolveException(request, response, null, new GeneralException(HttpStatus.UNAUTHORIZED, "Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
+		}catch (Exception ex){
+			log.info(ex.getMessage());
+			resolver.resolveException(request, response, null, new Exception("Problemas en el servidor"));
 		}
 
 
 	}
 
 	// Bearer token de acceso
-	private String obtenerJWTdeLaSolicitud(HttpServletRequest request) {
+	private String getJwtFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
 			return bearerToken.substring(7, bearerToken.length());
