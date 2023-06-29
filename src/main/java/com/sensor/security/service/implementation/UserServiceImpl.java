@@ -29,12 +29,12 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public List<User> getAllUsers() {
-		return this.userDao.getAll();
+		return this.userDao.getAllUsers();
 	}
 
 	@Override
 	public User getUserById(Long userId) {
-		return  this.userDao.getUser(userId).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario con id: "+userId));
+		return  this.userDao.getUserById(userId).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario con id: "+userId));
 
 	}
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public User getUserLoggedInByEmailInToken() {
 		MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return  this.userDao.getUser(mu.getId()).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario logueado por favor inicie sesion de vuelta"));
+		return  this.userDao.getUserById(mu.getId()).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario logueado por favor inicie sesion de vuelta"));
 	}
 
 	@Override

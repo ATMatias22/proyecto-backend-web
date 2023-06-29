@@ -49,7 +49,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 	@Override
 	public void savePurchasedHardware(PurchasedHardwareDTO purchasedHardwareDTO) {
 
-		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = userDao.getUserById(purchasedHardwareDTO.getUserId());
 
 		if (user.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
@@ -74,7 +74,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 	@Override
 	public void modifyPurchasedHardwareById(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
 		
-		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = userDao.getUserById(purchasedHardwareDTO.getUserId());
 		
 		if (user.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
