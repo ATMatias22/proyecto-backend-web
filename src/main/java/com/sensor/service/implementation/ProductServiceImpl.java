@@ -105,7 +105,7 @@ public class ProductServiceImpl implements IProductService {
 			System.out.println(productDTO);
 
 			Optional<Product> optionalProduct = productDao.getProductByName(productDTO.getName());
-			Optional<User> user = userDao.getUser(productDTO.getIdUser());
+			Optional<User> user = userDao.getUserById(productDTO.getIdUser());
 
 			if (!optionalProduct.isEmpty()) {
 				throw new GeneralException(HttpStatus.NOT_FOUND,
@@ -175,7 +175,7 @@ public class ProductServiceImpl implements IProductService {
 			}
 		}
 
-		Optional<User> user = userDao.getUser(productDTO.getIdUser());
+		Optional<User> user = userDao.getUserById(productDTO.getIdUser());
 
 		if (user.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND,

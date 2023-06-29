@@ -37,7 +37,7 @@ public class AuthController {
 
 	@PostMapping("/login-admin")
 	public ResponseEntity<JwtResponse> loginAdminUser(@RequestBody LoginUserRequest loginUser) {
-		String jwt = this.authService.loginUser(this.userMapper.loginUserRequestToUserEntity(loginUser));
+		String jwt = this.authService.loginAdminUser(this.userMapper.loginUserRequestToUserEntity(loginUser));
 		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
