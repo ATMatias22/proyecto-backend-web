@@ -19,7 +19,7 @@ public class ConfirmationToken {
     @Column(name="ID_ConfirmationToken")
     private String idConfirmationToken;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String token;
 
     @Column(nullable = false)

@@ -6,12 +6,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class JwtResponse {
 
 	private String token;
 
-	@Builder.Default
 	private String bearer = "Bearer";
 
 	public JwtResponse(String token) {
