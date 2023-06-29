@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IContactMessageDao;
 import com.sensor.dto.contact.request.ContactMessageDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.ContactMessageMapper;
 import com.sensor.entity.ContactMessage;
 import com.sensor.service.IContactMessageService;
@@ -34,7 +34,7 @@ public class ContactMessageServiceImpl implements IContactMessageService {
 		Optional<ContactMessage> opt = contactMessageDao.getContactMessage(contactMessageId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
 		}
 		return contactMessageMapper.toContactMessageDTO(opt.get());
 	}
@@ -49,7 +49,7 @@ public class ContactMessageServiceImpl implements IContactMessageService {
 		Optional<ContactMessage> opt = contactMessageDao.getContactMessage(contactMessageId);
 		
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
 		}
 		contactMessageDao.delete(contactMessageId);
 	}

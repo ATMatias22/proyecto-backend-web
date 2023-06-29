@@ -12,7 +12,7 @@ import com.sensor.dao.IProductDao;
 import com.sensor.dao.ISaleDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.sale.request.SaleDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.SaleMapper;
 import com.sensor.entity.Product;
 import com.sensor.entity.Sale;
@@ -43,7 +43,7 @@ public class SaleServiceImpl implements ISaleService {
 		Optional<Sale> opt = saleDao.getSale(saleId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
 		}
 		return saleMapper.toSaleDTO(opt.get());
 	}
@@ -53,7 +53,7 @@ public class SaleServiceImpl implements ISaleService {
 		Optional<User> user = userDao.getUserByEmail(email);
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
 		}
 		
 		
@@ -67,13 +67,13 @@ public class SaleServiceImpl implements ISaleService {
 		Optional<Product> product = productDao.getProductEnabled(saleDTO.getProductId());
 
 		if (product.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
 		}
 		
 		Optional<User> user = userDao.getUserByEmail(saleDTO.getEmail());
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
 		}
 		
 		saleDTO.setUserId(user.get().getUserId());
@@ -86,7 +86,7 @@ public class SaleServiceImpl implements ISaleService {
 		Optional<Sale> opt = saleDao.getSale(saleId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
 		}
 		
 		saleDao.delete(saleId);

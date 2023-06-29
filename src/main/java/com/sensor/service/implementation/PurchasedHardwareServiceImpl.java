@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.sensor.dao.IPurchasedHardwareDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.PurchasedHardwareMapper;
 import com.sensor.entity.PurchasedHardware;
 import com.sensor.security.entity.User;
@@ -40,7 +40,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con el id : " + purchasedHardwareId);
 		}
 		return purchasedHardwareMapper.toPurchasedHardwareDTO(opt.get());
@@ -52,7 +52,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
 		purchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
@@ -63,7 +63,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con id : " + purchasedHardwareId);
 		}
 
@@ -77,7 +77,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 		
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
 		

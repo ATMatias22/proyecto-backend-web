@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensor.dao.IProductDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.product.request.ProductDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
 import com.sensor.entity.Product;
@@ -57,7 +57,7 @@ public class ProductServiceImpl implements IProductService {
 		Optional<Product> opt = productDao.getProductEnabled(productId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
 		}
 
 		return getProductWithBase64Image(opt.get());
@@ -108,12 +108,12 @@ public class ProductServiceImpl implements IProductService {
 			Optional<User> user = userDao.getUser(productDTO.getIdUser());
 
 			if (!optionalProduct.isEmpty()) {
-				throw new BlogAppException(HttpStatus.NOT_FOUND,
+				throw new GeneralException(HttpStatus.NOT_FOUND,
 						"Ya existe el producto con nombre : " + productDTO.getName());
 			}
 
 			if (user.isEmpty()) {
-				throw new BlogAppException(HttpStatus.NOT_FOUND,
+				throw new GeneralException(HttpStatus.NOT_FOUND,
 						"No se encontro el usuario con id : " + productDTO.getIdUser());
 			}
 
@@ -145,7 +145,7 @@ public class ProductServiceImpl implements IProductService {
 		Optional<Product> opt = productDao.getProductEnabled(productId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
 		}
 
 		productDao.delete(productId);
@@ -156,7 +156,7 @@ public class ProductServiceImpl implements IProductService {
 		Optional<Product> opt = productDao.getProductByName(name);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto con nombre : " + name);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con nombre : " + name);
 		}
 
 		return getProductWithBase64Image(opt.get());
@@ -170,7 +170,7 @@ public class ProductServiceImpl implements IProductService {
 		if (!product.getName().equals(productDTO.getName())) {
 			Optional<Product> existProductWithName = productDao.getProductByName(productDTO.getName());
 			if (!existProductWithName.isEmpty()) {
-				throw new BlogAppException(HttpStatus.CONFLICT,
+				throw new GeneralException(HttpStatus.CONFLICT,
 						"Ya existe un producto con nombre : " + productDTO.getName());
 			}
 		}
@@ -178,7 +178,7 @@ public class ProductServiceImpl implements IProductService {
 		Optional<User> user = userDao.getUser(productDTO.getIdUser());
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el usuario con id : " + productDTO.getIdUser());
 		}
 

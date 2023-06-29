@@ -12,7 +12,7 @@ import com.sensor.dao.ICommentDao;
 import com.sensor.dao.IProductDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.comment.request.CommentDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.CommentMapper;
 import com.sensor.entity.Comment;
 import com.sensor.entity.Product;
@@ -45,7 +45,7 @@ public class CommentServiceImpl implements ICommentService {
 		Optional<Comment> opt = commentDao.getComment(commentId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el comentario: " + commentId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el comentario: " + commentId);
 		}
 		return commentMapper.toCommentDTO(opt.get());
 	}
@@ -56,7 +56,7 @@ public class CommentServiceImpl implements ICommentService {
 		Optional<Product> product = productDao.getProductEnabled(productId);
 
 		if (product.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No existe el producto con id : " + productId);
 		}
 		
@@ -69,7 +69,7 @@ public class CommentServiceImpl implements ICommentService {
 		Optional<Product> product = productDao.getProductEnabled(commentDTO.getIdProduct());
 		
 		if (product.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No existe el producto con id : " + commentDTO.getIdProduct());
 		}
 		User user = userDao.getUserByEmail(commentDTO.getEmail()).get();
@@ -85,7 +85,7 @@ public class CommentServiceImpl implements ICommentService {
 		Optional<Comment> opt = commentDao.getComment(commentId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el comentario con id : " + commentId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el comentario con id : " + commentId);
 		}
 
 		commentDao.delete(commentId);

@@ -1,7 +1,6 @@
 package com.sensor.security.service.implementation;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.sensor.exception.GeneralException;
 import com.sensor.security.MainUser;
@@ -13,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sensor.security.dao.IUserDao;
-import com.sensor.exception.BlogAppException;
 import com.sensor.security.entity.User;
 import com.sensor.security.service.IUserService;
 
