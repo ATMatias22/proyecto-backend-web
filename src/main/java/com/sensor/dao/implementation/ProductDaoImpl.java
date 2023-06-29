@@ -15,37 +15,37 @@ public class ProductDaoImpl implements IProductDao {
 
 	
 	@Autowired
-	private IProductRepository IProductRepository;
+	private IProductRepository productRepository;
 	
 
 	@Override
 	public Product save(Product product) {
-		return IProductRepository.save(product);
+		return productRepository.save(product);
 	}
 
 	@Override
 	public void delete(Long productId) {
-		IProductRepository.updateProductForDisabled(productId);
+		productRepository.updateProductForDisabled(productId);
 	}
 
 	@Override
 	public Optional<Product> getProductByName(String name) {
-		return IProductRepository.findByName(name);
+		return productRepository.findByName(name);
 	}
 
 	@Override
 	public List<Product> getAllEnabled() {
-		return (List<Product>) IProductRepository.findByEnabledTrue();
+		return (List<Product>) productRepository.findByEnabledTrue();
 	}
 
 	@Override
 	public Optional<Product> getProductEnabled(Long productId) {
-		return IProductRepository.findByEnabledTrueAndProductId(productId);
+		return productRepository.findByEnabledTrueAndProductId(productId);
 	}
 
 	@Override
 	public Optional<Product> getLastProduct() {
-		return IProductRepository.findTopByOrderByProductIdDesc();
+		return productRepository.findTopByOrderByProductIdDesc();
 	}
 	
 

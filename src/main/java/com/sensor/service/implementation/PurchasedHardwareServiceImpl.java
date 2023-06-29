@@ -21,10 +21,10 @@ import com.sensor.service.IPurchasedHardwareService;
 public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 
 	@Autowired
-	private IPurchasedHardwareDao IPurchasedHardwareDao;
+	private IPurchasedHardwareDao purchasedHardwareDao;
 
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 	
 	@Autowired
 	private PurchasedHardwareMapper purchasedHardwareMapper;
@@ -32,12 +32,12 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 	
 	@Override
 	public List<PurchasedHardwareDTO> getAll() {
-		return IPurchasedHardwareDao.getAll().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
+		return purchasedHardwareDao.getAll().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
 	}
 
 	@Override
 	public PurchasedHardwareDTO getPurchasedHardware(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = IPurchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
+		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
@@ -49,39 +49,39 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 	@Override
 	public void save(PurchasedHardwareDTO purchasedHardwareDTO) {
 
-		Optional<User> user = IUserDao.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
-		IPurchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
+		purchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
 	}
 
 	@Override
 	public void delete(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = IPurchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
+		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con id : " + purchasedHardwareId);
 		}
 
-		IPurchasedHardwareDao.delete(purchasedHardwareId);
+		purchasedHardwareDao.delete(purchasedHardwareId);
 	}
 
 
 	@Override
 	public void modify(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
 		
-		Optional<User> user = IUserDao.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 		
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
 		
-		IPurchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
+		purchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
 		
 	}
 

@@ -24,23 +24,23 @@ public class SaleServiceImpl implements ISaleService {
 
 	
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 	@Autowired
-	private IProductDao IProductDao;
+	private IProductDao productDao;
 	@Autowired
-	private ISaleDao ISaleDao;
+	private ISaleDao saleDao;
 	
 	@Autowired
 	private SaleMapper saleMapper;
 	
 	@Override
 	public List<SaleDTO> getAll() {
-		return ISaleDao.getAll().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+		return saleDao.getAll().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 	@Override
 	public SaleDTO getSale(Long saleId) {
-		Optional<Sale> opt = ISaleDao.getSale(saleId);
+		Optional<Sale> opt = saleDao.getSale(saleId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
@@ -50,27 +50,27 @@ public class SaleServiceImpl implements ISaleService {
 	
 	@Override
 	public List<SaleDTO> getAllByUserId(String email) {
-		Optional<User> user = IUserDao.getUserByEmail(email);
+		Optional<User> user = userDao.getUserByEmail(email);
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
 		}
 		
 		
-		return ISaleDao.getAllByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+		return saleDao.getAllByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 
 	@Override
 	public void save(SaleDTO saleDTO) {
 		
-		Optional<Product> product = IProductDao.getProductEnabled(saleDTO.getProductId());
+		Optional<Product> product = productDao.getProductEnabled(saleDTO.getProductId());
 
 		if (product.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
 		}
 		
-		Optional<User> user = IUserDao.getUserByEmail(saleDTO.getEmail());
+		Optional<User> user = userDao.getUserByEmail(saleDTO.getEmail());
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
@@ -78,18 +78,18 @@ public class SaleServiceImpl implements ISaleService {
 		
 		saleDTO.setUserId(user.get().getUserId());
 		
-		ISaleDao.save(saleMapper.toSale(saleDTO));
+		saleDao.save(saleMapper.toSale(saleDTO));
 	}
 
 	@Override
 	public void delete(Long saleId) {
-		Optional<Sale> opt = ISaleDao.getSale(saleId);
+		Optional<Sale> opt = saleDao.getSale(saleId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
 		}
 		
-		ISaleDao.delete(saleId);
+		saleDao.delete(saleId);
 	}
 
 	

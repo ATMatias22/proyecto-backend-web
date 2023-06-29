@@ -14,26 +14,26 @@ import com.sensor.repository.IContactMessageRepository;
 public class ContactMessageDaoImpl implements IContactMessageDao {
 	
 	@Autowired
-	private IContactMessageRepository IContactMessageRepository;
+	private IContactMessageRepository contactMessageRepository;
 
 	@Override
 	public List<ContactMessage> getAll() {
-		return (List<ContactMessage>) IContactMessageRepository.findAll();
+		return (List<ContactMessage>) contactMessageRepository.findAll();
 	}
 
 	@Override
 	public Optional<ContactMessage> getContactMessage(Long contactMessageId) {
-		return IContactMessageRepository.findById(contactMessageId);
+		return contactMessageRepository.findById(contactMessageId);
 	}
 
 	@Override
 	public ContactMessage save(ContactMessage contactMessage) {
-		return IContactMessageRepository.save(contactMessage);
+		return contactMessageRepository.save(contactMessage);
 	}
 
 	@Override
 	public void delete(Long contactMessageId) {
-		IContactMessageRepository.deleteById(contactMessageId);
+		contactMessageRepository.deleteById(contactMessageId);
 		
 	}
 

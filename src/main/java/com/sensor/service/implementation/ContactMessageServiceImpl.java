@@ -19,19 +19,19 @@ import com.sensor.service.IContactMessageService;
 public class ContactMessageServiceImpl implements IContactMessageService {
 	
 	@Autowired
-	private IContactMessageDao IContactMessageDao;
+	private IContactMessageDao contactMessageDao;
 	
 	@Autowired
 	private ContactMessageMapper contactMessageMapper;
 
 	@Override
 	public List<ContactMessageDTO> getAll() {
-		return IContactMessageDao.getAll().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
+		return contactMessageDao.getAll().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
 	}
 
 	@Override
 	public ContactMessageDTO getContactMessage(Long contactMessageId) {
-		Optional<ContactMessage> opt = IContactMessageDao.getContactMessage(contactMessageId);
+		Optional<ContactMessage> opt = contactMessageDao.getContactMessage(contactMessageId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
@@ -41,17 +41,17 @@ public class ContactMessageServiceImpl implements IContactMessageService {
 
 	@Override
 	public void save(ContactMessageDTO contactMessageDTO) {
-		IContactMessageDao.save(contactMessageMapper.toContactMessage(contactMessageDTO));
+		contactMessageDao.save(contactMessageMapper.toContactMessage(contactMessageDTO));
 	}
 
 	@Override
 	public void delete(Long contactMessageId) {
-		Optional<ContactMessage> opt = IContactMessageDao.getContactMessage(contactMessageId);
+		Optional<ContactMessage> opt = contactMessageDao.getContactMessage(contactMessageId);
 		
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
 		}
-		IContactMessageDao.delete(contactMessageId);
+		contactMessageDao.delete(contactMessageId);
 	}
 	
 

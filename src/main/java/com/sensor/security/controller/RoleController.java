@@ -20,17 +20,17 @@ import com.sensor.security.service.IRoleService;
 public class RoleController {
 	
 	@Autowired
-	private IRoleService typeUserService;
+	private IRoleService roleService;
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Role>> getAll() {
-		return new ResponseEntity<>(typeUserService.getAllRoles(), HttpStatus.OK);
+		return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{typeUserId}")
 	public ResponseEntity<Role> getTypeUser(
 			@PathVariable("typeUserId") Long typeUserId) {
-		return new ResponseEntity<Role>(typeUserService.getRole(typeUserId), HttpStatus.OK);
+		return new ResponseEntity<Role>(roleService.getRole(typeUserId), HttpStatus.OK);
 	}
 	
 //	@GetMapping("/name/{typeUserByName}")

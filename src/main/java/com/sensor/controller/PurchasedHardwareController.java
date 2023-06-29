@@ -27,37 +27,37 @@ public class PurchasedHardwareController {
 	
 	
 	@Autowired
-	private IPurchasedHardwareService IPurchasedHardwareService;
+	private IPurchasedHardwareService purchasedHardwareService;
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<PurchasedHardwareDTO>> getAll() {
-		return new ResponseEntity<>(IPurchasedHardwareService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(purchasedHardwareService.getAll(), HttpStatus.OK);
 	}
 	
 	
 	@GetMapping("/{purchasedHardwareServiceId}")
 	public ResponseEntity<PurchasedHardwareDTO> getProduct(
 			@PathVariable("purchasedHardwareServiceId") Long purchasedHardwareServiceId) {
-		return new ResponseEntity<PurchasedHardwareDTO>(IPurchasedHardwareService.getPurchasedHardware(purchasedHardwareServiceId), HttpStatus.OK);
+		return new ResponseEntity<PurchasedHardwareDTO>(purchasedHardwareService.getPurchasedHardware(purchasedHardwareServiceId), HttpStatus.OK);
 	}
 	
 	
 	
 	@PostMapping
 	public ResponseEntity<PurchasedHardwareDTO> save(@RequestBody PurchasedHardwareDTO purchasedHardwareDTO) {
-		IPurchasedHardwareService.save(purchasedHardwareDTO);
+		purchasedHardwareService.save(purchasedHardwareDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{purchasedHardwareId}")
 	public ResponseEntity delete(@PathVariable("purchasedHardwareId") Long purchasedHardwareId) {
-		IPurchasedHardwareService.delete(purchasedHardwareId);
+		purchasedHardwareService.delete(purchasedHardwareId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	
 	@PatchMapping("/{purchasedHardwareId}")
 	public ResponseEntity modify(@PathVariable("purchasedHardwareId") Long purchasedHardwareId, @RequestBody PurchasedHardwareDTO purchasedHardwareDTO) {
-		IPurchasedHardwareService.modify(purchasedHardwareId,purchasedHardwareDTO);
+		purchasedHardwareService.modify(purchasedHardwareId,purchasedHardwareDTO);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

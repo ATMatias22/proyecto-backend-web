@@ -24,37 +24,37 @@ import com.sensor.service.ICommentService;
 public class CommentController {
 
 	@Autowired
-	private ICommentService ICommentService;
+	private ICommentService commentService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<List<CommentDTO>> getAll() {
-		return new ResponseEntity<>(ICommentService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(commentService.getAll(), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{commentId}")
 	public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
-		return new ResponseEntity<>(ICommentService.getComment(commentId), HttpStatus.OK);
+		return new ResponseEntity<>(commentService.getComment(commentId), HttpStatus.OK);
 	}
 
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<CommentDTO>> getCommentsForAProduct(@PathVariable("productId") Long productId) {
 
-		return new ResponseEntity<>(ICommentService.getAllCommentsForAProduct(productId), HttpStatus.OK);
+		return new ResponseEntity<>(commentService.getAllCommentsForAProduct(productId), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity save(@RequestBody CommentDTO commentDTO) {
-		ICommentService.save(commentDTO);
+		commentService.save(commentDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{commentId}")
 	public ResponseEntity delete(@PathVariable("commentId") Long commentId) {
-		ICommentService.delete(commentId);
+		commentService.delete(commentId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 

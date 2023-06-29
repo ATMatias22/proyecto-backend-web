@@ -34,10 +34,10 @@ import com.sensor.service.IProductService;
 public class ProductServiceImpl implements IProductService {
 
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 
 	@Autowired
-	private IProductDao IProductDao;
+	private IProductDao productDao;
 	
 	@Autowired
 	private ProductMapper productMapper;
@@ -49,12 +49,12 @@ public class ProductServiceImpl implements IProductService {
 
 	@Override
 	public List<ProductDTO> getAllEnabled() {
-		return IProductDao.getAllEnabled().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
+		return productDao.getAllEnabled().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
 	}
 
 	@Override
 	public ProductDTO getProductEnabled(Long productId) {
-		Optional<Product> opt = IProductDao.getProductEnabled(productId);
+		Optional<Product> opt = productDao.getProductEnabled(productId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
@@ -104,8 +104,8 @@ public class ProductServiceImpl implements IProductService {
 			productDTO = JSONToProductoDTO(productDTOJSON);
 			System.out.println(productDTO);
 
-			Optional<Product> optionalProduct = IProductDao.getProductByName(productDTO.getName());
-			Optional<User> user = IUserDao.getUser(productDTO.getIdUser());
+			Optional<Product> optionalProduct = productDao.getProductByName(productDTO.getName());
+			Optional<User> user = userDao.getUser(productDTO.getIdUser());
 
 			if (!optionalProduct.isEmpty()) {
 				throw new BlogAppException(HttpStatus.NOT_FOUND,
@@ -118,9 +118,9 @@ public class ProductServiceImpl implements IProductService {
 			}
 
 			productDTO.setImage(DEFAULT_IMAGE);
-			IProductDao.save(productMapper.toProduct(productDTO));
+			productDao.save(productMapper.toProduct(productDTO));
 
-			Optional<Product> getLastProduct = IProductDao.getLastProduct();
+			Optional<Product> getLastProduct = productDao.getLastProduct();
 			Product product;
 
 			if (!getLastProduct.isEmpty()) {
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements IProductService {
 					String saveDirectory = createDirectoryAndSaveFile(product, file);
 					product.setImage(saveDirectory);
 					product.setUpdated(Calendar.getInstance());
-					IProductDao.save(product);
+					productDao.save(product);
 				}
 			}
 
@@ -142,18 +142,18 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public void delete(Long productId) {
 
-		Optional<Product> opt = IProductDao.getProductEnabled(productId);
+		Optional<Product> opt = productDao.getProductEnabled(productId);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
 		}
 
-		IProductDao.delete(productId);
+		productDao.delete(productId);
 	}
 
 	@Override
 	public ProductDTO getProductByName(String name) {
-		Optional<Product> opt = IProductDao.getProductByName(name);
+		Optional<Product> opt = productDao.getProductByName(name);
 
 		if (opt.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto con nombre : " + name);
@@ -165,17 +165,17 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public void modify(Long productId, ProductDTO productDTO) {
 
-		Product product = IProductDao.getProductEnabled(productId).get();
+		Product product = productDao.getProductEnabled(productId).get();
 
 		if (!product.getName().equals(productDTO.getName())) {
-			Optional<Product> existProductWithName = IProductDao.getProductByName(productDTO.getName());
+			Optional<Product> existProductWithName = productDao.getProductByName(productDTO.getName());
 			if (!existProductWithName.isEmpty()) {
 				throw new BlogAppException(HttpStatus.CONFLICT,
 						"Ya existe un producto con nombre : " + productDTO.getName());
 			}
 		}
 
-		Optional<User> user = IUserDao.getUser(productDTO.getIdUser());
+		Optional<User> user = userDao.getUser(productDTO.getIdUser());
 
 		if (user.isEmpty()) {
 			throw new BlogAppException(HttpStatus.NOT_FOUND,
@@ -189,7 +189,7 @@ public class ProductServiceImpl implements IProductService {
 		product.setCreated(product.getCreated());
 		product.setUpdated(Calendar.getInstance());
 
-		IProductDao.save(product);
+		productDao.save(product);
 	}
 
 

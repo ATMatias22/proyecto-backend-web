@@ -26,13 +26,13 @@ import com.sensor.service.ISaleService;
 public class SaleController {
 
 	@Autowired
-	private ISaleService ISaleService;
+	private ISaleService saleService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<List<SaleDTO>> getAll() {
 		
-		return new ResponseEntity<>(ISaleService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(saleService.getAll(), HttpStatus.OK);
 	}
 	
 	
@@ -41,13 +41,13 @@ public class SaleController {
 	@GetMapping("/user/{email}")
 	public ResponseEntity<List<SaleDTO>> getAllSaleByUser(@PathVariable("email") String email) {
 		
-		return new ResponseEntity<>(ISaleService.getAllByUserId(email), HttpStatus.OK);
+		return new ResponseEntity<>(saleService.getAllByUserId(email), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("isAuthenticated() and #saleDTO.email == authentication.principal.username")
 	@PostMapping
 	public ResponseEntity save(@RequestBody SaleDTO saleDTO) {
-		ISaleService.save(saleDTO);
+		saleService.save(saleDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
@@ -56,14 +56,14 @@ public class SaleController {
 	@GetMapping("/{saleId}")
 	public ResponseEntity<SaleDTO> getProduct(
 			@PathVariable("saleId") Long saleId) {
-		return new ResponseEntity<SaleDTO>(ISaleService.getSale(saleId), HttpStatus.OK);
+		return new ResponseEntity<SaleDTO>(saleService.getSale(saleId), HttpStatus.OK);
 	}
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{saleId}")
 	public ResponseEntity delete(@PathVariable("saleId") Long saleId) {
-		ISaleService.delete(saleId);
+		saleService.delete(saleId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

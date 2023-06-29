@@ -24,31 +24,31 @@ import com.sensor.service.IContactMessageService;
 public class ContactMessageController {
 	
 	@Autowired
-	private IContactMessageService IContactMessageService;
+	private IContactMessageService contactMessageService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<List<ContactMessageDTO>> getAll() {
-		return new ResponseEntity<>(IContactMessageService.getAll(), HttpStatus.OK);
+		return new ResponseEntity<>(contactMessageService.getAll(), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{contactMessageId}")
 	public ResponseEntity<ContactMessageDTO> getContactMessage(
 			@PathVariable("contactMessageId") Long contactMessageId) {
-		return new ResponseEntity<ContactMessageDTO>(IContactMessageService.getContactMessage(contactMessageId), HttpStatus.OK);
+		return new ResponseEntity<ContactMessageDTO>(contactMessageService.getContactMessage(contactMessageId), HttpStatus.OK);
 	}
 	
 	@PostMapping
 	public ResponseEntity save(@RequestBody ContactMessageDTO contactMessageDTO) {
-		IContactMessageService.save(contactMessageDTO);
+		contactMessageService.save(contactMessageDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{contactMessageId}")
 	public ResponseEntity delete(@PathVariable("contactMessageId") Long contactMessageId) {
-		IContactMessageService.delete(contactMessageId);
+		contactMessageService.delete(contactMessageId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	
