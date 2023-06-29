@@ -23,7 +23,7 @@ public class RoleServiceImpl implements IRoleService {
 	}
 
 	@Override
-	public Role getRole(Long roleId) {
+	public Role getRoleById(Long roleId) {
 		return this.roleDao.getRole(roleId).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el role con id: "+ roleId));
 	}
 

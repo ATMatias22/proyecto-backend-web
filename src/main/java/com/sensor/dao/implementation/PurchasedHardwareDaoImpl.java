@@ -20,22 +20,22 @@ public class PurchasedHardwareDaoImpl implements IPurchasedHardwareDao {
 	
 	
 	@Override
-	public List<PurchasedHardware> getAll() {
+	public List<PurchasedHardware> getAllPurchasedHardware() {
 		return (List<PurchasedHardware>) purchasedHardwareRepository.findAll();
 	}
 
 	@Override
-	public Optional<PurchasedHardware> getPurchasedHardware(Long purchasedHardwareId) {
+	public Optional<PurchasedHardware> getPurchasedHardwareById(Long purchasedHardwareId) {
 		return purchasedHardwareRepository.findById(purchasedHardwareId);
 	}
 
 	@Override
-	public PurchasedHardware save(PurchasedHardware purchasedHardware) {
+	public PurchasedHardware savePurchasedHardware(PurchasedHardware purchasedHardware) {
 		return purchasedHardwareRepository.save(purchasedHardware);
 	}
 
 	@Override
-	public void delete(Long purchasedHardwareId) {
+	public void deletePurchasedHardwareById(Long purchasedHardwareId) {
 		 purchasedHardwareRepository.deleteById(purchasedHardwareId);
 
 	}

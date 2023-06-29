@@ -8,17 +8,17 @@ import com.sensor.dto.product.request.ProductDTO;
 
 public interface IProductService {
 
-	void save(String productDTOJSON, MultipartFile file);
+	void saveProduct(String productDTOJSON, MultipartFile file);
 
-	void delete(Long productId);
+	void deleteProductById(Long productId);
 
 	ProductDTO getProductByName(String name);
 
-	void modify(Long productId, ProductDTO productDTO);
+	void modifyProductById(Long productId, ProductDTO productDTO);
 
-	List<ProductDTO> getAllEnabled();
+	List<ProductDTO> getAllEnabledProducts();
 
-	ProductDTO getProductEnabled(Long productId);
+	ProductDTO getEnabledProductById(Long productId);
 	
 	
 

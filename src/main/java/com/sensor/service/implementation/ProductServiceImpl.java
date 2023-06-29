@@ -48,13 +48,13 @@ public class ProductServiceImpl implements IProductService {
 	private static final String DEFAULT_IMAGE = "default.png";
 
 	@Override
-	public List<ProductDTO> getAllEnabled() {
-		return productDao.getAllEnabled().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
+	public List<ProductDTO> getAllEnabledProducts() {
+		return productDao.getAllEnabledProducts().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
 	}
 
 	@Override
-	public ProductDTO getProductEnabled(Long productId) {
-		Optional<Product> opt = productDao.getProductEnabled(productId);
+	public ProductDTO getEnabledProductById(Long productId) {
+		Optional<Product> opt = productDao.getEnabledProductById(productId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements IProductService {
 
 	@Override
 	@Transactional
-	public void save(String productDTOJSON, MultipartFile file) {
+	public void saveProduct(String productDTOJSON, MultipartFile file) {
 		System.out.println("LLege al service 1");
 
 		try {
@@ -118,7 +118,7 @@ public class ProductServiceImpl implements IProductService {
 			}
 
 			productDTO.setImage(DEFAULT_IMAGE);
-			productDao.save(productMapper.toProduct(productDTO));
+			productDao.saveProduct(productMapper.toProduct(productDTO));
 
 			Optional<Product> getLastProduct = productDao.getLastProduct();
 			Product product;
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements IProductService {
 					String saveDirectory = createDirectoryAndSaveFile(product, file);
 					product.setImage(saveDirectory);
 					product.setUpdated(Calendar.getInstance());
-					productDao.save(product);
+					productDao.saveProduct(product);
 				}
 			}
 
@@ -140,15 +140,15 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public void delete(Long productId) {
+	public void deleteProductById(Long productId) {
 
-		Optional<Product> opt = productDao.getProductEnabled(productId);
+		Optional<Product> opt = productDao.getEnabledProductById(productId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
 		}
 
-		productDao.delete(productId);
+		productDao.deleteProductById(productId);
 	}
 
 	@Override
@@ -163,9 +163,9 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public void modify(Long productId, ProductDTO productDTO) {
+	public void modifyProductById(Long productId, ProductDTO productDTO) {
 
-		Product product = productDao.getProductEnabled(productId).get();
+		Product product = productDao.getEnabledProductById(productId).get();
 
 		if (!product.getName().equals(productDTO.getName())) {
 			Optional<Product> existProductWithName = productDao.getProductByName(productDTO.getName());
@@ -189,7 +189,7 @@ public class ProductServiceImpl implements IProductService {
 		product.setCreated(product.getCreated());
 		product.setUpdated(Calendar.getInstance());
 
-		productDao.save(product);
+		productDao.saveProduct(product);
 	}
 
 

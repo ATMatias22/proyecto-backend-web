@@ -19,28 +19,28 @@ public class SaleDaoImpl implements ISaleDao {
 	private ISaleRepository saleRepository;
 	
 	@Override
-	public List<Sale> getAll() {
+	public List<Sale> getAllSales() {
 		return (List<Sale>) saleRepository.findAll();
 
 	}
 
 	@Override
-	public Optional<Sale> getSale(Long saleId) {
+	public Optional<Sale> getSaleById(Long saleId) {
 		return saleRepository.findById(saleId);
 	}
 
 	@Override
-	public Sale save(Sale sale) {
+	public Sale saveSale(Sale sale) {
 		return saleRepository.save(sale);
 	}
 
 	@Override
-	public void delete(Long saleId) {
+	public void deleteSaleById(Long saleId) {
 		saleRepository.deleteById(saleId);
 	}
 
 	@Override
-	public List<Sale> getAllByUserId(Long userId) {
+	public List<Sale> getAllSalesByUserId(Long userId) {
 		return saleRepository.findByUserId(userId);
 	}
 

@@ -6,14 +6,14 @@ import com.sensor.dto.sale.request.SaleDTO;
 
 public interface ISaleService {
 
-	List<SaleDTO> getAll();
+	List<SaleDTO> getAllSales();
 
-	SaleDTO getSale(Long saleId);
+	SaleDTO getSaleById(Long saleId);
 
-	void save(SaleDTO saleDTO);
+	void saveSale(SaleDTO saleDTO);
 
-	void delete(Long saleId);
+	void deleteSaleById(Long saleId);
 
-	List<SaleDTO> getAllByUserId(String email);
+	List<SaleDTO> getAllSalesByUserEmail(String email);
 
 }

@@ -6,12 +6,12 @@ import com.sensor.dto.contact.request.ContactMessageDTO;
 
 public interface IContactMessageService {
 
-	List<ContactMessageDTO> getAll();
+	List<ContactMessageDTO> getAllContactMessage();
 
-	ContactMessageDTO getContactMessage(Long contactMessageId);
+	ContactMessageDTO getContactMessageById(Long contactMessageId);
 
-	void save(ContactMessageDTO contactMessageDTO);
+	void saveContactMessage(ContactMessageDTO contactMessageDTO);
 
-	void delete(Long contactMessageId);
+	void deleteContactMessageById(Long contactMessageId);
 	
 }

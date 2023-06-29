@@ -27,12 +27,12 @@ public class ConfirmationTokenServiceImpl implements IConfirmationTokenService {
     }
 
     @Override
-    public boolean existsTokenForFkUser(User user) {
+    public boolean existsConfirmationTokenForFkUser(User user) {
         return this.confirmationTokenDao.existsTokenForFkUser(user);
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteConfirmationTokenById(String id) {
         this.confirmationTokenDao.deleteById(id);
     }
 }

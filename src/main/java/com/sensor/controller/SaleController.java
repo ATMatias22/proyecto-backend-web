@@ -30,40 +30,37 @@ public class SaleController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
-	public ResponseEntity<List<SaleDTO>> getAll() {
-		
-		return new ResponseEntity<>(saleService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<SaleDTO>> getAllSales() {
+		return new ResponseEntity<>(saleService.getAllSales(), HttpStatus.OK);
 	}
-	
-	
-	
+
 	@PreAuthorize("isAuthenticated() and #email == authentication.principal.username")
 	@GetMapping("/user/{email}")
-	public ResponseEntity<List<SaleDTO>> getAllSaleByUser(@PathVariable("email") String email) {
+	public ResponseEntity<List<SaleDTO>> getAllSaleByUserEmail(@PathVariable("email") String email) {
 		
-		return new ResponseEntity<>(saleService.getAllByUserId(email), HttpStatus.OK);
+		return new ResponseEntity<>(saleService.getAllSalesByUserEmail(email), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("isAuthenticated() and #saleDTO.email == authentication.principal.username")
 	@PostMapping
-	public ResponseEntity save(@RequestBody SaleDTO saleDTO) {
-		saleService.save(saleDTO);
+	public ResponseEntity saveSale(@RequestBody SaleDTO saleDTO) {
+		saleService.saveSale(saleDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{saleId}")
-	public ResponseEntity<SaleDTO> getProduct(
+	public ResponseEntity<SaleDTO> getSaleById(
 			@PathVariable("saleId") Long saleId) {
-		return new ResponseEntity<SaleDTO>(saleService.getSale(saleId), HttpStatus.OK);
+		return new ResponseEntity<SaleDTO>(saleService.getSaleById(saleId), HttpStatus.OK);
 	}
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{saleId}")
-	public ResponseEntity delete(@PathVariable("saleId") Long saleId) {
-		saleService.delete(saleId);
+	public ResponseEntity deleteSaleById(@PathVariable("saleId") Long saleId) {
+		saleService.deleteSaleById(saleId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

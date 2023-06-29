@@ -47,7 +47,7 @@ public class AuthServiceImpl implements IAuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Override
-    public String login(User user) {
+    public String loginUser(User user) {
 
         try {
             Authentication authentication = authenticationManager
@@ -97,7 +97,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     @Transactional
-    public void register(User user) {
+    public void registerUser(User user) {
         User userForLogin = null;
 
         try {
@@ -111,7 +111,7 @@ public class AuthServiceImpl implements IAuthService {
         user.getRoles().add(role);
         this.userService.saveUser(user);
 
-        String token = this.login(userForLogin);
+        String token = this.loginUser(userForLogin);
 
         String id = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken = new ConfirmationToken(
@@ -122,12 +122,12 @@ public class AuthServiceImpl implements IAuthService {
         );
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-        emailService.send("Registro",user.getEmail(), buildEmail(user.getName(), id));
+        emailService.sendEmail("Registro",user.getEmail(), buildEmail(user.getName(), id));
     }
 
     @Override
     @Transactional
-    public String confirmToken(String id) {
+    public String confirmRegisterUser(String id) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getConfirmationTokenById(id)
                 .orElseThrow(() ->
@@ -135,7 +135,7 @@ public class AuthServiceImpl implements IAuthService {
 
         User user = confirmationToken.getFkUser();
         userService.enableUser(user.getEmail());
-        this.confirmationTokenService.deleteById(id);
+        this.confirmationTokenService.deleteConfirmationTokenById(id);
 
         return confirmationToken.getToken();
     }

@@ -28,14 +28,14 @@ public class CommentController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
-	public ResponseEntity<List<CommentDTO>> getAll() {
-		return new ResponseEntity<>(commentService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<CommentDTO>> getAllComments() {
+		return new ResponseEntity<>(commentService.getAllComments(), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{commentId}")
-	public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
-		return new ResponseEntity<>(commentService.getComment(commentId), HttpStatus.OK);
+	public ResponseEntity<CommentDTO> getCommentById(@PathVariable("commentId") Long commentId) {
+		return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
 	}
 
 	@GetMapping("/product/{productId}")
@@ -46,15 +46,15 @@ public class CommentController {
 
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PostMapping
-	public ResponseEntity save(@RequestBody CommentDTO commentDTO) {
-		commentService.save(commentDTO);
+	public ResponseEntity saveComment(@RequestBody CommentDTO commentDTO) {
+		commentService.saveComment(commentDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity delete(@PathVariable("commentId") Long commentId) {
-		commentService.delete(commentId);
+	public ResponseEntity deleteCommentById(@PathVariable("commentId") Long commentId) {
+		commentService.deleteCommentById(commentId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 

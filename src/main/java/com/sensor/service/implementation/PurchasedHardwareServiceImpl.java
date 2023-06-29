@@ -31,13 +31,13 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 
 	
 	@Override
-	public List<PurchasedHardwareDTO> getAll() {
-		return purchasedHardwareDao.getAll().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
+	public List<PurchasedHardwareDTO> getAllPurchasedHardware() {
+		return purchasedHardwareDao.getAllPurchasedHardware().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
 	}
 
 	@Override
-	public PurchasedHardwareDTO getPurchasedHardware(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
+	public PurchasedHardwareDTO getPurchasedHardwareById(Long purchasedHardwareId) {
+		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardwareById(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND,
@@ -47,7 +47,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 	}
 
 	@Override
-	public void save(PurchasedHardwareDTO purchasedHardwareDTO) {
+	public void savePurchasedHardware(PurchasedHardwareDTO purchasedHardwareDTO) {
 
 		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 
@@ -55,24 +55,24 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
-		purchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
+		purchasedHardwareDao.savePurchasedHardware(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
 	}
 
 	@Override
-	public void delete(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
+	public void deletePurchasedHardwareById(Long purchasedHardwareId) {
+		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardwareById(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con id : " + purchasedHardwareId);
 		}
 
-		purchasedHardwareDao.delete(purchasedHardwareId);
+		purchasedHardwareDao.deletePurchasedHardwareById(purchasedHardwareId);
 	}
 
 
 	@Override
-	public void modify(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
+	public void modifyPurchasedHardwareById(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
 		
 		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 		
@@ -81,7 +81,7 @@ public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 		}
 		
 		
-		purchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
+		purchasedHardwareDao.savePurchasedHardware(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
 		
 	}
 

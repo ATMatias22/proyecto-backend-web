@@ -21,7 +21,7 @@ public class EmailServiceImpl implements IEmailService {
     private JavaMailSender mailSender;
 
     @Override
-    public void send(String subject, String to, String email) {
+    public void sendEmail(String subject, String to, String email) {
         try {
 
             MimeMessage message = mailSender.createMimeMessage();

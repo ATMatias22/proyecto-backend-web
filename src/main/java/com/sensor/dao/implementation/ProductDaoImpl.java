@@ -19,12 +19,12 @@ public class ProductDaoImpl implements IProductDao {
 	
 
 	@Override
-	public Product save(Product product) {
+	public Product saveProduct(Product product) {
 		return productRepository.save(product);
 	}
 
 	@Override
-	public void delete(Long productId) {
+	public void deleteProductById(Long productId) {
 		productRepository.updateProductForDisabled(productId);
 	}
 
@@ -34,12 +34,12 @@ public class ProductDaoImpl implements IProductDao {
 	}
 
 	@Override
-	public List<Product> getAllEnabled() {
+	public List<Product> getAllEnabledProducts() {
 		return (List<Product>) productRepository.findByEnabledTrue();
 	}
 
 	@Override
-	public Optional<Product> getProductEnabled(Long productId) {
+	public Optional<Product> getEnabledProductById(Long productId) {
 		return productRepository.findByEnabledTrueAndProductId(productId);
 	}
 

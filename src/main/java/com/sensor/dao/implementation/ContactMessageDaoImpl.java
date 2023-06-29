@@ -17,22 +17,22 @@ public class ContactMessageDaoImpl implements IContactMessageDao {
 	private IContactMessageRepository contactMessageRepository;
 
 	@Override
-	public List<ContactMessage> getAll() {
+	public List<ContactMessage> getAllContactMessage() {
 		return (List<ContactMessage>) contactMessageRepository.findAll();
 	}
 
 	@Override
-	public Optional<ContactMessage> getContactMessage(Long contactMessageId) {
+	public Optional<ContactMessage> getContactMessageById(Long contactMessageId) {
 		return contactMessageRepository.findById(contactMessageId);
 	}
 
 	@Override
-	public ContactMessage save(ContactMessage contactMessage) {
+	public ContactMessage saveContactMessage(ContactMessage contactMessage) {
 		return contactMessageRepository.save(contactMessage);
 	}
 
 	@Override
-	public void delete(Long contactMessageId) {
+	public void deleteContactMessageById(Long contactMessageId) {
 		contactMessageRepository.deleteById(contactMessageId);
 		
 	}

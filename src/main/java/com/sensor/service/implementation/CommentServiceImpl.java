@@ -36,13 +36,13 @@ public class CommentServiceImpl implements ICommentService {
 	private CommentMapper commentMapper;
 
 	@Override
-	public List<CommentDTO> getAll() {
-		return commentDao.getAll().stream().map((comment) -> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
+	public List<CommentDTO> getAllComments() {
+		return commentDao.getAllComments().stream().map((comment) -> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
 	}
 
 	@Override
-	public CommentDTO getComment(Long commentId) {
-		Optional<Comment> opt = commentDao.getComment(commentId);
+	public CommentDTO getCommentById(Long commentId) {
+		Optional<Comment> opt = commentDao.getCommentById(commentId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el comentario: " + commentId);
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements ICommentService {
 	@Override
 	public List<CommentDTO> getAllCommentsForAProduct(Long productId) {
 		
-		Optional<Product> product = productDao.getProductEnabled(productId);
+		Optional<Product> product = productDao.getEnabledProductById(productId);
 
 		if (product.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND,
@@ -65,8 +65,8 @@ public class CommentServiceImpl implements ICommentService {
 
 
 	@Override
-	public void save(CommentDTO commentDTO) {
-		Optional<Product> product = productDao.getProductEnabled(commentDTO.getIdProduct());
+	public void saveComment(CommentDTO commentDTO) {
+		Optional<Product> product = productDao.getEnabledProductById(commentDTO.getIdProduct());
 		
 		if (product.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND,
@@ -76,19 +76,19 @@ public class CommentServiceImpl implements ICommentService {
 		
 		commentDTO.setIdUser(user.getUserId());
 		
-		commentDao.save(commentMapper.toComment(commentDTO));
+		commentDao.saveComment(commentMapper.toComment(commentDTO));
 
 	}
 
 	@Override
-	public void delete(Long commentId) {
-		Optional<Comment> opt = commentDao.getComment(commentId);
+	public void deleteCommentById(Long commentId) {
+		Optional<Comment> opt = commentDao.getCommentById(commentId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el comentario con id : " + commentId);
 		}
 
-		commentDao.delete(commentId);
+		commentDao.deleteCommentById(commentId);
 	}
 
 

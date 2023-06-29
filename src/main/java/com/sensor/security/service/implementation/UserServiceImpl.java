@@ -56,7 +56,7 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public User getUserLoggedIn() {
+	public User getUserLoggedInByEmailInToken() {
 		MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return  this.userDao.getUser(mu.getId()).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario logueado por favor inicie sesion de vuelta"));
 	}

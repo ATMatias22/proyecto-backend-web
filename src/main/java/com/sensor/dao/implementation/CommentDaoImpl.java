@@ -17,22 +17,22 @@ public class CommentDaoImpl implements ICommentDao {
 	private ICommentRepository commentRepository;
 
 	@Override
-	public List<Comment> getAll() {
+	public List<Comment> getAllComments() {
 		return (List<Comment>) commentRepository.findAll();
 	}
 
 	@Override
-	public Optional<Comment> getComment(Long commentId) {
+	public Optional<Comment> getCommentById(Long commentId) {
 		return commentRepository.findById(commentId);
 	}
 
 	@Override
-	public Comment save(Comment comment) {
+	public Comment saveComment(Comment comment) {
 		return commentRepository.save(comment);
 	}
 
 	@Override
-	public void delete(Long commentId) {
+	public void deleteCommentById(Long commentId) {
 		commentRepository.deleteById(commentId);
 	}
 

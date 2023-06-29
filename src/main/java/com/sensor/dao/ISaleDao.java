@@ -7,14 +7,14 @@ import com.sensor.entity.Sale;
 
 public interface ISaleDao {
 	
-	List<Sale> getAll();
+	List<Sale> getAllSales();
 	
-	List<Sale> getAllByUserId(Long userId);
+	List<Sale> getAllSalesByUserId(Long userId);
 
-	Optional<Sale> getSale(Long saleId);
+	Optional<Sale> getSaleById(Long saleId);
 
-	Sale save(Sale sale);
+	Sale saveSale(Sale sale);
 	
-	void delete(Long saleId);
+	void deleteSaleById(Long saleId);
 	
 }

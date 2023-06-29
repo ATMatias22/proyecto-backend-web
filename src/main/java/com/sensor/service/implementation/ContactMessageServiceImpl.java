@@ -25,13 +25,13 @@ public class ContactMessageServiceImpl implements IContactMessageService {
 	private ContactMessageMapper contactMessageMapper;
 
 	@Override
-	public List<ContactMessageDTO> getAll() {
-		return contactMessageDao.getAll().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
+	public List<ContactMessageDTO> getAllContactMessage() {
+		return contactMessageDao.getAllContactMessage().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
 	}
 
 	@Override
-	public ContactMessageDTO getContactMessage(Long contactMessageId) {
-		Optional<ContactMessage> opt = contactMessageDao.getContactMessage(contactMessageId);
+	public ContactMessageDTO getContactMessageById(Long contactMessageId) {
+		Optional<ContactMessage> opt = contactMessageDao.getContactMessageById(contactMessageId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
@@ -40,18 +40,18 @@ public class ContactMessageServiceImpl implements IContactMessageService {
 	}
 
 	@Override
-	public void save(ContactMessageDTO contactMessageDTO) {
-		contactMessageDao.save(contactMessageMapper.toContactMessage(contactMessageDTO));
+	public void saveContactMessage(ContactMessageDTO contactMessageDTO) {
+		contactMessageDao.saveContactMessage(contactMessageMapper.toContactMessage(contactMessageDTO));
 	}
 
 	@Override
-	public void delete(Long contactMessageId) {
-		Optional<ContactMessage> opt = contactMessageDao.getContactMessage(contactMessageId);
+	public void deleteContactMessageById(Long contactMessageId) {
+		Optional<ContactMessage> opt = contactMessageDao.getContactMessageById(contactMessageId);
 		
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
 		}
-		contactMessageDao.delete(contactMessageId);
+		contactMessageDao.deleteContactMessageById(contactMessageId);
 	}
 	
 

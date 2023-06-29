@@ -28,27 +28,27 @@ public class ContactMessageController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
-	public ResponseEntity<List<ContactMessageDTO>> getAll() {
-		return new ResponseEntity<>(contactMessageService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<ContactMessageDTO>> getAllContactMessage() {
+		return new ResponseEntity<>(contactMessageService.getAllContactMessage(), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{contactMessageId}")
-	public ResponseEntity<ContactMessageDTO> getContactMessage(
+	public ResponseEntity<ContactMessageDTO> getContactMessageById(
 			@PathVariable("contactMessageId") Long contactMessageId) {
-		return new ResponseEntity<ContactMessageDTO>(contactMessageService.getContactMessage(contactMessageId), HttpStatus.OK);
+		return new ResponseEntity<ContactMessageDTO>(contactMessageService.getContactMessageById(contactMessageId), HttpStatus.OK);
 	}
 	
 	@PostMapping
-	public ResponseEntity save(@RequestBody ContactMessageDTO contactMessageDTO) {
-		contactMessageService.save(contactMessageDTO);
+	public ResponseEntity saveContactMessage(@RequestBody ContactMessageDTO contactMessageDTO) {
+		contactMessageService.saveContactMessage(contactMessageDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{contactMessageId}")
-	public ResponseEntity delete(@PathVariable("contactMessageId") Long contactMessageId) {
-		contactMessageService.delete(contactMessageId);
+	public ResponseEntity deleteContactMessageById(@PathVariable("contactMessageId") Long contactMessageId) {
+		contactMessageService.deleteContactMessageById(contactMessageId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

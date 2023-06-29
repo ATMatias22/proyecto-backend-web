@@ -23,14 +23,14 @@ public class RoleController {
 	private IRoleService roleService;
 	
 	@GetMapping("/all")
-	public ResponseEntity<List<Role>> getAll() {
+	public ResponseEntity<List<Role>> getAllRoles() {
 		return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{typeUserId}")
-	public ResponseEntity<Role> getTypeUser(
-			@PathVariable("typeUserId") Long typeUserId) {
-		return new ResponseEntity<Role>(roleService.getRole(typeUserId), HttpStatus.OK);
+	@GetMapping("/{roleId}")
+	public ResponseEntity<Role> getRoleById(
+			@PathVariable("roleId") Long roleId) {
+		return new ResponseEntity<Role>(roleService.getRoleById(roleId), HttpStatus.OK);
 	}
 	
 //	@GetMapping("/name/{typeUserByName}")

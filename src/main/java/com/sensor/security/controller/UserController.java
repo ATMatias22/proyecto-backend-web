@@ -31,14 +31,14 @@ public class UserController {
 
 	@GetMapping("/all")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<RegisteredUserResponse>> getAll() {
+	public ResponseEntity<List<RegisteredUserResponse>> getAllUsers() {
 		List<RegisteredUserResponse> registeredUsers = userSerivce.getAllUsers().stream().map( user -> userMapper.userEntityToRegisteredUserResponse(user)).collect(Collectors.toList());
 		return new ResponseEntity<>(registeredUsers, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<RegisteredUserResponse> getAnyUserById(
+	public ResponseEntity<RegisteredUserResponse> getUserById(
 			@PathVariable("userId") Long userId) {
 		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserById(userId));
 		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
@@ -46,8 +46,8 @@ public class UserController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/email/{email}")
-	public ResponseEntity<RegisteredUserResponse> getUserLoggedIn() {
-		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserLoggedIn());
+	public ResponseEntity<RegisteredUserResponse> getUserLoggedInByEmailInToken() {
+		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserLoggedInByEmailInToken());
 		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
 
 	}

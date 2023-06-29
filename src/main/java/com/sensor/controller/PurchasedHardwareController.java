@@ -30,34 +30,34 @@ public class PurchasedHardwareController {
 	private IPurchasedHardwareService purchasedHardwareService;
 	
 	@GetMapping("/all")
-	public ResponseEntity<List<PurchasedHardwareDTO>> getAll() {
-		return new ResponseEntity<>(purchasedHardwareService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<PurchasedHardwareDTO>> getAllPurchasedHardware() {
+		return new ResponseEntity<>(purchasedHardwareService.getAllPurchasedHardware(), HttpStatus.OK);
 	}
 	
 	
 	@GetMapping("/{purchasedHardwareServiceId}")
-	public ResponseEntity<PurchasedHardwareDTO> getProduct(
+	public ResponseEntity<PurchasedHardwareDTO> getPurchasedHardwareById(
 			@PathVariable("purchasedHardwareServiceId") Long purchasedHardwareServiceId) {
-		return new ResponseEntity<PurchasedHardwareDTO>(purchasedHardwareService.getPurchasedHardware(purchasedHardwareServiceId), HttpStatus.OK);
+		return new ResponseEntity<PurchasedHardwareDTO>(purchasedHardwareService.getPurchasedHardwareById(purchasedHardwareServiceId), HttpStatus.OK);
 	}
 	
 	
 	
 	@PostMapping
-	public ResponseEntity<PurchasedHardwareDTO> save(@RequestBody PurchasedHardwareDTO purchasedHardwareDTO) {
-		purchasedHardwareService.save(purchasedHardwareDTO);
+	public ResponseEntity<PurchasedHardwareDTO> savePurchasedHardware(@RequestBody PurchasedHardwareDTO purchasedHardwareDTO) {
+		purchasedHardwareService.savePurchasedHardware(purchasedHardwareDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{purchasedHardwareId}")
-	public ResponseEntity delete(@PathVariable("purchasedHardwareId") Long purchasedHardwareId) {
-		purchasedHardwareService.delete(purchasedHardwareId);
+	public ResponseEntity deletePurchasedHardwareById(@PathVariable("purchasedHardwareId") Long purchasedHardwareId) {
+		purchasedHardwareService.deletePurchasedHardwareById(purchasedHardwareId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	
 	@PatchMapping("/{purchasedHardwareId}")
-	public ResponseEntity modify(@PathVariable("purchasedHardwareId") Long purchasedHardwareId, @RequestBody PurchasedHardwareDTO purchasedHardwareDTO) {
-		purchasedHardwareService.modify(purchasedHardwareId,purchasedHardwareDTO);
+	public ResponseEntity modifyPurchasedHardwareById(@PathVariable("purchasedHardwareId") Long purchasedHardwareId, @RequestBody PurchasedHardwareDTO purchasedHardwareDTO) {
+		purchasedHardwareService.modifyPurchasedHardwareById(purchasedHardwareId,purchasedHardwareDTO);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

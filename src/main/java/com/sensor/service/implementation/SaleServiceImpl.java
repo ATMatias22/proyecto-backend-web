@@ -34,13 +34,13 @@ public class SaleServiceImpl implements ISaleService {
 	private SaleMapper saleMapper;
 	
 	@Override
-	public List<SaleDTO> getAll() {
-		return saleDao.getAll().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+	public List<SaleDTO> getAllSales() {
+		return saleDao.getAllSales().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 	@Override
-	public SaleDTO getSale(Long saleId) {
-		Optional<Sale> opt = saleDao.getSale(saleId);
+	public SaleDTO getSaleById(Long saleId) {
+		Optional<Sale> opt = saleDao.getSaleById(saleId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
@@ -49,7 +49,7 @@ public class SaleServiceImpl implements ISaleService {
 	}
 	
 	@Override
-	public List<SaleDTO> getAllByUserId(String email) {
+	public List<SaleDTO> getAllSalesByUserEmail(String email) {
 		Optional<User> user = userDao.getUserByEmail(email);
 
 		if (user.isEmpty()) {
@@ -57,14 +57,14 @@ public class SaleServiceImpl implements ISaleService {
 		}
 		
 		
-		return saleDao.getAllByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+		return saleDao.getAllSalesByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 
 	@Override
-	public void save(SaleDTO saleDTO) {
+	public void saveSale(SaleDTO saleDTO) {
 		
-		Optional<Product> product = productDao.getProductEnabled(saleDTO.getProductId());
+		Optional<Product> product = productDao.getEnabledProductById(saleDTO.getProductId());
 
 		if (product.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
@@ -78,18 +78,18 @@ public class SaleServiceImpl implements ISaleService {
 		
 		saleDTO.setUserId(user.get().getUserId());
 		
-		saleDao.save(saleMapper.toSale(saleDTO));
+		saleDao.saveSale(saleMapper.toSale(saleDTO));
 	}
 
 	@Override
-	public void delete(Long saleId) {
-		Optional<Sale> opt = saleDao.getSale(saleId);
+	public void deleteSaleById(Long saleId) {
+		Optional<Sale> opt = saleDao.getSaleById(saleId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
 		}
 		
-		saleDao.delete(saleId);
+		saleDao.deleteSaleById(saleId);
 	}
 
 	
