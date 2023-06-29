@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.sensor.dao.ICommentDao;
 import com.sensor.dao.IProductDao;
-import com.sensor.dao.IUserDao;
+import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.CommentMapper;
 import com.sensor.entity.Comment;
 import com.sensor.entity.Product;
-import com.sensor.entity.User;
+import com.sensor.security.entity.User;
 import com.sensor.service.ICommentService;
 
 

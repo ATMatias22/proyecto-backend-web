@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IProductDao;
 import com.sensor.dao.ISaleDao;
-import com.sensor.dao.IUserDao;
+import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.sale.request.SaleDTO;
 import com.sensor.exception.BlogAppException;
 import com.sensor.mapper.SaleMapper;
 import com.sensor.entity.Product;
 import com.sensor.entity.Sale;
-import com.sensor.entity.User;
+import com.sensor.security.entity.User;
 import com.sensor.service.ISaleService;
 
 @Service

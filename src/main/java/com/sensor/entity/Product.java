@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 
+import com.sensor.security.entity.User;
 import lombok.Data;
 
 @Entity

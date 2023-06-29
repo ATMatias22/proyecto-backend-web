@@ -16,7 +16,7 @@ public interface SaleMapper {
 	@Mappings({ 
 		@Mapping(source = "idSale", target = "id"), 
 		@Mapping(source = "user.name", target = "namePurchaser"),
-		@Mapping(source = "user.lastName", target = "lastNamePurchaser"),
+		@Mapping(source = "user.lastname", target = "lastNamePurchaser"),
 		@Mapping(target = "datePurchase", source="created"),
 		@Mapping(source = "product.name", target = "productName"),
 		@Mapping(source = "product.price", target = "price"),

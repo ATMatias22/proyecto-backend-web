@@ -29,11 +29,10 @@ public interface ProductMapper {
             @Mapping(source = "productDTO.idUser", target = "userId"),
             @Mapping(source = "productDTO.image", target = "image"),
             @Mapping(target = "enabled", constant = "true"),
-            @Mapping(target = "product.created", ignore = true),
-            @Mapping(target = "product.updated", ignore = true),
-            @Mapping(target = "product.userId", ignore = true),
-            @Mapping(target = "product.user", ignore = true),
-            @Mapping(target = "product.productId", ignore = true)
+            @Mapping(target = "created", ignore = true),
+            @Mapping(target = "updated", ignore = true),
+            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "productId", ignore = true)
 
     })
     Product toProduct(ProductDTO productDTO);
