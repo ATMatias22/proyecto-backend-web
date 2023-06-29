@@ -7,7 +7,7 @@ import com.sensor.security.entity.Role;
 
 public interface IRoleDao {
 
-	List<Role> getAll();
+	List<Role> getAllRoles();
 
 	Optional<Role> getRole(Long roleId);
 

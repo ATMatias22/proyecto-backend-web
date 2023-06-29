@@ -3,12 +3,10 @@ package com.sensor.security.service.implementation;
 import com.sensor.exception.GeneralException;
 import com.sensor.exception.constants.ExceptionMessage;
 import com.sensor.security.entity.ConfirmationToken;
+import com.sensor.security.entity.Role;
 import com.sensor.security.entity.User;
 import com.sensor.security.jwt.JwtProvider;
-import com.sensor.security.service.IAuthService;
-import com.sensor.security.service.IConfirmationTokenService;
-import com.sensor.security.service.IEmailService;
-import com.sensor.security.service.IUserService;
+import com.sensor.security.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -34,6 +34,9 @@ public class AuthServiceImpl implements IAuthService {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IRoleService roleService;
     @Autowired
     private JwtProvider jwtProvider;
     @Autowired
@@ -106,6 +109,8 @@ public class AuthServiceImpl implements IAuthService {
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el servidor");
         }
 
+        Role role = roleService.getRoleByName("ROLE_USER");
+        user.getRoles().add(role);
         this.userService.saveUser(user);
 
         String token = this.login(userForLogin);

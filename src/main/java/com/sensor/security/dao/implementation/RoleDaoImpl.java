@@ -18,7 +18,7 @@ public class RoleDaoImpl implements IRoleDao {
 	public IRoleRepository IRoleRepository;
 	
 	@Override
-	public List<Role> getAll() {
+	public List<Role> getAllRoles() {
 		return (List<Role>) IRoleRepository.findAll();
 	}
 

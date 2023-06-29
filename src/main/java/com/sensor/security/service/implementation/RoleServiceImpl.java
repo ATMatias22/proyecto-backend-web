@@ -3,7 +3,9 @@ package com.sensor.security.service.implementation;
 import java.util.List;
 import java.util.Optional;
 
+import com.sensor.exception.GeneralException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sensor.security.dao.IRoleDao;
@@ -17,19 +19,18 @@ public class RoleServiceImpl implements IRoleService {
 	private IRoleDao IRoleDao;
 
 	@Override
-	public List<Role> getAll() {
-		return IRoleDao.getAll();
+	public List<Role> getAllRoles() {
+		return IRoleDao.getAllRoles();
 	}
 
 	@Override
-	public Optional<Role> getRole(Long roleId) {
-		Optional<Role> opt = IRoleDao.getRole(roleId);
-		return opt;
+	public Role getRole(Long roleId) {
+		return this.IRoleDao.getRole(roleId).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el role con id: "+ roleId));
 	}
 
 	@Override
-	public Optional<Role> getRoleByName(String name) {
-		return IRoleDao.getRoleByName(name);
+	public Role getRoleByName(String name) {
+		return this.IRoleDao.getRoleByName(name).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el role con nombre: "+ name));
 	}
 
 }
