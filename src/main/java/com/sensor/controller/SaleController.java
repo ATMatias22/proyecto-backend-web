@@ -21,7 +21,7 @@ import com.sensor.service.ISaleService;
 
 
 @RestController
-@RequestMapping("/api/sales")
+@RequestMapping("/sales")
 @CrossOrigin(origins = "*")
 public class SaleController {
 

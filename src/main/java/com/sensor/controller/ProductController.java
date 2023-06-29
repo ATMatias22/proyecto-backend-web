@@ -23,7 +23,7 @@ import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.service.IProductService;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @CrossOrigin(origins = "*")
 public class ProductController {
 

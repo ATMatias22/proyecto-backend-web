@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sensor.security.service.IUserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 	

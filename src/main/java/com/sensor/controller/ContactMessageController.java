@@ -19,7 +19,7 @@ import com.sensor.dto.contact.request.ContactMessageDTO;
 import com.sensor.service.IContactMessageService;
 
 @RestController
-@RequestMapping("/api/contactmessages")
+@RequestMapping("/contactmessages")
 @CrossOrigin(origins = "*")
 public class ContactMessageController {
 	

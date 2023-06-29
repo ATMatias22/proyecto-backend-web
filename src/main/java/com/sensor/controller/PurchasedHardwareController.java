@@ -21,7 +21,7 @@ import com.sensor.service.IPurchasedHardwareService;
 
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/api/purchasedhardwares")
+@RequestMapping("/purchasedhardwares")
 @CrossOrigin(origins = "*")
 public class PurchasedHardwareController {
 	

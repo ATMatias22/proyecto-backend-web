@@ -19,7 +19,7 @@ import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.service.ICommentService;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/comments")
 @CrossOrigin(origins = "*")
 public class CommentController {
 

@@ -15,7 +15,7 @@ import com.sensor.security.entity.Role;
 import com.sensor.security.service.IRoleService;
 
 @RestController
-@RequestMapping("/api/role")
+@RequestMapping("/role")
 @PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 	
