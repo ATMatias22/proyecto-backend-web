@@ -29,11 +29,11 @@ public class Role {
 	private String name;
 
 	@CreationTimestamp
-	@Column(name = "create_date",insertable = false,  updatable = false, nullable = false)
+	@Column(name = "create_date", nullable = false)
 	private Calendar created;
 
 	@CreationTimestamp
-	@Column(name = "update_date", insertable = false, nullable = false)
+	@Column(name = "update_date", nullable = false)
 	private Calendar updated;
 
 }

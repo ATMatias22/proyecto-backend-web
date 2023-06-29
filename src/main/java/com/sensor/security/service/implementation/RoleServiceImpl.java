@@ -33,4 +33,15 @@ public class RoleServiceImpl implements IRoleService {
 		return this.IRoleDao.getRoleByName(name).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el role con nombre: "+ name));
 	}
 
+	@Override
+	public void saveRole(Role role) {
+		boolean exist = this.IRoleDao.getRoleByName(role.getName()).isPresent();
+
+		if (exist){
+			throw new GeneralException(HttpStatus.BAD_REQUEST, "Ya existe el nombre del role");
+		}
+
+		this.IRoleDao.saveRole(role);
+	}
+
 }

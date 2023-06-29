@@ -12,5 +12,7 @@ public interface IRoleDao {
 	Optional<Role> getRole(Long roleId);
 
 	Optional<Role> getRoleByName(String name);
+
+	void saveRole(Role role);
 	
 }

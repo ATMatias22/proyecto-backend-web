@@ -32,6 +32,11 @@ public class RoleDaoImpl implements IRoleDao {
 		return IRoleRepository.findByName(name);
 
 	}
-	
+
+	@Override
+	public void saveRole(Role role) {
+		IRoleRepository.save(role);
+	}
+
 
 }

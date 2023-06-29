@@ -12,4 +12,6 @@ public interface IRoleService {
 
 	Role getRoleByName(String name);
 
+	void saveRole(Role role);
+
 }
