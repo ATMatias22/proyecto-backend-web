@@ -30,26 +30,26 @@ public class AuthController {
 
 
 	@PostMapping("/login")
-	public ResponseEntity<JwtResponse> login(@RequestBody LoginUserRequest loginUser) {
-		String jwt = this.authService.login(this.userMapper.loginUserRequestToUserEntity(loginUser));
+	public ResponseEntity<JwtResponse> loginUser(@RequestBody LoginUserRequest loginUser) {
+		String jwt = this.authService.loginUser(this.userMapper.loginUserRequestToUserEntity(loginUser));
 		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
 	@PostMapping("/login-admin")
-	public ResponseEntity<JwtResponse> loginAdmin(@RequestBody LoginUserRequest loginUser) {
-		String jwt = this.authService.login(this.userMapper.loginUserRequestToUserEntity(loginUser));
+	public ResponseEntity<JwtResponse> loginAdminUser(@RequestBody LoginUserRequest loginUser) {
+		String jwt = this.authService.loginUser(this.userMapper.loginUserRequestToUserEntity(loginUser));
 		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<Void> register(@RequestBody NewUserRequest newUserRequest) {
-		authService.register(this.userMapper.newUserRequestToUserEntity(newUserRequest));
+	public ResponseEntity<Void> registerUser(@RequestBody NewUserRequest newUserRequest) {
+		authService.registerUser(this.userMapper.newUserRequestToUserEntity(newUserRequest));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping(path = "/confirm", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<JwtResponse> confirm(@RequestBody ConfirmRegisterUserRequest cru) {
-		return new ResponseEntity<>(new JwtResponse(authService.confirmToken(cru.getToken())), HttpStatus.OK);
+	public ResponseEntity<JwtResponse> confirmRegisterUser(@RequestBody ConfirmRegisterUserRequest cru) {
+		return new ResponseEntity<>(new JwtResponse(authService.confirmRegisterUser(cru.getToken())), HttpStatus.OK);
 	}
 
 }

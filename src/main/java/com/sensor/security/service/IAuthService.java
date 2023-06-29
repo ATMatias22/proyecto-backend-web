@@ -4,8 +4,8 @@ import com.sensor.security.entity.User;
 
 public interface IAuthService {
 
-    String login (User user);
+    String loginUser(User user);
     String loginAdmin (User user);
-    void register(User user);
-    String confirmToken(String token);
+    void registerUser(User user);
+    String confirmRegisterUser(String token);
 }

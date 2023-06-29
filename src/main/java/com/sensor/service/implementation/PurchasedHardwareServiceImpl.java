@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.sensor.dao.IPurchasedHardwareDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.PurchasedHardwareMapper;
 import com.sensor.entity.PurchasedHardware;
 import com.sensor.security.entity.User;
@@ -21,67 +21,67 @@ import com.sensor.service.IPurchasedHardwareService;
 public class PurchasedHardwareServiceImpl implements IPurchasedHardwareService {
 
 	@Autowired
-	private IPurchasedHardwareDao IPurchasedHardwareDao;
+	private IPurchasedHardwareDao purchasedHardwareDao;
 
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 	
 	@Autowired
 	private PurchasedHardwareMapper purchasedHardwareMapper;
 
 	
 	@Override
-	public List<PurchasedHardwareDTO> getAll() {
-		return IPurchasedHardwareDao.getAll().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
+	public List<PurchasedHardwareDTO> getAllPurchasedHardware() {
+		return purchasedHardwareDao.getAllPurchasedHardware().stream().map((ph)->purchasedHardwareMapper.toPurchasedHardwareDTO(ph)).collect(Collectors.toList());
 	}
 
 	@Override
-	public PurchasedHardwareDTO getPurchasedHardware(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = IPurchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
+	public PurchasedHardwareDTO getPurchasedHardwareById(Long purchasedHardwareId) {
+		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardwareById(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con el id : " + purchasedHardwareId);
 		}
 		return purchasedHardwareMapper.toPurchasedHardwareDTO(opt.get());
 	}
 
 	@Override
-	public void save(PurchasedHardwareDTO purchasedHardwareDTO) {
+	public void savePurchasedHardware(PurchasedHardwareDTO purchasedHardwareDTO) {
 
-		Optional<User> user = IUserDao.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
-		IPurchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
+		purchasedHardwareDao.savePurchasedHardware(purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareDTO));
 	}
 
 	@Override
-	public void delete(Long purchasedHardwareId) {
-		Optional<PurchasedHardware> opt = IPurchasedHardwareDao.getPurchasedHardware(purchasedHardwareId);
+	public void deletePurchasedHardwareById(Long purchasedHardwareId) {
+		Optional<PurchasedHardware> opt = purchasedHardwareDao.getPurchasedHardwareById(purchasedHardwareId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el hardware comprado con id : " + purchasedHardwareId);
 		}
 
-		IPurchasedHardwareDao.delete(purchasedHardwareId);
+		purchasedHardwareDao.deletePurchasedHardwareById(purchasedHardwareId);
 	}
 
 
 	@Override
-	public void modify(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
+	public void modifyPurchasedHardwareById(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO) {
 		
-		Optional<User> user = IUserDao.getUser(purchasedHardwareDTO.getUserId());
+		Optional<User> user = userDao.getUser(purchasedHardwareDTO.getUserId());
 		
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con id : " + purchasedHardwareDTO.getUserId());
 		}
 		
 		
-		IPurchasedHardwareDao.save(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
+		purchasedHardwareDao.savePurchasedHardware(purchasedHardwareMapper.toPurchasedHardwareModify(purchasedHardwareDTO));
 		
 	}
 

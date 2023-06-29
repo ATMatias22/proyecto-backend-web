@@ -12,7 +12,7 @@ import com.sensor.dao.IProductDao;
 import com.sensor.dao.ISaleDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.sale.request.SaleDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.SaleMapper;
 import com.sensor.entity.Product;
 import com.sensor.entity.Sale;
@@ -24,72 +24,72 @@ public class SaleServiceImpl implements ISaleService {
 
 	
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 	@Autowired
-	private IProductDao IProductDao;
+	private IProductDao productDao;
 	@Autowired
-	private ISaleDao ISaleDao;
+	private ISaleDao saleDao;
 	
 	@Autowired
 	private SaleMapper saleMapper;
 	
 	@Override
-	public List<SaleDTO> getAll() {
-		return ISaleDao.getAll().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+	public List<SaleDTO> getAllSales() {
+		return saleDao.getAllSales().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 	@Override
-	public SaleDTO getSale(Long saleId) {
-		Optional<Sale> opt = ISaleDao.getSale(saleId);
+	public SaleDTO getSaleById(Long saleId) {
+		Optional<Sale> opt = saleDao.getSaleById(saleId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro la venta con el id : " + saleId);
 		}
 		return saleMapper.toSaleDTO(opt.get());
 	}
 	
 	@Override
-	public List<SaleDTO> getAllByUserId(String email) {
-		Optional<User> user = IUserDao.getUserByEmail(email);
+	public List<SaleDTO> getAllSalesByUserEmail(String email) {
+		Optional<User> user = userDao.getUserByEmail(email);
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario con email : " + email);
 		}
 		
 		
-		return ISaleDao.getAllByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
+		return saleDao.getAllSalesByUserId(user.get().getUserId()).stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 
 	@Override
-	public void save(SaleDTO saleDTO) {
+	public void saveSale(SaleDTO saleDTO) {
 		
-		Optional<Product> product = IProductDao.getProductEnabled(saleDTO.getProductId());
+		Optional<Product> product = productDao.getEnabledProductById(saleDTO.getProductId());
 
 		if (product.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
 		}
 		
-		Optional<User> user = IUserDao.getUserByEmail(saleDTO.getEmail());
+		Optional<User> user = userDao.getUserByEmail(saleDTO.getEmail());
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
 		}
 		
 		saleDTO.setUserId(user.get().getUserId());
 		
-		ISaleDao.save(saleMapper.toSale(saleDTO));
+		saleDao.saveSale(saleMapper.toSale(saleDTO));
 	}
 
 	@Override
-	public void delete(Long saleId) {
-		Optional<Sale> opt = ISaleDao.getSale(saleId);
+	public void deleteSaleById(Long saleId) {
+		Optional<Sale> opt = saleDao.getSaleById(saleId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro la venta con id : " + saleId);
 		}
 		
-		ISaleDao.delete(saleId);
+		saleDao.deleteSaleById(saleId);
 	}
 
 	

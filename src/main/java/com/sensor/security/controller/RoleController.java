@@ -15,22 +15,22 @@ import com.sensor.security.entity.Role;
 import com.sensor.security.service.IRoleService;
 
 @RestController
-@RequestMapping("/api/role")
+@RequestMapping("/role")
 @PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 	
 	@Autowired
-	private IRoleService typeUserService;
+	private IRoleService roleService;
 	
 	@GetMapping("/all")
-	public ResponseEntity<List<Role>> getAll() {
-		return new ResponseEntity<>(typeUserService.getAllRoles(), HttpStatus.OK);
+	public ResponseEntity<List<Role>> getAllRoles() {
+		return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{typeUserId}")
-	public ResponseEntity<Role> getTypeUser(
-			@PathVariable("typeUserId") Long typeUserId) {
-		return new ResponseEntity<Role>(typeUserService.getRole(typeUserId), HttpStatus.OK);
+	@GetMapping("/{roleId}")
+	public ResponseEntity<Role> getRoleById(
+			@PathVariable("roleId") Long roleId) {
+		return new ResponseEntity<Role>(roleService.getRoleById(roleId), HttpStatus.OK);
 	}
 	
 //	@GetMapping("/name/{typeUserByName}")

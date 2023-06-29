@@ -11,7 +11,7 @@ public interface IConfirmationTokenService {
 
     Optional<ConfirmationToken> getConfirmationTokenById(String id);
 
-    boolean existsTokenForFkUser (User user);
+    boolean existsConfirmationTokenForFkUser(User user);
 
-    void deleteById(String id);
+    void deleteConfirmationTokenById(String id);
 }

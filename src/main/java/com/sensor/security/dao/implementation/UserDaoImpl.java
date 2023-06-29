@@ -14,31 +14,31 @@ import com.sensor.security.repository.IUserRepository;
 public class UserDaoImpl implements IUserDao {
 
 	@Autowired
-	private IUserRepository IUserRepository;
+	private IUserRepository userRepository;
 	
 	@Override
 	public List<User> getAll() {
-		return (List<User>) IUserRepository.findAll();
+		return (List<User>) userRepository.findAll();
 	}
 
 	@Override
 	public Optional<User> getUser(Long userId) {
-		return IUserRepository.findById(userId);
+		return userRepository.findById(userId);
 	}
 
 	@Override
 	public Optional<User> getUserByEmail(String email) {
-		return IUserRepository.findByEmail(email);
+		return userRepository.findByEmail(email);
 
 	}
 	@Override
 	public User saveUser(User user) {
-		return IUserRepository.save(user);
+		return userRepository.save(user);
 	}
 
 	@Override
 	public Integer enableUser(String email) {
-		return this.IUserRepository.enableUser(email);
+		return this.userRepository.enableUser(email);
 	}
 
 }

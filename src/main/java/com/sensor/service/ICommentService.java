@@ -6,14 +6,14 @@ import com.sensor.dto.comment.request.CommentDTO;
 
 public interface ICommentService {
 
-	List<CommentDTO> getAll();
+	List<CommentDTO> getAllComments();
 
-	CommentDTO getComment(Long commentId);
+	CommentDTO getCommentById(Long commentId);
 	
 	List<CommentDTO> getAllCommentsForAProduct(Long productId);
 
-	void save(CommentDTO commentDTO);
+	void saveComment(CommentDTO commentDTO);
 
-	void delete(Long commentId);
+	void deleteCommentById(Long commentId);
 	
 }

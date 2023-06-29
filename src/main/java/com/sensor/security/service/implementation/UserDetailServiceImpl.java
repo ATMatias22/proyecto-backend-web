@@ -36,7 +36,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 			throw new GeneralException(HttpStatus.UNAUTHORIZED, ExceptionMessage.BAD_CREDENTIALS);
 		}
 
-		if (!user.getEnabled() && this.confirmationTokenService.existsTokenForFkUser(user)) {
+		if (!user.getEnabled() && this.confirmationTokenService.existsConfirmationTokenForFkUser(user)) {
 			throw new UnabledAccountException(HttpStatus.UNAUTHORIZED, ExceptionMessage.UNABLED_ACCOUNT);
 		}
 

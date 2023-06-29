@@ -8,15 +8,15 @@ import com.sensor.entity.Comment;
 public interface ICommentDao {
 	
 	
-	List<Comment> getAll();
+	List<Comment> getAllComments();
 
 	List<Comment> getAllCommentsForAProduct(Long productId);
 
-	Optional<Comment> getComment(Long commentId);
+	Optional<Comment> getCommentById(Long commentId);
 	
-	Comment save (Comment comment);
+	Comment saveComment(Comment comment);
 	
-	void delete (Long commentId);
+	void deleteCommentById(Long commentId);
 	
 
 }

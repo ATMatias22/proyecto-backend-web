@@ -19,42 +19,42 @@ import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.service.ICommentService;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/comments")
 @CrossOrigin(origins = "*")
 public class CommentController {
 
 	@Autowired
-	private ICommentService ICommentService;
+	private ICommentService commentService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
-	public ResponseEntity<List<CommentDTO>> getAll() {
-		return new ResponseEntity<>(ICommentService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<CommentDTO>> getAllComments() {
+		return new ResponseEntity<>(commentService.getAllComments(), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{commentId}")
-	public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId) {
-		return new ResponseEntity<>(ICommentService.getComment(commentId), HttpStatus.OK);
+	public ResponseEntity<CommentDTO> getCommentById(@PathVariable("commentId") Long commentId) {
+		return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
 	}
 
 	@GetMapping("/product/{productId}")
 	public ResponseEntity<List<CommentDTO>> getCommentsForAProduct(@PathVariable("productId") Long productId) {
 
-		return new ResponseEntity<>(ICommentService.getAllCommentsForAProduct(productId), HttpStatus.OK);
+		return new ResponseEntity<>(commentService.getAllCommentsForAProduct(productId), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PostMapping
-	public ResponseEntity save(@RequestBody CommentDTO commentDTO) {
-		ICommentService.save(commentDTO);
+	public ResponseEntity saveComment(@RequestBody CommentDTO commentDTO) {
+		commentService.saveComment(commentDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{commentId}")
-	public ResponseEntity delete(@PathVariable("commentId") Long commentId) {
-		ICommentService.delete(commentId);
+	public ResponseEntity deleteCommentById(@PathVariable("commentId") Long commentId) {
+		commentService.deleteCommentById(commentId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 

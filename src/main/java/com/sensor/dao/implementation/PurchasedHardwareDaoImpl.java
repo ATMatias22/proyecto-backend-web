@@ -15,28 +15,28 @@ import com.sensor.repository.IPurchasedHardwareRepository;
 public class PurchasedHardwareDaoImpl implements IPurchasedHardwareDao {
 
 	@Autowired
-	private IPurchasedHardwareRepository IPurchasedHardwareRepository;
+	private IPurchasedHardwareRepository purchasedHardwareRepository;
 	
 	
 	
 	@Override
-	public List<PurchasedHardware> getAll() {
-		return (List<PurchasedHardware>) IPurchasedHardwareRepository.findAll();
+	public List<PurchasedHardware> getAllPurchasedHardware() {
+		return (List<PurchasedHardware>) purchasedHardwareRepository.findAll();
 	}
 
 	@Override
-	public Optional<PurchasedHardware> getPurchasedHardware(Long purchasedHardwareId) {
-		return IPurchasedHardwareRepository.findById(purchasedHardwareId);
+	public Optional<PurchasedHardware> getPurchasedHardwareById(Long purchasedHardwareId) {
+		return purchasedHardwareRepository.findById(purchasedHardwareId);
 	}
 
 	@Override
-	public PurchasedHardware save(PurchasedHardware purchasedHardware) {
-		return IPurchasedHardwareRepository.save(purchasedHardware);
+	public PurchasedHardware savePurchasedHardware(PurchasedHardware purchasedHardware) {
+		return purchasedHardwareRepository.save(purchasedHardware);
 	}
 
 	@Override
-	public void delete(Long purchasedHardwareId) {
-		 IPurchasedHardwareRepository.deleteById(purchasedHardwareId);
+	public void deletePurchasedHardwareById(Long purchasedHardwareId) {
+		 purchasedHardwareRepository.deleteById(purchasedHardwareId);
 
 	}
 

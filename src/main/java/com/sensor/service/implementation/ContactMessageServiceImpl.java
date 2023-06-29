@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.sensor.dao.IContactMessageDao;
 import com.sensor.dto.contact.request.ContactMessageDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.ContactMessageMapper;
 import com.sensor.entity.ContactMessage;
 import com.sensor.service.IContactMessageService;
@@ -19,39 +19,39 @@ import com.sensor.service.IContactMessageService;
 public class ContactMessageServiceImpl implements IContactMessageService {
 	
 	@Autowired
-	private IContactMessageDao IContactMessageDao;
+	private IContactMessageDao contactMessageDao;
 	
 	@Autowired
 	private ContactMessageMapper contactMessageMapper;
 
 	@Override
-	public List<ContactMessageDTO> getAll() {
-		return IContactMessageDao.getAll().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
+	public List<ContactMessageDTO> getAllContactMessage() {
+		return contactMessageDao.getAllContactMessage().stream().map((contactMessage) -> contactMessageMapper.toContactMessageDTO(contactMessage)).collect(Collectors.toList());
 	}
 
 	@Override
-	public ContactMessageDTO getContactMessage(Long contactMessageId) {
-		Optional<ContactMessage> opt = IContactMessageDao.getContactMessage(contactMessageId);
+	public ContactMessageDTO getContactMessageById(Long contactMessageId) {
+		Optional<ContactMessage> opt = contactMessageDao.getContactMessageById(contactMessageId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id: " + contactMessageId);
 		}
 		return contactMessageMapper.toContactMessageDTO(opt.get());
 	}
 
 	@Override
-	public void save(ContactMessageDTO contactMessageDTO) {
-		IContactMessageDao.save(contactMessageMapper.toContactMessage(contactMessageDTO));
+	public void saveContactMessage(ContactMessageDTO contactMessageDTO) {
+		contactMessageDao.saveContactMessage(contactMessageMapper.toContactMessage(contactMessageDTO));
 	}
 
 	@Override
-	public void delete(Long contactMessageId) {
-		Optional<ContactMessage> opt = IContactMessageDao.getContactMessage(contactMessageId);
+	public void deleteContactMessageById(Long contactMessageId) {
+		Optional<ContactMessage> opt = contactMessageDao.getContactMessageById(contactMessageId);
 		
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el mensaje de contacto con id : " + contactMessageId);
 		}
-		IContactMessageDao.delete(contactMessageId);
+		contactMessageDao.deleteContactMessageById(contactMessageId);
 	}
 	
 

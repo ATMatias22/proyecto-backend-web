@@ -19,36 +19,36 @@ import com.sensor.dto.contact.request.ContactMessageDTO;
 import com.sensor.service.IContactMessageService;
 
 @RestController
-@RequestMapping("/api/contactmessages")
+@RequestMapping("/contactmessages")
 @CrossOrigin(origins = "*")
 public class ContactMessageController {
 	
 	@Autowired
-	private IContactMessageService IContactMessageService;
+	private IContactMessageService contactMessageService;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
-	public ResponseEntity<List<ContactMessageDTO>> getAll() {
-		return new ResponseEntity<>(IContactMessageService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<ContactMessageDTO>> getAllContactMessage() {
+		return new ResponseEntity<>(contactMessageService.getAllContactMessage(), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{contactMessageId}")
-	public ResponseEntity<ContactMessageDTO> getContactMessage(
+	public ResponseEntity<ContactMessageDTO> getContactMessageById(
 			@PathVariable("contactMessageId") Long contactMessageId) {
-		return new ResponseEntity<ContactMessageDTO>(IContactMessageService.getContactMessage(contactMessageId), HttpStatus.OK);
+		return new ResponseEntity<ContactMessageDTO>(contactMessageService.getContactMessageById(contactMessageId), HttpStatus.OK);
 	}
 	
 	@PostMapping
-	public ResponseEntity save(@RequestBody ContactMessageDTO contactMessageDTO) {
-		IContactMessageService.save(contactMessageDTO);
+	public ResponseEntity saveContactMessage(@RequestBody ContactMessageDTO contactMessageDTO) {
+		contactMessageService.saveContactMessage(contactMessageDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{contactMessageId}")
-	public ResponseEntity delete(@PathVariable("contactMessageId") Long contactMessageId) {
-		IContactMessageService.delete(contactMessageId);
+	public ResponseEntity deleteContactMessageById(@PathVariable("contactMessageId") Long contactMessageId) {
+		contactMessageService.deleteContactMessageById(contactMessageId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	

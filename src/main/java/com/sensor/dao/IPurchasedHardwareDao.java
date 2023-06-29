@@ -8,13 +8,13 @@ import com.sensor.entity.PurchasedHardware;
 public interface IPurchasedHardwareDao {
 	
 	
-	List<PurchasedHardware> getAll();
+	List<PurchasedHardware> getAllPurchasedHardware();
 
-	Optional<PurchasedHardware> getPurchasedHardware(Long purchasedHardwareId);
+	Optional<PurchasedHardware> getPurchasedHardwareById(Long purchasedHardwareId);
 
-	PurchasedHardware save(PurchasedHardware purchasedHardware);
+	PurchasedHardware savePurchasedHardware(PurchasedHardware purchasedHardware);
 	
-	void delete(Long purchasedHardwareId);
+	void deletePurchasedHardwareById(Long purchasedHardwareId);
 
 
 }

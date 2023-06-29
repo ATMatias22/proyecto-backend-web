@@ -23,7 +23,7 @@ import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.service.IProductService;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @CrossOrigin(origins = "*")
 public class ProductController {
 
@@ -32,33 +32,33 @@ public class ProductController {
 
 
 	@GetMapping("/all")
-	public ResponseEntity<List<ProductDTO>> getAll() {
-		return new ResponseEntity<>(productService.getAllEnabled(), HttpStatus.OK);
+	public ResponseEntity<List<ProductDTO>> getAllEnabledProducts() {
+		return new ResponseEntity<>(productService.getAllEnabledProducts(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{productId}")
-	public ResponseEntity<ProductDTO> getProduct(@PathVariable("productId") Long productId) {
-		return new ResponseEntity<ProductDTO>(productService.getProductEnabled(productId), HttpStatus.OK);
+	public ResponseEntity<ProductDTO> getEnabledProductById(@PathVariable("productId") Long productId) {
+		return new ResponseEntity<ProductDTO>(productService.getEnabledProductById(productId), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-	public ResponseEntity save(@RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
-		productService.save(product,file);
+	public ResponseEntity saveProduct(@RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
+		productService.saveProduct(product,file);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{productId}")
-	public ResponseEntity delete(@PathVariable("productId") Long productId) {
-		productService.delete(productId);
+	public ResponseEntity deleteProductById(@PathVariable("productId") Long productId) {
+		productService.deleteProductById(productId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PatchMapping("/{productId}")
-	public ResponseEntity modify(@PathVariable("productId") Long productId, @RequestBody ProductDTO productDTO) {
-		productService.modify(productId, productDTO);
+	public ResponseEntity modifyProductById(@PathVariable("productId") Long productId, @RequestBody ProductDTO productDTO) {
+		productService.modifyProductById(productId, productDTO);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 

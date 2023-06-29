@@ -59,22 +59,6 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(dataError, HttpStatus.UNAUTHORIZED);
 	}
 
-	@ExceptionHandler(BlogAppException.class)
-	public ResponseEntity<HashMap<String, DetailsError>> blogExceptionHandler(BlogAppException exception, WebRequest webRequest) {
-		
-		HashMap<String, DetailsError> data = new HashMap<>();
-
-		
-		DetailsError errorDetalles = new DetailsError(new Date(), exception.getMessage(),
-				webRequest.getDescription(false), exception.getEstado().value());
-		
-		data.put("error", errorDetalles);
-
-		
-		return new ResponseEntity<>(data, exception.getEstado());
-	}
-
-
 	// tiene q  ver con MyAccessDeniedHandler
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<HashMap<String, DetailsError>> accessDeniedExceptionHandler(AccessDeniedException exception, WebRequest webRequest) {

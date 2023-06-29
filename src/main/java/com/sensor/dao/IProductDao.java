@@ -7,13 +7,13 @@ import java.util.Optional;
 import com.sensor.entity.Product;
 public interface IProductDao {
 	
-	List<Product> getAllEnabled();
+	List<Product> getAllEnabledProducts();
 	
-	Optional<Product> getProductEnabled(Long productId);
+	Optional<Product> getEnabledProductById(Long productId);
 	
-	Product save(Product product);
+	Product saveProduct(Product product);
 	
-	void delete (Long productId);
+	void deleteProductById(Long productId);
 	
 	Optional<Product> getProductByName(String name);
 

@@ -7,12 +7,12 @@ import com.sensor.entity.ContactMessage;
 
 public interface IContactMessageDao {
 
-	List<ContactMessage> getAll();
+	List<ContactMessage> getAllContactMessage();
 
-	Optional<ContactMessage> getContactMessage(Long contactMessageId);
+	Optional<ContactMessage> getContactMessageById(Long contactMessageId);
 
-	ContactMessage save(ContactMessage contactMessage);
+	ContactMessage saveContactMessage(ContactMessage contactMessage);
 
-	void delete(Long contactMessageId);
+	void deleteContactMessageById(Long contactMessageId);
 
 }

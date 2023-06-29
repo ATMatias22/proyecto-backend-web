@@ -8,7 +8,7 @@ public interface IRoleService {
 	
 	List<Role> getAllRoles();
 
-	Role getRole(Long roleId);
+	Role getRoleById(Long roleId);
 
 	Role getRoleByName(String name);
 

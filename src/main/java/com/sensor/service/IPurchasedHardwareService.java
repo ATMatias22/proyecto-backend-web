@@ -7,14 +7,14 @@ import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
 public interface IPurchasedHardwareService {
 	
 
-	List<PurchasedHardwareDTO> getAll();
+	List<PurchasedHardwareDTO> getAllPurchasedHardware();
 
-	PurchasedHardwareDTO getPurchasedHardware(Long purchasedHardwareId);
+	PurchasedHardwareDTO getPurchasedHardwareById(Long purchasedHardwareId);
 
-	void save(PurchasedHardwareDTO purchasedHardwareDTO);
+	void savePurchasedHardware(PurchasedHardwareDTO purchasedHardwareDTO);
 	
-	void delete(Long purchasedHardwareId);
+	void deletePurchasedHardwareById(Long purchasedHardwareId);
 
-	void modify(Long purchasedHardwareId,PurchasedHardwareDTO purchasedHardwareDTO );
+	void modifyPurchasedHardwareById(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO );
 
 }

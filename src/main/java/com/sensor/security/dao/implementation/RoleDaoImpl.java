@@ -15,27 +15,27 @@ import com.sensor.security.repository.IRoleRepository;
 public class RoleDaoImpl implements IRoleDao {
 
 	@Autowired
-	public IRoleRepository IRoleRepository;
+	public IRoleRepository roleRepository;
 	
 	@Override
 	public List<Role> getAllRoles() {
-		return (List<Role>) IRoleRepository.findAll();
+		return (List<Role>) roleRepository.findAll();
 	}
 
 	@Override
 	public Optional<Role> getRole(Long roleId) {
-		return IRoleRepository.findById(roleId);
+		return roleRepository.findById(roleId);
 	}
 
 	@Override
 	public Optional<Role> getRoleByName(String name) {
-		return IRoleRepository.findByName(name);
+		return roleRepository.findByName(name);
 
 	}
 
 	@Override
 	public void saveRole(Role role) {
-		IRoleRepository.save(role);
+		roleRepository.save(role);
 	}
 
 

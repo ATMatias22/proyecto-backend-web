@@ -12,7 +12,7 @@ import com.sensor.dao.ICommentDao;
 import com.sensor.dao.IProductDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.comment.request.CommentDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.CommentMapper;
 import com.sensor.entity.Comment;
 import com.sensor.entity.Product;
@@ -24,28 +24,28 @@ import com.sensor.service.ICommentService;
 public class CommentServiceImpl implements ICommentService {
 
 	@Autowired
-	private ICommentDao ICommentDao;
+	private ICommentDao commentDao;
 
 	@Autowired
-	private IProductDao IProductDao;
+	private IProductDao productDao;
 	
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 	
 	@Autowired
 	private CommentMapper commentMapper;
 
 	@Override
-	public List<CommentDTO> getAll() {
-		return ICommentDao.getAll().stream().map((comment) -> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
+	public List<CommentDTO> getAllComments() {
+		return commentDao.getAllComments().stream().map((comment) -> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
 	}
 
 	@Override
-	public CommentDTO getComment(Long commentId) {
-		Optional<Comment> opt = ICommentDao.getComment(commentId);
+	public CommentDTO getCommentById(Long commentId) {
+		Optional<Comment> opt = commentDao.getCommentById(commentId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el comentario: " + commentId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el comentario: " + commentId);
 		}
 		return commentMapper.toCommentDTO(opt.get());
 	}
@@ -53,42 +53,42 @@ public class CommentServiceImpl implements ICommentService {
 	@Override
 	public List<CommentDTO> getAllCommentsForAProduct(Long productId) {
 		
-		Optional<Product> product = IProductDao.getProductEnabled(productId);
+		Optional<Product> product = productDao.getEnabledProductById(productId);
 
 		if (product.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No existe el producto con id : " + productId);
 		}
 		
-		return ICommentDao.getAllCommentsForAProduct(productId).stream().map((comment)-> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
+		return commentDao.getAllCommentsForAProduct(productId).stream().map((comment)-> commentMapper.toCommentDTO(comment)).collect(Collectors.toList());
 	}
 
 
 	@Override
-	public void save(CommentDTO commentDTO) {
-		Optional<Product> product = IProductDao.getProductEnabled(commentDTO.getIdProduct());
+	public void saveComment(CommentDTO commentDTO) {
+		Optional<Product> product = productDao.getEnabledProductById(commentDTO.getIdProduct());
 		
 		if (product.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No existe el producto con id : " + commentDTO.getIdProduct());
 		}
-		User user = IUserDao.getUserByEmail(commentDTO.getEmail()).get();
+		User user = userDao.getUserByEmail(commentDTO.getEmail()).get();
 		
 		commentDTO.setIdUser(user.getUserId());
 		
-		ICommentDao.save(commentMapper.toComment(commentDTO));
+		commentDao.saveComment(commentMapper.toComment(commentDTO));
 
 	}
 
 	@Override
-	public void delete(Long commentId) {
-		Optional<Comment> opt = ICommentDao.getComment(commentId);
+	public void deleteCommentById(Long commentId) {
+		Optional<Comment> opt = commentDao.getCommentById(commentId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el comentario con id : " + commentId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el comentario con id : " + commentId);
 		}
 
-		ICommentDao.delete(commentId);
+		commentDao.deleteCommentById(commentId);
 	}
 
 

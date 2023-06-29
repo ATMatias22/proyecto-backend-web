@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensor.dao.IProductDao;
 import com.sensor.security.dao.IUserDao;
 import com.sensor.dto.product.request.ProductDTO;
-import com.sensor.exception.BlogAppException;
+import com.sensor.exception.GeneralException;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
 import com.sensor.entity.Product;
@@ -34,10 +34,10 @@ import com.sensor.service.IProductService;
 public class ProductServiceImpl implements IProductService {
 
 	@Autowired
-	private IUserDao IUserDao;
+	private IUserDao userDao;
 
 	@Autowired
-	private IProductDao IProductDao;
+	private IProductDao productDao;
 	
 	@Autowired
 	private ProductMapper productMapper;
@@ -48,16 +48,16 @@ public class ProductServiceImpl implements IProductService {
 	private static final String DEFAULT_IMAGE = "default.png";
 
 	@Override
-	public List<ProductDTO> getAllEnabled() {
-		return IProductDao.getAllEnabled().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
+	public List<ProductDTO> getAllEnabledProducts() {
+		return productDao.getAllEnabledProducts().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
 	}
 
 	@Override
-	public ProductDTO getProductEnabled(Long productId) {
-		Optional<Product> opt = IProductDao.getProductEnabled(productId);
+	public ProductDTO getEnabledProductById(Long productId) {
+		Optional<Product> opt = productDao.getEnabledProductById(productId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
 		}
 
 		return getProductWithBase64Image(opt.get());
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements IProductService {
 
 	@Override
 	@Transactional
-	public void save(String productDTOJSON, MultipartFile file) {
+	public void saveProduct(String productDTOJSON, MultipartFile file) {
 		System.out.println("LLege al service 1");
 
 		try {
@@ -104,23 +104,23 @@ public class ProductServiceImpl implements IProductService {
 			productDTO = JSONToProductoDTO(productDTOJSON);
 			System.out.println(productDTO);
 
-			Optional<Product> optionalProduct = IProductDao.getProductByName(productDTO.getName());
-			Optional<User> user = IUserDao.getUser(productDTO.getIdUser());
+			Optional<Product> optionalProduct = productDao.getProductByName(productDTO.getName());
+			Optional<User> user = userDao.getUser(productDTO.getIdUser());
 
 			if (!optionalProduct.isEmpty()) {
-				throw new BlogAppException(HttpStatus.NOT_FOUND,
+				throw new GeneralException(HttpStatus.NOT_FOUND,
 						"Ya existe el producto con nombre : " + productDTO.getName());
 			}
 
 			if (user.isEmpty()) {
-				throw new BlogAppException(HttpStatus.NOT_FOUND,
+				throw new GeneralException(HttpStatus.NOT_FOUND,
 						"No se encontro el usuario con id : " + productDTO.getIdUser());
 			}
 
 			productDTO.setImage(DEFAULT_IMAGE);
-			IProductDao.save(productMapper.toProduct(productDTO));
+			productDao.saveProduct(productMapper.toProduct(productDTO));
 
-			Optional<Product> getLastProduct = IProductDao.getLastProduct();
+			Optional<Product> getLastProduct = productDao.getLastProduct();
 			Product product;
 
 			if (!getLastProduct.isEmpty()) {
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements IProductService {
 					String saveDirectory = createDirectoryAndSaveFile(product, file);
 					product.setImage(saveDirectory);
 					product.setUpdated(Calendar.getInstance());
-					IProductDao.save(product);
+					productDao.saveProduct(product);
 				}
 			}
 
@@ -140,45 +140,45 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public void delete(Long productId) {
+	public void deleteProductById(Long productId) {
 
-		Optional<Product> opt = IProductDao.getProductEnabled(productId);
+		Optional<Product> opt = productDao.getEnabledProductById(productId);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
 		}
 
-		IProductDao.delete(productId);
+		productDao.deleteProductById(productId);
 	}
 
 	@Override
 	public ProductDTO getProductByName(String name) {
-		Optional<Product> opt = IProductDao.getProductByName(name);
+		Optional<Product> opt = productDao.getProductByName(name);
 
 		if (opt.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND, "No se encontro el producto con nombre : " + name);
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con nombre : " + name);
 		}
 
 		return getProductWithBase64Image(opt.get());
 	}
 
 	@Override
-	public void modify(Long productId, ProductDTO productDTO) {
+	public void modifyProductById(Long productId, ProductDTO productDTO) {
 
-		Product product = IProductDao.getProductEnabled(productId).get();
+		Product product = productDao.getEnabledProductById(productId).get();
 
 		if (!product.getName().equals(productDTO.getName())) {
-			Optional<Product> existProductWithName = IProductDao.getProductByName(productDTO.getName());
+			Optional<Product> existProductWithName = productDao.getProductByName(productDTO.getName());
 			if (!existProductWithName.isEmpty()) {
-				throw new BlogAppException(HttpStatus.CONFLICT,
+				throw new GeneralException(HttpStatus.CONFLICT,
 						"Ya existe un producto con nombre : " + productDTO.getName());
 			}
 		}
 
-		Optional<User> user = IUserDao.getUser(productDTO.getIdUser());
+		Optional<User> user = userDao.getUser(productDTO.getIdUser());
 
 		if (user.isEmpty()) {
-			throw new BlogAppException(HttpStatus.NOT_FOUND,
+			throw new GeneralException(HttpStatus.NOT_FOUND,
 					"No se encontro el usuario con id : " + productDTO.getIdUser());
 		}
 
@@ -189,7 +189,7 @@ public class ProductServiceImpl implements IProductService {
 		product.setCreated(product.getCreated());
 		product.setUpdated(Calendar.getInstance());
 
-		IProductDao.save(product);
+		productDao.saveProduct(product);
 	}
 
 
