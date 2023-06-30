@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sensor.security.dao.IRoleDao;
+import com.sensor.security.enums.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,18 +20,12 @@ public class RoleDaoImpl implements IRoleDao {
 	
 	@Override
 	public List<Role> getAllRoles() {
-		return (List<Role>) roleRepository.findAll();
+		return  roleRepository.findAll();
 	}
 
 	@Override
-	public Optional<Role> getRole(Long roleId) {
-		return roleRepository.findById(roleId);
-	}
-
-	@Override
-	public Optional<Role> getRoleByName(String name) {
-		return roleRepository.findByName(name);
-
+	public Optional<Role> getRoleByERole(ERole role) {
+		return roleRepository.findByeRole(role);
 	}
 
 	@Override

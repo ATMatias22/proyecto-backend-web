@@ -1,6 +1,7 @@
 package com.sensor.security.listener;
 
 import com.sensor.exception.GeneralException;
+import com.sensor.security.enums.ERole;
 import com.sensor.security.entity.Role;
 import com.sensor.security.entity.User;
 import com.sensor.security.service.IRoleService;
@@ -35,9 +36,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup)
             return;
-        Role perfilAdministrador = createRoleIfNotExists("ROLE_ADMIN");
-        Role perfilUsuario = createRoleIfNotExists("ROLE_USER");
-
+        Role perfilAdministrador = createRoleIfNotExists(ERole.ROLE_ADMIN);
+        Role perfilUsuario = createRoleIfNotExists(ERole.ROLE_USER);
 
         User userAdmin = new User();
         userAdmin.setName("Matias");
@@ -48,6 +48,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         userAdmin.setPassword(passwordEncoder.encode("Password#546"));
         userAdmin.setEnabled(true);
         userAdmin.getRoles().add(perfilAdministrador);
+        userAdmin.getRoles().add(perfilUsuario);
 
         try{
             userService.saveUser(userAdmin);
@@ -59,14 +60,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    Role createRoleIfNotExists(String nombrePerfil) {
+    Role createRoleIfNotExists(ERole role) {
         try {
-            return roleService.getRoleByName(nombrePerfil);
+            return roleService.getRoleByERole(role);
         }catch (GeneralException ge){
-            Role role = new Role();
-            role.setName(nombrePerfil);
-            roleService.saveRole(role);
-            return role;
+            Role newRole = new Role();
+            newRole.setERole(role);
+            roleService.saveRole(newRole);
+            return newRole;
         }
     }
 

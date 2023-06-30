@@ -3,6 +3,7 @@ package com.sensor.security.service.implementation;
 import com.sensor.exception.GeneralException;
 import com.sensor.exception.constants.ExceptionMessage;
 import com.sensor.security.entity.ConfirmationToken;
+import com.sensor.security.enums.ERole;
 import com.sensor.security.entity.Role;
 import com.sensor.security.entity.User;
 import com.sensor.security.jwt.JwtProvider;
@@ -55,7 +56,7 @@ public class AuthServiceImpl implements IAuthService {
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_USER"));
+            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase(ERole.ROLE_USER.toString()));
             if(existRole){
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return jwtProvider.generateToken(authentication);
@@ -79,7 +80,7 @@ public class AuthServiceImpl implements IAuthService {
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase(ERole.ROLE_ADMIN.toString()));
             if(existRole){
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return jwtProvider.generateToken(authentication);
@@ -107,7 +108,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el servidor");
         }
 
-        Role role = roleService.getRoleByName("ROLE_USER");
+        Role role = roleService.getRoleByERole(ERole.ROLE_USER);
         user.getRoles().add(role);
         this.userService.saveUser(user);
 
