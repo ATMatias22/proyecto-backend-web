@@ -72,7 +72,7 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public String loginAdmin(User user) {
+    public String loginAdminUser(User user) {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));

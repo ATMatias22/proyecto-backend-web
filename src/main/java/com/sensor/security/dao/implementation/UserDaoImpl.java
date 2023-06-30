@@ -17,12 +17,12 @@ public class UserDaoImpl implements IUserDao {
 	private IUserRepository userRepository;
 	
 	@Override
-	public List<User> getAll() {
+	public List<User> getAllUsers() {
 		return (List<User>) userRepository.findAll();
 	}
 
 	@Override
-	public Optional<User> getUser(Long userId) {
+	public Optional<User> getUserById(Long userId) {
 		return userRepository.findById(userId);
 	}
 
