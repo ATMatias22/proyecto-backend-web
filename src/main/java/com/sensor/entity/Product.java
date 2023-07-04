@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.sensor.security.entity.User;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name ="Product")
@@ -53,14 +55,12 @@ public class Product {
 	@Column(name = "image")
 	private String image;
 
-	@Column(name = "created", updatable = false, insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
+	@Column(name = "created_date")
+	@CreationTimestamp
 	private Calendar created;
 
-	@Column(name = "updated", insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
+	@Column(name = "updated_date")
+	@UpdateTimestamp
 	private Calendar updated;
 
 }
