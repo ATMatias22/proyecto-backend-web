@@ -1,6 +1,6 @@
 package com.sensor.entity;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,12 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-
 import com.sensor.security.entity.User;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -57,10 +51,10 @@ public class Product {
 
 	@Column(name = "created_date")
 	@CreationTimestamp
-	private Calendar created;
+	private LocalDateTime created;
 
 	@Column(name = "updated_date")
 	@UpdateTimestamp
-	private Calendar updated;
+	private LocalDateTime updated;
 
 }
