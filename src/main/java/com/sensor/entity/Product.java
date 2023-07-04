@@ -20,7 +20,7 @@ import com.sensor.security.entity.User;
 import lombok.Data;
 
 @Entity
-@Table(name ="product")
+@Table(name ="Product")
 @Data
 public class Product {
 
