@@ -14,7 +14,7 @@ public interface ICommentDao {
 
 	Optional<Comment> getCommentById(Long commentId);
 	
-	Comment saveComment(Comment comment);
+	void saveComment(Comment comment);
 	
 	void deleteCommentById(Long commentId);
 	
