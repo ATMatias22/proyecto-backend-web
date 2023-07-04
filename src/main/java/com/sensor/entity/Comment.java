@@ -1,5 +1,6 @@
 package com.sensor.entity;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -48,11 +49,11 @@ public class Comment {
 	
 	@Column(name = "created_date")
 	@CreationTimestamp
-	private Calendar createdDate;
+	private LocalDateTime createdDate;
 
 	@Column(name = "updated_date")
 	@UpdateTimestamp
-	private Calendar updatedDate;
+	private LocalDateTime updatedDate;
 	
 
 	
