@@ -8,6 +8,6 @@ import com.sensor.entity.Comment;
 
 public interface ICommentRepository extends CrudRepository<Comment, Long>{
 	
-	public List<Comment> findByProductId(Long productId);
+	List<Comment> findByProductId(Long productId);
 
 }
