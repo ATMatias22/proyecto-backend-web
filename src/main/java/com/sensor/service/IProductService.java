@@ -2,9 +2,9 @@ package com.sensor.service;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.sensor.dto.product.request.ProductDTO;
+import com.sensor.utils.ProductTransport;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IProductService {
 
@@ -12,13 +12,13 @@ public interface IProductService {
 
 	void deleteProductById(Long productId);
 
-	ProductDTO getProductByName(String name);
+	ProductTransport getProductByName(String name);
 
 	void modifyProductById(Long productId, ProductDTO productDTO);
 
-	List<ProductDTO> getAllEnabledProducts();
+	List<ProductTransport> getAllEnabledProducts();
 
-	ProductDTO getEnabledProductById(Long productId);
+	ProductTransport getEnabledProductById(Long productId);
 	
 	
 

@@ -1,7 +1,10 @@
 package com.sensor.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.sensor.dto.product.request.ProductDTO;
+import com.sensor.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.service.IProductService;
 
 @RestController
@@ -30,15 +32,18 @@ public class ProductController {
 	@Autowired
 	private IProductService productService;
 
+	@Autowired
+	private ProductMapper productMapper;
+
 
 	@GetMapping("/all")
 	public ResponseEntity<List<ProductDTO>> getAllEnabledProducts() {
-		return new ResponseEntity<>(productService.getAllEnabledProducts(), HttpStatus.OK);
+		return new ResponseEntity<>(productService.getAllEnabledProducts().stream().map(productTransport -> this.productMapper.productTransportToProductDTO(productTransport)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	@GetMapping("/{productId}")
 	public ResponseEntity<ProductDTO> getEnabledProductById(@PathVariable("productId") Long productId) {
-		return new ResponseEntity<ProductDTO>(productService.getEnabledProductById(productId), HttpStatus.OK);
+		return new ResponseEntity<>(this.productMapper.productTransportToProductDTO(productService.getEnabledProductById(productId)), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")

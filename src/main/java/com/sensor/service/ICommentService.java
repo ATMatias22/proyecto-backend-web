@@ -2,17 +2,17 @@ package com.sensor.service;
 
 import java.util.List;
 
-import com.sensor.dto.comment.request.CommentDTO;
+import com.sensor.entity.Comment;
 
 public interface ICommentService {
 
-	List<CommentDTO> getAllComments();
+	List<Comment> getAllComments();
 
-	CommentDTO getCommentById(Long commentId);
+	Comment getCommentById(Long commentId);
 	
-	List<CommentDTO> getAllCommentsForAProduct(Long productId);
+	List<Comment> getAllCommentsForAProductById(Long productId);
 
-	void saveComment(CommentDTO commentDTO);
+	void saveComment(Comment comment, Long productId);
 
 	void deleteCommentById(Long commentId);
 	

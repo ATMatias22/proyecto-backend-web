@@ -1,26 +1,27 @@
 package com.sensor.mapper;
 
+import com.sensor.dto.product.request.ProductDTO;
+import com.sensor.entity.Product;
+import com.sensor.utils.ProductTransport;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-
-import com.sensor.dto.product.request.ProductDTO;
-import com.sensor.entity.Product;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
 
     @Mappings({
-            @Mapping(source = "product.productId", target = "id"),
-            @Mapping(source = "product.name", target = "name"),
-            @Mapping(source = "product.price", target = "price"),
-            @Mapping(source = "product.description", target = "description"),
-            @Mapping(source = "product.userId", target = "idUser"),
-            @Mapping(source = "product.image", target = "image"),
-            @Mapping(source = "file", target = "file")
+            @Mapping(source = "productTransport.product.productId", target = "id"),
+            @Mapping(source = "productTransport.product.name", target = "name"),
+            @Mapping(source = "productTransport.product.price", target = "price"),
+            @Mapping(source = "productTransport.product.description", target = "description"),
+            @Mapping(source = "productTransport.product.userId", target = "idUser"),
+            @Mapping(source = "productTransport.product.image", target = "image"),
+            @Mapping(source = "productTransport.image", target = "file")
     })
-    ProductDTO toProductDTO(Product product, String file);
+    ProductDTO productTransportToProductDTO(ProductTransport productTransport);
+
 
     @Mappings({
             @Mapping(source = "productDTO.name", target = "name"),

@@ -4,17 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sensor.entity.Comment;
+import com.sensor.entity.Product;
 
 public interface ICommentDao {
 	
 	
 	List<Comment> getAllComments();
 
-	List<Comment> getAllCommentsForAProduct(Long productId);
+	List<Comment> getAllCommentsForAProduct(Product product);
 
 	Optional<Comment> getCommentById(Long commentId);
 	
-	Comment saveComment(Comment comment);
+	void saveComment(Comment comment);
 	
 	void deleteCommentById(Long commentId);
 	

@@ -3,6 +3,7 @@ package com.sensor.dao.implementation;
 import java.util.List;
 import java.util.Optional;
 
+import com.sensor.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +28,8 @@ public class CommentDaoImpl implements ICommentDao {
 	}
 
 	@Override
-	public Comment saveComment(Comment comment) {
-		return commentRepository.save(comment);
+	public void saveComment(Comment comment) {
+		commentRepository.save(comment);
 	}
 
 	@Override
@@ -37,8 +38,8 @@ public class CommentDaoImpl implements ICommentDao {
 	}
 
 	@Override
-	public List<Comment> getAllCommentsForAProduct(Long productId) {
-		return commentRepository.findByProductId(productId);
+	public List<Comment> getAllCommentsForAProduct(Product product) {
+		return commentRepository.findByProduct(product);
 	}
 
 }
