@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.sensor.dto.product.request.ProductDTO;
+import com.sensor.entity.Product;
+import com.sensor.utils.ProductTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,11 +25,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensor.dao.IProductDao;
 import com.sensor.security.dao.IUserDao;
-import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.exception.GeneralException;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
-import com.sensor.entity.Product;
 import com.sensor.security.entity.User;
 import com.sensor.service.IProductService;
 
@@ -48,30 +49,23 @@ public class ProductServiceImpl implements IProductService {
 	private static final String DEFAULT_IMAGE = "default.png";
 
 	@Override
-	public List<ProductDTO> getAllEnabledProducts() {
-		return productDao.getAllEnabledProducts().stream().map((product) -> getProductWithBase64Image(product)).collect(Collectors.toList());
+	public List<ProductTransport> getAllEnabledProducts() {
+		return productDao.getAllEnabledProducts().stream().map((product) -> new ProductTransport(product, getBase64Image(product))).collect(Collectors.toList());
 	}
 
 	@Override
-	public ProductDTO getEnabledProductById(Long productId) {
-		Optional<Product> opt = productDao.getEnabledProductById(productId);
+	public ProductTransport getEnabledProductById(Long productId) {
+		Product product = productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
 
-		if (opt.isEmpty()) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId);
-		}
-
-		return getProductWithBase64Image(opt.get());
+		return new ProductTransport(product, getBase64Image(product));
 	}
 
 	//
-	private ProductDTO getProductWithBase64Image(Product p) {
-		String image;
-
+	private String getBase64Image(Product p) {
+		String image = null;
 		String path = FILE_DIRECTORY + p.getImage();
 		File file = new File(path);
-
 		String encodeBase64 = null;
-		ProductDTO pdto = null;
 		try {
 			String extension = FileHelper.getExtension(file.getName());
 			FileInputStream fileInputStream = new FileInputStream(file);
@@ -84,12 +78,12 @@ public class ProductServiceImpl implements IProductService {
 
 			fileInputStream.close();
 
-			pdto = productMapper.toProductDTO(p,image);
 		} catch (IOException e1) {
 			System.out.println(e1.getMessage());
+			throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas en el servidor");
 		}
 
-		return pdto;
+		return image;
 	}
 
 	@Override
@@ -104,7 +98,7 @@ public class ProductServiceImpl implements IProductService {
 			productDTO = JSONToProductoDTO(productDTOJSON);
 			System.out.println(productDTO);
 
-			Optional<Product> optionalProduct = productDao.getProductByName(productDTO.getName());
+			Optional<com.sensor.entity.Product> optionalProduct = productDao.getProductByName(productDTO.getName());
 			Optional<User> user = userDao.getUserById(productDTO.getIdUser());
 
 			if (!optionalProduct.isEmpty()) {
@@ -120,8 +114,8 @@ public class ProductServiceImpl implements IProductService {
 			productDTO.setImage(DEFAULT_IMAGE);
 			productDao.saveProduct(productMapper.toProduct(productDTO));
 
-			Optional<Product> getLastProduct = productDao.getLastProduct();
-			Product product;
+			Optional<com.sensor.entity.Product> getLastProduct = productDao.getLastProduct();
+			com.sensor.entity.Product product;
 
 			if (!getLastProduct.isEmpty()) {
 				if (!file.isEmpty()) {
@@ -142,7 +136,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public void deleteProductById(Long productId) {
 
-		Optional<Product> opt = productDao.getEnabledProductById(productId);
+		Optional<com.sensor.entity.Product> opt = productDao.getEnabledProductById(productId);
 
 		if (opt.isEmpty()) {
 			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
@@ -152,23 +146,19 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public ProductDTO getProductByName(String name) {
-		Optional<Product> opt = productDao.getProductByName(name);
+	public ProductTransport getProductByName(String name) {
+		Product product = productDao.getProductByName(name).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + name));
 
-		if (opt.isEmpty()) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con nombre : " + name);
-		}
-
-		return getProductWithBase64Image(opt.get());
+		return new ProductTransport(product, getBase64Image(product));
 	}
 
 	@Override
 	public void modifyProductById(Long productId, ProductDTO productDTO) {
 
-		Product product = productDao.getEnabledProductById(productId).get();
+		com.sensor.entity.Product product = productDao.getEnabledProductById(productId).get();
 
 		if (!product.getName().equals(productDTO.getName())) {
-			Optional<Product> existProductWithName = productDao.getProductByName(productDTO.getName());
+			Optional<com.sensor.entity.Product> existProductWithName = productDao.getProductByName(productDTO.getName());
 			if (!existProductWithName.isEmpty()) {
 				throw new GeneralException(HttpStatus.CONFLICT,
 						"Ya existe un producto con nombre : " + productDTO.getName());
@@ -200,7 +190,7 @@ public class ProductServiceImpl implements IProductService {
 		return prodDTO;
 	}
 
-	private String createDirectoryAndSaveFile(Product product, MultipartFile file) throws IOException {
+	private String createDirectoryAndSaveFile(com.sensor.entity.Product product, MultipartFile file) throws IOException {
 
 		Long productId = product.getProductId();
 		File directory = new File(FILE_DIRECTORY + productId);

@@ -16,11 +16,11 @@ public class StringToLocalDateAndViceVersa {
     private static final Logger logger = LoggerFactory.getLogger(StringToLocalDateAndViceVersa.class);
 
     public Optional<LocalDate> toLocalDate(String strDate, boolean canNull) throws NullPointerException, DateTimeParseException {
-        Optional<LocalDate> optionalCalendar = Optional.empty();
+        Optional<LocalDate> optionalLocalDate = Optional.empty();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateConstants.FORMAT_DATE);
         try {
             LocalDate localDate = LocalDate.parse(strDate, formatter);
-            optionalCalendar = Optional.of(localDate);
+            optionalLocalDate = Optional.of(localDate);
         } catch (DateTimeParseException e) {
             logger.error(String.format("DateTimeParseException: %s",  e.getMessage()));
             throw new RuntimeException("Cadena no cumple con el formato necesario");
@@ -30,7 +30,7 @@ public class StringToLocalDateAndViceVersa {
                 throw new NullPointerException("No puede ser nulo");
             }
         }
-        return optionalCalendar;
+        return optionalLocalDate;
     }
 
 
@@ -61,5 +61,6 @@ public class StringToLocalDateAndViceVersa {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern(DateConstants.FORMAT_DATE);
         return ld.format(formato);
     }
+
 
 }
