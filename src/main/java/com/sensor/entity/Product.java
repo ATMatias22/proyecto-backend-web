@@ -25,22 +25,21 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productId;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name ="description", columnDefinition = "TEXT")
+	@Column(name ="description", columnDefinition = "TEXT", nullable = false)
 	private String description;
 
-	@Column(name = "price")
-	private Long price;
-	
-	
+	@Column(name = "price", nullable = false)
+	private Double price;
+
+
 	@Column(name = "fk_user")
 	private Long userId;
-	
-	
+
 	@ManyToOne
-	@JoinColumn(name="fk_user", insertable = false, updatable = false)
+	@JoinColumn(name="fk_user", nullable = false)
 	private User user;
 	
 	@Column(name = "enabled")
