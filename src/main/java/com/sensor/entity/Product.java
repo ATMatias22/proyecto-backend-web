@@ -34,10 +34,6 @@ public class Product {
 	@Column(name = "price", nullable = false)
 	private Double price;
 
-
-	@Column(name = "fk_user")
-	private Long userId;
-
 	@ManyToOne
 	@JoinColumn(name="fk_user", nullable = false)
 	private User user;
