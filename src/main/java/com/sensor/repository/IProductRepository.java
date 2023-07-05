@@ -13,11 +13,11 @@ import com.sensor.entity.Product;
 
 public interface IProductRepository extends CrudRepository<Product, Long> {
 
-	public Optional<Product> findByName(String name);
+	Optional<Product> findByName(String name);
 
-	public List<Product> findByEnabledTrue();
+	List<Product> findByEnabledTrue();
 
-	public Optional<Product> findByEnabledTrueAndProductId(Long productId);
+	Optional<Product> findByEnabledTrueAndProductId(Long productId);
 
 	@Modifying
 	@Transactional
