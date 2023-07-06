@@ -8,14 +8,14 @@ import java.io.File;
 import java.io.IOException;
 
 @Getter
-public class DirectoryHandler {
+public class DirectoryHandler<T> {
 
 
     //lo necesitamos para saber en que ruta vamos a guardar todas las subrutas que haremos aca
     private final String mainDirectory;
 
     //necesietamos el Id para crear el directorio y usarlo como parte del nombre de la imagen
-    private Integer id;
+    private T id;
 
     // a traves del mainDirectory y el id crearemos este directory en donde se guardara todo lo que haremos
     //en caso de eliminar este directory sera donde apunta la imagen guardada
@@ -48,8 +48,10 @@ public class DirectoryHandler {
     //Aca esta el archivo que se guardara en el directorio especificado
     private final MultipartFile filePicture;
 
+    private FileHelper<T> fileHelper;
 
-    public DirectoryHandler(Integer id, String oldPath, String prefix, MultipartFile filePicture, String mainDirectory) {
+
+    public DirectoryHandler(T id, String oldPath, String prefix, MultipartFile filePicture, String mainDirectory) {
         this.id = id;
         this.oldPath = oldPath;
         this.prefix = prefix;
@@ -61,22 +63,23 @@ public class DirectoryHandler {
         this.newPathForDB = null;
         this.newNamePicture = null;
         this.directoryForDeleteBeforeCreate = null;
+        fileHelper = new FileHelper<>();
     }
 
 
     public void ifIsNecessaryDeleteDirectoryThenDoIt() {
         if(this.directoryForDeleteBeforeCreate != null){
-            FileHelper.deleteDirectory(directoryForDeleteBeforeCreate);
+            fileHelper.deleteDirectory(directoryForDeleteBeforeCreate);
         }
 
         if (this.isNecessaryDelete) {
-            FileHelper.deleteDirectory(directory);
+            fileHelper.deleteDirectory(directory);
         }
     }
 
     public void ifIsNecessaryCreateDirectoryThenDoIt() throws IOException {
         if (this.isNecessaryCreate) {
-            FileHelper.saveFile(filePicture, directory, newNamePicture);
+            fileHelper.saveFile(filePicture, directory, newNamePicture);
         }
     }
 
@@ -105,10 +108,10 @@ public class DirectoryHandler {
             this.directory = new File(this.mainDirectory + this.id);
 
             //renombramos la imagen
-            this.newNamePicture = FileHelper.renameFile(this.filePicture, this.id, this.prefix);
+            this.newNamePicture = fileHelper.renameFile(this.filePicture, this.id, this.prefix);
 
             //creamos el directorio en donde estara la imagen
-            FileHelper.createDirectory(directory);
+            fileHelper.createDirectory(directory);
 
             // armamos la ruta que se guardara en la base de datos
             this.newPathForDB = this.assembleDirectoryNameForSaveInDataBase(this.id, this.newNamePicture);
@@ -126,9 +129,9 @@ public class DirectoryHandler {
 
     public void prepareDirectoryForSave() {
         this.directory = new File(mainDirectory + id); //CREAMOS DIRECTORIO
-        FileHelper.createDirectory(directory);
+        fileHelper.createDirectory(directory);
         if (!this.filePicture.isEmpty()) {
-            this.newNamePicture = FileHelper.renameFile(filePicture, id, prefix);
+            this.newNamePicture = fileHelper.renameFile(filePicture, id, prefix);
             this.newPathForDB = this.assembleDirectoryNameForSaveInDataBase(id, this.newNamePicture);
             this.isNecessaryCreate = true;
         }else{
@@ -136,7 +139,7 @@ public class DirectoryHandler {
         }
     }
 
-    private String assembleDirectoryNameForSaveInDataBase(Integer id, String nameImage) {
+    private String assembleDirectoryNameForSaveInDataBase(T id, String nameImage) {
         return id + File.separator + nameImage;
     }
 }

@@ -10,28 +10,24 @@ import java.util.Base64;
 import com.sensor.exception.GeneralException;
 import org.aspectj.util.FileUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-public final class FileHelper {
-
-	private FileHelper() {
-
-	}
-
-	public static boolean createDirectory(File path) {
+public class FileHelper<T> {
+	public boolean createDirectory(File path) {
 		if (!path.exists()) {
 			return path.mkdir();
 		}
 		return false;
 	}
 
-	public static String renameFile(MultipartFile file, Integer id, String prefix) {
+	public String renameFile(MultipartFile file, T id, String prefix) {
 		String extension = FileHelper.getExtension(file.getOriginalFilename());
 		return prefix + "_" + id + "." + extension;
 	}
 
-	public static void saveFile(MultipartFile file, File directory, String nameImage) throws IOException {
+	public void saveFile(MultipartFile file, File directory, String nameImage) throws IOException {
 		Files.copy(file.getInputStream(), directory.toPath().resolve(nameImage),
 				StandardCopyOption.REPLACE_EXISTING);
 	}

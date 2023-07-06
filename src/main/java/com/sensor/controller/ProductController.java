@@ -3,7 +3,12 @@ package com.sensor.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.sensor.dto.product.request.ProductDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sensor.dto.product.request.ModifyProductRequest;
+import com.sensor.dto.product.request.ProductRequest;
+import com.sensor.dto.product.response.ProductResponse;
+import com.sensor.exception.GeneralException;
 import com.sensor.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,35 +40,51 @@ public class ProductController {
 	@Autowired
 	private ProductMapper productMapper;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
+
 
 	@GetMapping("/all")
-	public ResponseEntity<List<ProductDTO>> getAllEnabledProducts() {
-		return new ResponseEntity<>(productService.getAllEnabledProducts().stream().map(productTransport -> this.productMapper.productTransportToProductDTO(productTransport)).collect(Collectors.toList()), HttpStatus.OK);
+	public ResponseEntity<List<ProductResponse>> getAllEnabledProducts() {
+		return new ResponseEntity<>(productService.getAllEnabledProducts().stream().map(productTransport -> this.productMapper.productTransportToControllerToProductProductResponse(productTransport)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	@GetMapping("/{productId}")
-	public ResponseEntity<ProductDTO> getEnabledProductById(@PathVariable("productId") Long productId) {
-		return new ResponseEntity<>(this.productMapper.productTransportToProductDTO(productService.getEnabledProductById(productId)), HttpStatus.OK);
+	public ResponseEntity<ProductResponse> getEnabledProductById(@PathVariable("productId") Long productId) {
+		return new ResponseEntity<>(this.productMapper.productTransportToControllerToProductProductResponse(productService.getEnabledProductById(productId)), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-	public ResponseEntity saveProduct(@RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
-		productService.saveProduct(product,file);
+	public ResponseEntity<Void> saveProduct(@RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
+		ProductRequest productRequest = null;
+		try {
+			productRequest = this.objectMapper.readValue(product, ProductRequest.class);
+		} catch (JsonProcessingException e) {
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se pudo transformar");
+		}
+		productService.saveProduct(this.productMapper.productRequestToProductTransportToService(productRequest,file));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{productId}")
-	public ResponseEntity deleteProductById(@PathVariable("productId") Long productId) {
+	public ResponseEntity<Void> deleteProductById(@PathVariable("productId") Long productId) {
 		productService.deleteProductById(productId);
-		return new ResponseEntity(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PatchMapping("/{productId}")
-	public ResponseEntity modifyProductById(@PathVariable("productId") Long productId, @RequestBody ProductDTO productDTO) {
-		productService.modifyProductById(productId, productDTO);
+	public ResponseEntity<Void> modifyProductById(@PathVariable("productId") Long productId, @RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
+		ModifyProductRequest modifyProductRequest = null;
+		try {
+			modifyProductRequest = this.objectMapper.readValue(product, ModifyProductRequest.class);
+		} catch (JsonProcessingException e) {
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se pudo transformar");
+		}
+		productService.modifyProductById(productId, this.productMapper.modifyProductRequestToProductTransportToService(modifyProductRequest,file));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
