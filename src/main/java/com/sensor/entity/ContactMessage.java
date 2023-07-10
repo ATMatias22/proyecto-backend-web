@@ -1,7 +1,7 @@
 package com.sensor.entity;
 
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,15 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name ="contact_message")
+@Table(name ="ContactMessage")
 @Data
 public class ContactMessage {
 
@@ -25,28 +23,28 @@ public class ContactMessage {
 	@Column(name = "id_contact_message")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long contactId;
-	
-	
-	@Column(name = "name")
+
+	@Column(name = "name", length = 50, nullable = false)
 	private String name;
 	
-	@Column(name = "last_name")
-	private String lastName;
-	
-	@Column(name = "email")
+	@Column(name = "lastname", length = 50, nullable = false)
+	private String lastname;
+
+	@Column(name = "email", length = 150, nullable = false)
 	private String email;
 	
-	@Column(name = "reason_for_contact")
+	@Column(name = "reason_for_contact", length = 200, nullable = false)
 	private String reasonForContact;
-	
-	@Column(name = "message")
+
+	@Column(name = "message", columnDefinition = "TEXT", nullable = false)
 	private String message;
-	
-	
-	
-	@Column(name = "created", updatable = false, insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-	private Calendar created;
+
+	@Column(name = "created_date")
+	@CreationTimestamp
+	private LocalDateTime created;
+
+	@Column(name = "updated_date")
+	@UpdateTimestamp
+	private LocalDateTime updated;
 	
 }
