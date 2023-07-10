@@ -127,6 +127,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<HashMap<String, DetailsError>> httpMessageNotReadableException(HttpMessageNotReadableException  exception, WebRequest webRequest) {
 
 		logger.info("estoy en HttpMessageNotReadableException");
+		logger.info(exception.getMessage());
 
 		HashMap<String, DetailsError> dataError = new HashMap<>();
 

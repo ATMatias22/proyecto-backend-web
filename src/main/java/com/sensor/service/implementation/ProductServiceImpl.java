@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sensor.dao.IProductDao;
-import com.sensor.security.dao.IUserDao;
 import com.sensor.exception.GeneralException;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
@@ -45,6 +44,7 @@ public class ProductServiceImpl implements IProductService {
     private String FILE_DIRECTORY_PRODUCT_IMAGES;
 
     private static final String DEFAULT_IMAGE = "default.png";
+    private static final String PREFIX_DIRECTORY_NAME = "product_image";
 
     @Override
     public List<ProductTransportToController> getAllEnabledProducts() {
@@ -77,16 +77,19 @@ public class ProductServiceImpl implements IProductService {
         product.setImage(null);
         product.setUser(userLoggedIn);
         Product savedProduct = this.productDao.saveProduct(product);
-        Long savedProductId = savedProduct.getProductId();
-        DirectoryHandler<Long> dh = new DirectoryHandler<>(savedProductId, savedProduct.getImage(),
-                "product_image", productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES);
-        dh.prepareDirectoryForSave();
-        savedProduct.setImage(dh.getNewPathForDB());
-        this.productDao.saveProduct(savedProduct);
-        try {
-            dh.ifIsNecessaryCreateOrDeleteThenDoIt();
-        } catch (IOException e) {
-            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el sistema de archivos del servidor");
+
+        if(!productTransportToService.getFile().isEmpty()){
+            Long savedProductId = savedProduct.getProductId();
+            DirectoryHandler<Long> dh = new DirectoryHandler<>(savedProductId, savedProduct.getImage(),
+                    PREFIX_DIRECTORY_NAME, productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES);
+            dh.prepareDirectoryForSave();
+            savedProduct.setImage(dh.getNewPathForDB());
+            this.productDao.saveProduct(savedProduct);
+            try {
+                dh.ifIsNecessaryCreateOrDeleteThenDoIt();
+            } catch (IOException e) {
+                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el sistema de archivos del servidor");
+            }
         }
     }
 
@@ -99,13 +102,13 @@ public class ProductServiceImpl implements IProductService {
                             + productId;
                     FileHelper.deleteDirectory(new File(path));
                 }, () -> {
-                    throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
+                    throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto con id : " + productId);
                 });
     }
 
     @Override
     public ProductTransportToController getProductByName(String name) {
-        Product product = productDao.getProductByName(name).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + name));
+        Product product = productDao.getProductByName(name).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto: " + name));
 
         return new ProductTransportToController(product, FileHelper.filePathToBase64String(product.getImage(), FILE_DIRECTORY_PRODUCT_IMAGES));
     }
@@ -114,7 +117,7 @@ public class ProductServiceImpl implements IProductService {
     public void modifyProductById(Long productId, ProductTransportToService productTransportToService) {
 
         Product productWithNewData = productTransportToService.getProduct();
-        Product productToModify = this.productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId));
+        Product productToModify = this.productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto con id : " + productId));
         boolean existProductWithName = productDao.getProductByName(productWithNewData.getName()).isPresent();
         if (existProductWithName) {
             throw new GeneralException(HttpStatus.CONFLICT,
@@ -126,7 +129,7 @@ public class ProductServiceImpl implements IProductService {
         productToModify.setDescription(productWithNewData.getDescription());
 
         DirectoryHandler<Long> dh = new DirectoryHandler<>(productToModify.getProductId(),
-                productToModify.getImage(), "product_image",
+                productToModify.getImage(), PREFIX_DIRECTORY_NAME,
                 productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES
         );
         dh.prepareDirectoryForModify();

@@ -29,6 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sensor.service.IProductService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/products")
 @CrossOrigin(origins = "*")
@@ -57,13 +59,7 @@ public class ProductController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-	public ResponseEntity<Void> saveProduct(@RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
-		ProductRequest productRequest = null;
-		try {
-			productRequest = this.objectMapper.readValue(product, ProductRequest.class);
-		} catch (JsonProcessingException e) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se pudo transformar");
-		}
+	public ResponseEntity<Void> saveProduct(@RequestPart("product") @Valid ProductRequest productRequest, @RequestPart("file") MultipartFile file) {
 		productService.saveProduct(this.productMapper.productRequestToProductTransportToService(productRequest,file));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
@@ -77,13 +73,7 @@ public class ProductController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PatchMapping("/{productId}")
-	public ResponseEntity<Void> modifyProductById(@PathVariable("productId") Long productId, @RequestPart("product") String product, @RequestPart("file") MultipartFile file) {
-		ModifyProductRequest modifyProductRequest = null;
-		try {
-			modifyProductRequest = this.objectMapper.readValue(product, ModifyProductRequest.class);
-		} catch (JsonProcessingException e) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se pudo transformar");
-		}
+	public ResponseEntity<Void> modifyProductById(@PathVariable("productId") Long productId, @RequestPart("product") @Valid ModifyProductRequest modifyProductRequest, @RequestPart("file") MultipartFile file) {
 		productService.modifyProductById(productId, this.productMapper.modifyProductRequestToProductTransportToService(modifyProductRequest,file));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
