@@ -1,4 +1,4 @@
-package com.sensor.dto.contact.request;
+package com.sensor.dto.contact.response;
 
 import java.util.Calendar;
 
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContactMessageDTO {
+public class ContactMessageResponse {
 	
 	private Long id;
 	private String name;
-	private String lastName;
+	private String lastname;
 	private String email;
 	private String message;
 	private String reasonForContact;
