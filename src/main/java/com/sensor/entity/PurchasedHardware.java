@@ -44,7 +44,6 @@ public class PurchasedHardware {
 	private Integer quantity;
 	
 	@Column(name = "date_purchase", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDate datePurchase;
 
 	@Column(name = "provider", nullable = false)
