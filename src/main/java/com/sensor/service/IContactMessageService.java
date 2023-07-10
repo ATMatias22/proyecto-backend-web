@@ -2,15 +2,15 @@ package com.sensor.service;
 
 import java.util.List;
 
-import com.sensor.dto.contact.request.ContactMessageDTO;
+import com.sensor.entity.ContactMessage;
 
 public interface IContactMessageService {
 
-	List<ContactMessageDTO> getAllContactMessage();
+	List<ContactMessage> getAllContactMessage();
 
-	ContactMessageDTO getContactMessageById(Long contactMessageId);
+	ContactMessage getContactMessageById(Long contactMessageId);
 
-	void saveContactMessage(ContactMessageDTO contactMessageDTO);
+	void saveContactMessage(ContactMessage contactMessage);
 
 	void deleteContactMessageById(Long contactMessageId);
 	
