@@ -30,8 +30,8 @@ public class PurchasedHardwareDaoImpl implements IPurchasedHardwareDao {
 	}
 
 	@Override
-	public PurchasedHardware savePurchasedHardware(PurchasedHardware purchasedHardware) {
-		return purchasedHardwareRepository.save(purchasedHardware);
+	public void savePurchasedHardware(PurchasedHardware purchasedHardware) {
+		purchasedHardwareRepository.save(purchasedHardware);
 	}
 
 	@Override
