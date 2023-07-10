@@ -8,7 +8,7 @@ import com.sensor.entity.Sale;
 
 public interface ISaleRepository extends JpaRepository<Sale, Long> {
 
-	public List<Sale> findByUserId(Long userId);
+	List<Sale> findByUserId(Long userId);
 
 	
 }
