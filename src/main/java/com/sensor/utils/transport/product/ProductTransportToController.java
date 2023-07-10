@@ -1,4 +1,4 @@
-package com.sensor.utils.transport;
+package com.sensor.utils.transport.product;
 
 import com.sensor.entity.Product;
 import lombok.AllArgsConstructor;

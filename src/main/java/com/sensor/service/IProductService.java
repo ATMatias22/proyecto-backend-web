@@ -2,8 +2,8 @@ package com.sensor.service;
 
 import java.util.List;
 
-import com.sensor.utils.transport.ProductTransportToController;
-import com.sensor.utils.transport.ProductTransportToService;
+import com.sensor.utils.transport.product.ProductTransportToController;
+import com.sensor.utils.transport.product.ProductTransportToService;
 
 public interface IProductService {
 

@@ -3,6 +3,7 @@ package com.sensor.service;
 import java.util.List;
 
 import com.sensor.entity.Sale;
+import com.sensor.utils.transport.Sale.SaleTransportToService;
 
 public interface ISaleService {
 
@@ -10,7 +11,7 @@ public interface ISaleService {
 
 	Sale getSaleById(Long saleId);
 
-	void saveSale(Sale sale);
+	void saveSale(SaleTransportToService saleTransportToService);
 
 	void deleteSaleById(Long saleId);
 
