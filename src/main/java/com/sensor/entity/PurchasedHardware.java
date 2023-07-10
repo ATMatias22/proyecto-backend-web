@@ -1,5 +1,7 @@
 package com.sensor.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -19,9 +21,11 @@ import com.sensor.security.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "purchased_hardware")
+@Table(name = "PurchasedHardware")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,42 +37,33 @@ public class PurchasedHardware {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idPurchasedHardware;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "quantity")
+	@Column(name = "quantity", nullable = false)
 	private Integer quantity;
 	
-	@Column(name = "date_purchase")
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
-	private Calendar datePurchase;
+	@Column(name = "date_purchase", nullable = false)
+	private LocalDate datePurchase;
 
-	
-	@Column(name = "provider")
+	@Column(name = "provider", nullable = false)
 	private String provider;
 	
-	@Column(name = "price")
+	@Column(name = "price", nullable = false)
 	private Long price;
-	
-	@Column(name = "fk_user")
-	private Long userId;
-	
+
 	@ManyToOne
-	@JoinColumn(name="fk_user", insertable = false, updatable = false)
+	@JoinColumn(name="fk_user", nullable = false)
 	private User user;
-	
 
-	@Column(insertable=false, updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
-	private Calendar created;
+	@Column(name = "created_date")
+	@CreationTimestamp
+	private LocalDateTime created;
 
-	//insertable para que la query de insert no la realice con esta columna
-	@Column(insertable=false, updatable = true)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="America/Argentina/Buenos_Aires")
-	private Calendar updated;
+	@Column(name = "updated_date")
+	@UpdateTimestamp
+	private LocalDateTime updated;
+
 	
 	
 }
