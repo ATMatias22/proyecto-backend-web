@@ -13,7 +13,7 @@ public interface ISaleDao {
 
 	Optional<Sale> getSaleById(Long saleId);
 
-	Sale saveSale(Sale sale);
+	void saveSale(Sale sale);
 	
 	void deleteSaleById(Long saleId);
 	

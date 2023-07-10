@@ -30,8 +30,8 @@ public class SaleDaoImpl implements ISaleDao {
 	}
 
 	@Override
-	public Sale saveSale(Sale sale) {
-		return saleRepository.save(sale);
+	public void saveSale(Sale sale) {
+		saleRepository.save(sale);
 	}
 
 	@Override
