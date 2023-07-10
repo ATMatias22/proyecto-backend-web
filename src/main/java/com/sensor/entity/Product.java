@@ -1,6 +1,6 @@
 package com.sensor.entity;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,17 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-
 import com.sensor.security.entity.User;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name ="product")
+@Table(name ="Product")
 @Data
 public class Product {
 
@@ -29,22 +25,17 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productId;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name ="description")
+	@Column(name ="description", columnDefinition = "TEXT", nullable = false)
 	private String description;
 
-	@Column(name = "price")
-	private Long price;
-	
-	
-	@Column(name = "fk_user")
-	private Long userId;
-	
-	
+	@Column(name = "price", nullable = false)
+	private Double price;
+
 	@ManyToOne
-	@JoinColumn(name="fk_user", insertable = false, updatable = false)
+	@JoinColumn(name="fk_user", nullable = false)
 	private User user;
 	
 	@Column(name = "enabled")
@@ -53,14 +44,12 @@ public class Product {
 	@Column(name = "image")
 	private String image;
 
-	@Column(name = "created", updatable = false, insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-	private Calendar created;
+	@Column(name = "created_date")
+	@CreationTimestamp
+	private LocalDateTime created;
 
-	@Column(name = "updated", insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-	private Calendar updated;
+	@Column(name = "updated_date")
+	@UpdateTimestamp
+	private LocalDateTime updated;
 
 }

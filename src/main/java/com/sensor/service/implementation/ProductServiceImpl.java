@@ -1,30 +1,27 @@
 package com.sensor.service.implementation;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.sensor.dto.product.request.ProductDTO;
 import com.sensor.entity.Product;
-import com.sensor.utils.ProductTransport;
+import com.sensor.security.MainUser;
+import com.sensor.security.service.IUserService;
+import com.sensor.utils.directory.DirectoryHandler;
+import com.sensor.utils.transport.ProductTransportToController;
+import com.sensor.utils.transport.ProductTransportToService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensor.dao.IProductDao;
-import com.sensor.security.dao.IUserDao;
 import com.sensor.exception.GeneralException;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.mapper.ProductMapper;
@@ -34,171 +31,119 @@ import com.sensor.service.IProductService;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-	@Autowired
-	private IUserDao userDao;
+    @Autowired
+    private IUserService userService;
 
-	@Autowired
-	private IProductDao productDao;
-	
-	@Autowired
-	private ProductMapper productMapper;
+    @Autowired
+    private IProductDao productDao;
 
-	@Value("${file.upload-dir}")
-	private String FILE_DIRECTORY;
+    @Autowired
+    private ProductMapper productMapper;
 
-	private static final String DEFAULT_IMAGE = "default.png";
+    @Value("${file.upload-dir-product-images}")
+    private String FILE_DIRECTORY_PRODUCT_IMAGES;
 
-	@Override
-	public List<ProductTransport> getAllEnabledProducts() {
-		return productDao.getAllEnabledProducts().stream().map((product) -> new ProductTransport(product, getBase64Image(product))).collect(Collectors.toList());
-	}
+    private static final String DEFAULT_IMAGE = "default.png";
+    private static final String PREFIX_DIRECTORY_NAME = "product_image";
 
-	@Override
-	public ProductTransport getEnabledProductById(Long productId) {
-		Product product = productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
+    @Override
+    public List<ProductTransportToController> getAllEnabledProducts() {
+        return productDao.getAllEnabledProducts().stream().map((product) -> new ProductTransportToController(product, FileHelper.filePathToBase64String(FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DEFAULT_IMAGE))).collect(Collectors.toList());
+    }
 
-		return new ProductTransport(product, getBase64Image(product));
-	}
+    @Override
+    public ProductTransportToController getEnabledProductById(Long productId) {
+        Product product = productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
 
-	//
-	private String getBase64Image(Product p) {
-		String image = null;
-		String path = FILE_DIRECTORY + p.getImage();
-		File file = new File(path);
-		String encodeBase64 = null;
-		try {
-			String extension = FileHelper.getExtension(file.getName());
-			FileInputStream fileInputStream = new FileInputStream(file);
-			byte bytes[] = new byte[(int) file.length()];
+        return new ProductTransportToController(product, FileHelper.filePathToBase64String(FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DEFAULT_IMAGE));
+    }
 
-			fileInputStream.read(bytes);
+    @Override
+    @Transactional
+    public void saveProduct(ProductTransportToService productTransportToService) {
 
-			encodeBase64 = Base64.getEncoder().encodeToString(bytes);
-			image = "data:image/" + extension + ";base64," + encodeBase64;
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-			fileInputStream.close();
+        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+        Product product = productTransportToService.getProduct();
 
-		} catch (IOException e1) {
-			System.out.println(e1.getMessage());
-			throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas en el servidor");
-		}
+        boolean existProductWithName = productDao.getProductByName(product.getName()).isPresent();
 
-		return image;
-	}
+        if (existProductWithName) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST,
+                    "Ya existe un producto con nombre : " + product.getName());
+        }
 
-	@Override
-	@Transactional
-	public void saveProduct(String productDTOJSON, MultipartFile file) {
-		System.out.println("LLege al service 1");
+        product.setImage(null);
+        product.setUser(userLoggedIn);
+        Product savedProduct = this.productDao.saveProduct(product);
 
-		try {
+        if(!productTransportToService.getFile().isEmpty()){
+            Long savedProductId = savedProduct.getProductId();
+            DirectoryHandler<Long> dh = new DirectoryHandler<>(savedProductId, savedProduct.getImage(),
+                    PREFIX_DIRECTORY_NAME, productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES);
+            dh.prepareDirectoryForSave();
+            savedProduct.setImage(dh.getNewPathForDB());
+            this.productDao.saveProduct(savedProduct);
+            try {
+                dh.ifIsNecessaryCreateOrDeleteThenDoIt();
+            } catch (IOException e) {
+                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el sistema de archivos del servidor");
+            }
+        }
+    }
 
-			System.out.println("LLege adentro del catch 1");
-			ProductDTO productDTO = null;
-			productDTO = JSONToProductoDTO(productDTOJSON);
-			System.out.println(productDTO);
+    @Override
+    public void deleteProductById(Long productId) {
+        this.productDao.getEnabledProductById(productId).ifPresentOrElse
+                (product -> {
+                    this.productDao.deleteProductById(productId);
+                    String path = FILE_DIRECTORY_PRODUCT_IMAGES
+                            + productId;
+                    FileHelper.deleteDirectory(new File(path));
+                }, () -> {
+                    throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto con id : " + productId);
+                });
+    }
 
-			Optional<com.sensor.entity.Product> optionalProduct = productDao.getProductByName(productDTO.getName());
-			Optional<User> user = userDao.getUserById(productDTO.getIdUser());
+    @Override
+    public ProductTransportToController getProductByName(String name) {
+        Product product = productDao.getProductByName(name).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto: " + name));
 
-			if (!optionalProduct.isEmpty()) {
-				throw new GeneralException(HttpStatus.NOT_FOUND,
-						"Ya existe el producto con nombre : " + productDTO.getName());
-			}
+        return new ProductTransportToController(product, FileHelper.filePathToBase64String(product.getImage(), FILE_DIRECTORY_PRODUCT_IMAGES));
+    }
 
-			if (user.isEmpty()) {
-				throw new GeneralException(HttpStatus.NOT_FOUND,
-						"No se encontro el usuario con id : " + productDTO.getIdUser());
-			}
+    @Override
+    public void modifyProductById(Long productId, ProductTransportToService productTransportToService) {
 
-			productDTO.setImage(DEFAULT_IMAGE);
-			productDao.saveProduct(productMapper.toProduct(productDTO));
+        Product productWithNewData = productTransportToService.getProduct();
+        Product productToModify = this.productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto con id : " + productId));
+        boolean existProductWithName = productDao.getProductByName(productWithNewData.getName()).isPresent();
+        if (existProductWithName) {
+            throw new GeneralException(HttpStatus.CONFLICT,
+                    "Ya existe un producto con nombre : " + productWithNewData.getName());
+        }
 
-			Optional<com.sensor.entity.Product> getLastProduct = productDao.getLastProduct();
-			com.sensor.entity.Product product;
+        productToModify.setName(productWithNewData.getName());
+        productToModify.setPrice(productWithNewData.getPrice());
+        productToModify.setDescription(productWithNewData.getDescription());
 
-			if (!getLastProduct.isEmpty()) {
-				if (!file.isEmpty()) {
-					product = getLastProduct.get();
-					String saveDirectory = createDirectoryAndSaveFile(product, file);
-					product.setImage(saveDirectory);
-					product.setUpdated(Calendar.getInstance());
-					productDao.saveProduct(product);
-				}
-			}
+        DirectoryHandler<Long> dh = new DirectoryHandler<>(productToModify.getProductId(),
+                productToModify.getImage(), PREFIX_DIRECTORY_NAME,
+                productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES
+        );
+        dh.prepareDirectoryForModify();
 
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
+        productToModify.setImage(dh.getNewPathForDB());
+        productDao.saveProduct(productToModify);
 
-	}
+        try {
+            dh.ifIsNecessaryCreateOrDeleteThenDoIt();
+        } catch (IOException e) {
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el sistema de archivos del servidor");
+        }
 
-	@Override
-	public void deleteProductById(Long productId) {
+    }
 
-		Optional<com.sensor.entity.Product> opt = productDao.getEnabledProductById(productId);
-
-		if (opt.isEmpty()) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto con id : " + productId);
-		}
-
-		productDao.deleteProductById(productId);
-	}
-
-	@Override
-	public ProductTransport getProductByName(String name) {
-		Product product = productDao.getProductByName(name).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + name));
-
-		return new ProductTransport(product, getBase64Image(product));
-	}
-
-	@Override
-	public void modifyProductById(Long productId, ProductDTO productDTO) {
-
-		com.sensor.entity.Product product = productDao.getEnabledProductById(productId).get();
-
-		if (!product.getName().equals(productDTO.getName())) {
-			Optional<com.sensor.entity.Product> existProductWithName = productDao.getProductByName(productDTO.getName());
-			if (!existProductWithName.isEmpty()) {
-				throw new GeneralException(HttpStatus.CONFLICT,
-						"Ya existe un producto con nombre : " + productDTO.getName());
-			}
-		}
-
-		Optional<User> user = userDao.getUserById(productDTO.getIdUser());
-
-		if (user.isEmpty()) {
-			throw new GeneralException(HttpStatus.NOT_FOUND,
-					"No se encontro el usuario con id : " + productDTO.getIdUser());
-		}
-
-		product.setName(productDTO.getName());
-		product.setPrice(productDTO.getPrice());
-		product.setDescription(productDTO.getDescription());
-		product.setUserId(productDTO.getIdUser());
-		product.setCreated(product.getCreated());
-		product.setUpdated(Calendar.getInstance());
-
-		productDao.saveProduct(product);
-	}
-
-
-	private ProductDTO JSONToProductoDTO(String productDTOJSON) throws JsonMappingException, JsonProcessingException {
-		ProductDTO prodDTO = new ProductDTO();
-		ObjectMapper objectMapper = new ObjectMapper();
-		prodDTO = objectMapper.readValue(productDTOJSON, ProductDTO.class);
-		return prodDTO;
-	}
-
-	private String createDirectoryAndSaveFile(com.sensor.entity.Product product, MultipartFile file) throws IOException {
-
-		Long productId = product.getProductId();
-		File directory = new File(FILE_DIRECTORY + productId);
-		String newName = FileHelper.renameFile(file, productId);
-		FileHelper.createDirectory(directory);
-		FileHelper.saveFile(file, directory, newName);
-		String saveDirectory = productId + File.separator + newName;
-		return saveDirectory;
-	}
 
 }
