@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.sensor.dao.IProductDao;
 import com.sensor.dao.ISaleDao;
 import com.sensor.security.dao.IUserDao;
-import com.sensor.dto.sale.request.SaleDTO;
 import com.sensor.exception.GeneralException;
 import com.sensor.mapper.SaleMapper;
 import com.sensor.entity.Product;
@@ -34,12 +33,12 @@ public class SaleServiceImpl implements ISaleService {
 	private SaleMapper saleMapper;
 	
 	@Override
-	public List<SaleDTO> getAllSales() {
+	public List<Sale> getAllSales() {
 		return saleDao.getAllSales().stream().map((sale)->saleMapper.toSaleDTO(sale)).collect(Collectors.toList());
 	}
 
 	@Override
-	public SaleDTO getSaleById(Long saleId) {
+	public Sale getSaleById(Long saleId) {
 		Optional<Sale> opt = saleDao.getSaleById(saleId);
 
 		if (opt.isEmpty()) {
@@ -49,7 +48,7 @@ public class SaleServiceImpl implements ISaleService {
 	}
 	
 	@Override
-	public List<SaleDTO> getAllSalesByUserEmail(String email) {
+	public List<Sale> getAllSalesByUserEmail(String email) {
 		Optional<User> user = userDao.getUserByEmail(email);
 
 		if (user.isEmpty()) {
@@ -62,23 +61,23 @@ public class SaleServiceImpl implements ISaleService {
 
 
 	@Override
-	public void saveSale(SaleDTO saleDTO) {
+	public void saveSale(Sale sale) {
 		
-		Optional<Product> product = productDao.getEnabledProductById(saleDTO.getProductId());
+		Optional<Product> product = productDao.getEnabledProductById(sale.getProductId());
 
 		if (product.isEmpty()) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + saleDTO.getProductId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + sale.getProductId());
 		}
 		
-		Optional<User> user = userDao.getUserByEmail(saleDTO.getEmail());
+		Optional<User> user = userDao.getUserByEmail(sale.getEmail());
 
 		if (user.isEmpty()) {
-			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + saleDTO.getUserId());
+			throw new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el usuario: " + sale.getUserId());
 		}
 		
-		saleDTO.setUserId(user.get().getUserId());
+		sale.setUserId(user.get().getUserId());
 		
-		saleDao.saveSale(saleMapper.toSale(saleDTO));
+		saleDao.saveSale(saleMapper.toSale(sale));
 	}
 
 	@Override
