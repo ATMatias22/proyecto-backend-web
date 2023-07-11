@@ -2,17 +2,20 @@ package com.sensor.mapper;
 
 import com.sensor.dto.contact.request.ContactMessageRequest;
 import com.sensor.dto.contact.response.ContactMessageResponse;
+import com.sensor.utils.date.StringToLocalDateTimeAndViceVersa;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import com.sensor.entity.ContactMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Mapper(componentModel = "spring")
-public interface ContactMessageMapper {
-
+public abstract class ContactMessageMapper {
+    @Autowired
+    protected StringToLocalDateTimeAndViceVersa stdv;
 
     @Mappings({
             @Mapping(source = "contactMessage.contactId", target = "id"),
@@ -21,9 +24,9 @@ public interface ContactMessageMapper {
             @Mapping(source = "contactMessage.email", target = "email"),
             @Mapping(source = "contactMessage.reasonForContact", target = "reasonForContact"),
             @Mapping(source = "contactMessage.message", target = "message"),
-            @Mapping(source = "contactMessage.created", target = "created")
+            @Mapping(target = "created", expression = "java(stdv.getString(contactMessage.getCreated()))")
     })
-    ContactMessageResponse toContactMessageResponse(ContactMessage contactMessage);
+    public abstract ContactMessageResponse toContactMessageResponse(ContactMessage contactMessage);
 
     @Mappings({
             @Mapping(source = "contactMessageRequest.name", target = "name"),
@@ -35,7 +38,7 @@ public interface ContactMessageMapper {
             @Mapping(target = "updated", ignore = true),
             @Mapping(target = "created", ignore = true)
     })
-    ContactMessage toContactMessage(ContactMessageRequest contactMessageRequest);
+    public abstract ContactMessage toContactMessage(ContactMessageRequest contactMessageRequest);
 
 
 }
