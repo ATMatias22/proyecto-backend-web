@@ -7,6 +7,7 @@ import com.sensor.security.dto.role.response.RoleResponse;
 import com.sensor.security.mapper.RoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class RoleController {
 	@Autowired
 	private RoleMapper roleMapper;
 	
-	@GetMapping("/all")
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<RoleResponse>> getAllRoles() {
 		List<RoleResponse> roles = roleService.getAllRoles().stream().map(role -> roleMapper.rolToRolResponse(role)).collect(Collectors.toList());
 		return new ResponseEntity<>(roles, HttpStatus.OK);

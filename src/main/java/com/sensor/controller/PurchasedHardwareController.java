@@ -8,6 +8,7 @@ import com.sensor.dto.purchasedHardware.response.PurchasedHardwareResponse;
 import com.sensor.mapper.PurchasedHardwareMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,13 +36,13 @@ public class PurchasedHardwareController {
 	@Autowired
 	private PurchasedHardwareMapper purchasedHardwareMapper;
 	
-	@GetMapping("/all")
+	@GetMapping(value = "/all", consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<PurchasedHardwareResponse>> getAllPurchasedHardware() {
 		return new ResponseEntity<>(purchasedHardwareService.getAllPurchasedHardware().stream().map((ph) -> this.purchasedHardwareMapper.toPurchasedHardwareResponse(ph)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 	
 	
-	@GetMapping("/{purchasedHardwareServiceId}")
+	@GetMapping(value = "/{purchasedHardwareServiceId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<PurchasedHardwareResponse> getPurchasedHardwareById(
 			@PathVariable("purchasedHardwareServiceId") Long purchasedHardwareServiceId) {
 		return new ResponseEntity<>(this.purchasedHardwareMapper.toPurchasedHardwareResponse(purchasedHardwareService.getPurchasedHardwareById(purchasedHardwareServiceId)), HttpStatus.OK);
@@ -49,7 +50,7 @@ public class PurchasedHardwareController {
 	
 	
 	
-	@PostMapping
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> savePurchasedHardware(@RequestBody PurchasedHardwareRequest purchasedHardwareRequest) {
 		purchasedHardwareService.savePurchasedHardware(this.purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -61,7 +62,7 @@ public class PurchasedHardwareController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PatchMapping("/{purchasedHardwareId}")
+	@PatchMapping(value = "/{purchasedHardwareId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> modifyPurchasedHardwareById(@PathVariable("purchasedHardwareId") Long purchasedHardwareId, @RequestBody PurchasedHardwareRequest purchasedHardwareRequest) {
 		purchasedHardwareService.modifyPurchasedHardwareById(purchasedHardwareId, this.purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareRequest));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

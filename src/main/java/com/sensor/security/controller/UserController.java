@@ -7,6 +7,7 @@ import com.sensor.security.dto.user.response.RegisteredUserResponse;
 import com.sensor.security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,14 +30,14 @@ public class UserController {
 	private UserMapper userMapper;
 	
 
-	@GetMapping("/all")
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<RegisteredUserResponse>> getAllUsers() {
 		List<RegisteredUserResponse> registeredUsers = userSerivce.getAllUsers().stream().map( user -> userMapper.userEntityToRegisteredUserResponse(user)).collect(Collectors.toList());
 		return new ResponseEntity<>(registeredUsers, HttpStatus.OK);
 	}
 	
-	@GetMapping("/{userId}")
+	@GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<RegisteredUserResponse> getUserById(
 			@PathVariable("userId") Long userId) {
@@ -45,7 +46,7 @@ public class UserController {
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/email/{email}")
+	@GetMapping(value = "/email/{email}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<RegisteredUserResponse> getUserLoggedInByEmailInToken() {
 		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserLoggedInByEmailInToken());
 		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
