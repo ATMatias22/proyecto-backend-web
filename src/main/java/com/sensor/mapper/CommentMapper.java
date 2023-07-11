@@ -19,16 +19,16 @@ public abstract class CommentMapper {
     @Mappings({
             @Mapping(source = "comment.user.email", target = "email"),
             @Mapping(source = "comment.message", target = "comment"),
-            @Mapping(target = "created", expression = "java(stdv.getString(comment.getCreatedDate()))"),
-            @Mapping(target = "updated", expression = "java(stdv.getString(comment.getUpdatedDate()))")
+            @Mapping(target = "created", expression = "java(stdv.getString(comment.getCreated()))"),
+            @Mapping(target = "updated", expression = "java(stdv.getString(comment.getUpdated()))")
     })
     public abstract CommentResponse toCommentResponse(Comment comment);
 
     @Mappings({
             @Mapping(source = "commentRequest.comment", target = "message"),
             @Mapping(target = "product", ignore = true),
-            @Mapping(target = "createdDate", ignore = true),
-            @Mapping(target = "updatedDate", ignore = true),
+            @Mapping(target = "created", ignore = true),
+            @Mapping(target = "updated", ignore = true),
             @Mapping(target = "commentId", ignore = true),
             @Mapping(target = "user", ignore = true)
     })
