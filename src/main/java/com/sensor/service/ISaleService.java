@@ -15,6 +15,6 @@ public interface ISaleService {
 
 	void deleteSaleById(Long saleId);
 
-	List<Sale> getAllSalesByUserEmail(String email);
+	List<Sale> getAllSalesByUserLoggedIn();
 
 }

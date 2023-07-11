@@ -2,13 +2,14 @@ package com.sensor.repository;
 
 import java.util.List;
 
+import com.sensor.security.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sensor.entity.Sale;
 
 public interface ISaleRepository extends JpaRepository<Sale, Long> {
 
-	List<Sale> findByUserId(Long userId);
+	List<Sale> findByUser(User user);
 
 	
 }

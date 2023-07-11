@@ -1,7 +1,11 @@
 package com.sensor.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.sensor.dto.sale.request.SaleRequest;
+import com.sensor.dto.sale.response.SaleResponse;
+import com.sensor.mapper.SaleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sensor.dto.sale.request.SaleDTO;
 import com.sensor.service.ISaleService;
 
 
@@ -27,41 +30,43 @@ public class SaleController {
 
 	@Autowired
 	private ISaleService saleService;
+
+	@Autowired
+	private SaleMapper saleMapper;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/all")
-	public ResponseEntity<List<SaleDTO>> getAllSales() {
-		return new ResponseEntity<>(saleService.getAllSales(), HttpStatus.OK);
+	public ResponseEntity<List<SaleResponse>> getAllSales() {
+		return new ResponseEntity<>(saleService.getAllSales().stream().map(sale -> this.saleMapper.toSaleResponse(sale)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
-	@PreAuthorize("isAuthenticated() and #email == authentication.principal.username")
-	@GetMapping("/user/{email}")
-	public ResponseEntity<List<SaleDTO>> getAllSaleByUserEmail(@PathVariable("email") String email) {
-		
-		return new ResponseEntity<>(saleService.getAllSalesByUserEmail(email), HttpStatus.OK);
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/user-logged-in")
+	public ResponseEntity<List<SaleResponse>> getAllSaleByUserLoggedIn() {
+		return new ResponseEntity<>(saleService.getAllSalesByUserLoggedIn().stream().map(sale -> this.saleMapper.toSaleResponse(sale)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 	
-	@PreAuthorize("isAuthenticated() and #saleDTO.email == authentication.principal.username")
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping
-	public ResponseEntity saveSale(@RequestBody SaleDTO saleDTO) {
-		saleService.saveSale(saleDTO);
+	public ResponseEntity<Void> saveSale(@RequestBody SaleRequest saleRequest) {
+		saleService.saveSale(this.saleMapper.toSaleTransportToService(saleRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{saleId}")
-	public ResponseEntity<SaleDTO> getSaleById(
+	public ResponseEntity<SaleResponse> getSaleById(
 			@PathVariable("saleId") Long saleId) {
-		return new ResponseEntity<SaleDTO>(saleService.getSaleById(saleId), HttpStatus.OK);
+		return new ResponseEntity<SaleResponse>(this.saleMapper.toSaleResponse(saleService.getSaleById(saleId)), HttpStatus.OK);
 	}
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{saleId}")
-	public ResponseEntity deleteSaleById(@PathVariable("saleId") Long saleId) {
+	public ResponseEntity<Void> deleteSaleById(@PathVariable("saleId") Long saleId) {
 		saleService.deleteSaleById(saleId);
-		return new ResponseEntity(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 }

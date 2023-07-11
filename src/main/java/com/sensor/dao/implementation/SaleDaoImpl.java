@@ -3,6 +3,7 @@ package com.sensor.dao.implementation;
 import java.util.List;
 import java.util.Optional;
 
+import com.sensor.security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,8 +41,8 @@ public class SaleDaoImpl implements ISaleDao {
 	}
 
 	@Override
-	public List<Sale> getAllSalesByUserId(Long userId) {
-		return saleRepository.findByUserId(userId);
+	public List<Sale> getAllSalesByUser(User user) {
+		return saleRepository.findByUser(user);
 	}
 
 }

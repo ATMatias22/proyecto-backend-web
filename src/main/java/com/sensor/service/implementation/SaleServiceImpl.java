@@ -40,9 +40,10 @@ public class SaleServiceImpl implements ISaleService {
     }
 
     @Override
-    public List<Sale> getAllSalesByUserEmail(String email) {
-        User user = userService.getUserByEmail(email);
-        return saleDao.getAllSalesByUserId(user.getUserId());
+    public List<Sale> getAllSalesByUserLoggedIn() {
+        User user = this.userService.getUserLoggedInByEmailInToken();
+
+        return saleDao.getAllSalesByUser(user);
     }
 
 
@@ -51,9 +52,11 @@ public class SaleServiceImpl implements ISaleService {
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.getUserByEmail(mu.getUsername());
         Product product = productService.getEnabledProductById(saleTransportToService.getProductId()).getProduct();
-        saleTransportToService.getSale().setUser(user);
-        saleTransportToService.getSale().setProduct(product);
-        saleDao.saveSale(saleTransportToService.getSale());
+        Sale sale = new Sale();
+        sale.setQuantity(saleTransportToService.getQuantity());
+        sale.setProduct(product);
+        sale.setUser(user);
+        saleDao.saveSale(sale);
     }
 
     @Override

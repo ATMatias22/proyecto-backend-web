@@ -1,18 +1,16 @@
-package com.sensor.utils.transport.Sale;
+package com.sensor.dto.sale.request;
 
 
-import com.sensor.entity.Sale;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class SaleTransportToService {
+@AllArgsConstructor
+public class SaleRequest {
 
     private Long quantity;
-
     private Long productId;
 
 }
