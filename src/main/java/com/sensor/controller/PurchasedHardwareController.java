@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.service.IPurchasedHardwareService;
 
+import javax.validation.Valid;
+
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/purchased-hardwares")
@@ -36,7 +38,7 @@ public class PurchasedHardwareController {
 	@Autowired
 	private PurchasedHardwareMapper purchasedHardwareMapper;
 	
-	@GetMapping(value = "/all", consumes = { MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value = "/all", produces = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<PurchasedHardwareResponse>> getAllPurchasedHardware() {
 		return new ResponseEntity<>(purchasedHardwareService.getAllPurchasedHardware().stream().map((ph) -> this.purchasedHardwareMapper.toPurchasedHardwareResponse(ph)).collect(Collectors.toList()), HttpStatus.OK);
 	}
@@ -51,7 +53,7 @@ public class PurchasedHardwareController {
 	
 	
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Void> savePurchasedHardware(@RequestBody PurchasedHardwareRequest purchasedHardwareRequest) {
+	public ResponseEntity<Void> savePurchasedHardware(@RequestBody @Valid PurchasedHardwareRequest purchasedHardwareRequest) {
 		purchasedHardwareService.savePurchasedHardware(this.purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
@@ -63,7 +65,7 @@ public class PurchasedHardwareController {
 	}
 	
 	@PatchMapping(value = "/{purchasedHardwareId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Void> modifyPurchasedHardwareById(@PathVariable("purchasedHardwareId") Long purchasedHardwareId, @RequestBody PurchasedHardwareRequest purchasedHardwareRequest) {
+	public ResponseEntity<Void> modifyPurchasedHardwareById(@PathVariable("purchasedHardwareId") Long purchasedHardwareId, @RequestBody @Valid PurchasedHardwareRequest purchasedHardwareRequest) {
 		purchasedHardwareService.modifyPurchasedHardwareById(purchasedHardwareId, this.purchasedHardwareMapper.toPurchasedHardware(purchasedHardwareRequest));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}

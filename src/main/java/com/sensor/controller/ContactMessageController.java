@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.service.IContactMessageService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/contact-messages")
 @CrossOrigin(origins = "*")
@@ -47,7 +49,7 @@ public class ContactMessageController {
 	}
 	
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Void> saveContactMessage(@RequestBody ContactMessageRequest contactMessageRequest) {
+	public ResponseEntity<Void> saveContactMessage(@RequestBody @Valid ContactMessageRequest contactMessageRequest) {
 		contactMessageService.saveContactMessage(this.contactMessageMapper.toContactMessage(contactMessageRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}

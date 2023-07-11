@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.service.ICommentService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/comments")
 @CrossOrigin(origins = "*")
@@ -51,7 +53,7 @@ public class CommentController {
 
 	@PreAuthorize("hasRole('USER')")
 	@PostMapping(value = "/productos/{productoId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Void> saveComment(@PathVariable("productId") Long productId, @RequestBody CommentRequest commentRequest) {
+	public ResponseEntity<Void> saveComment(@PathVariable("productId") Long productId, @RequestBody @Valid CommentRequest commentRequest) {
 		commentService.saveComment(this.commentMapper.toCommentEntity(commentRequest), productId );
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}

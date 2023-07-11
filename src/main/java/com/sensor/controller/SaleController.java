@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sensor.service.ISaleService;
 
+import javax.validation.Valid;
 
 
 @RestController
@@ -49,7 +50,7 @@ public class SaleController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Void> saveSale(@RequestBody SaleRequest saleRequest) {
+	public ResponseEntity<Void> saveSale(@RequestBody @Valid SaleRequest saleRequest) {
 		saleService.saveSale(this.saleMapper.toSaleTransportToService(saleRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
