@@ -1,5 +1,6 @@
 package com.sensor.dto.purchasedHardware.request;
 
+import com.sensor.utils.date.validdate.ValidDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class PurchasedHardwareRequest {
     @Positive(message = "La cantidad debe ser positivo")
     private Integer quantity;
 
-    @NotBlank(message = "La fecha de la compra no puede ser nulo ni vacio")
+    @ValidDate(message =  "Fecha de nacimiento mal colocada")
     private String datePurchase;
 
     @NotBlank(message = "El proveedor no puede ser nulo ni vacio")
