@@ -33,11 +33,11 @@ public class Comment {
 	
 	@Column(name = "created_date")
 	@CreationTimestamp
-	private LocalDateTime createdDate;
+	private LocalDateTime created;
 
 	@Column(name = "updated_date")
 	@UpdateTimestamp
-	private LocalDateTime updatedDate;
+	private LocalDateTime updated;
 	
 
 	
