@@ -8,6 +8,7 @@ import com.sensor.dto.sale.response.SaleResponse;
 import com.sensor.mapper.SaleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,19 +36,19 @@ public class SaleController {
 	private SaleMapper saleMapper;
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/all")
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<SaleResponse>> getAllSales() {
 		return new ResponseEntity<>(saleService.getAllSales().stream().map(sale -> this.saleMapper.toSaleResponse(sale)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/user-logged-in")
+	@GetMapping(value = "/user-logged-in", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<SaleResponse>> getAllSaleByUserLoggedIn() {
 		return new ResponseEntity<>(saleService.getAllSalesByUserLoggedIn().stream().map(sale -> this.saleMapper.toSaleResponse(sale)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> saveSale(@RequestBody SaleRequest saleRequest) {
 		saleService.saveSale(this.saleMapper.toSaleTransportToService(saleRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -55,7 +56,7 @@ public class SaleController {
 	
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/{saleId}")
+	@GetMapping(value = "/{saleId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SaleResponse> getSaleById(
 			@PathVariable("saleId") Long saleId) {
 		return new ResponseEntity<SaleResponse>(this.saleMapper.toSaleResponse(saleService.getSaleById(saleId)), HttpStatus.OK);

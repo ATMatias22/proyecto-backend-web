@@ -8,6 +8,7 @@ import com.sensor.dto.comment.response.CommentResponse;
 import com.sensor.mapper.CommentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,24 +33,24 @@ public class CommentController {
 	private CommentMapper commentMapper;
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/all")
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<CommentResponse>> getAllComments() {
 		return new ResponseEntity<>(this.commentService.getAllComments().stream().map(comment -> this.commentMapper.toCommentResponse(comment)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/{commentId}")
+	@GetMapping(value = "/{commentId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<CommentResponse> getCommentById(@PathVariable("commentId") Long commentId) {
 		return new ResponseEntity<>(this.commentMapper.toCommentResponse(this.commentService.getCommentById(commentId)), HttpStatus.OK);
 	}
 
-	@GetMapping("/product/{productId}")
+	@GetMapping(value = "/product/{productId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<CommentResponse>> getCommentsForAProduct(@PathVariable("productId") Long productId) {
 		return new ResponseEntity<>(this.commentService.getAllCommentsForAProductById(productId).stream().map(comment -> this.commentMapper.toCommentResponse(comment)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('USER')")
-	@PostMapping("/productos/{productoId}")
+	@PostMapping(value = "/productos/{productoId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> saveComment(@PathVariable("productId") Long productId, @RequestBody CommentRequest commentRequest) {
 		commentService.saveComment(this.commentMapper.toCommentEntity(commentRequest), productId );
 		return new ResponseEntity<>(HttpStatus.CREATED);

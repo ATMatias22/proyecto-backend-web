@@ -8,6 +8,7 @@ import com.sensor.dto.contact.response.ContactMessageResponse;
 import com.sensor.mapper.ContactMessageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,26 +34,26 @@ public class ContactMessageController {
 	private ContactMessageMapper contactMessageMapper;
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/all")
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<ContactMessageResponse>> getAllContactMessage() {
 		return new ResponseEntity<>(contactMessageService.getAllContactMessage().stream().map( cm -> this.contactMessageMapper.toContactMessageResponse(cm)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/{contactMessageId}")
+	@GetMapping(value = "/{contactMessageId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<ContactMessageResponse> getContactMessageById(
 			@PathVariable("contactMessageId") Long contactMessageId) {
 		return new ResponseEntity<>(this.contactMessageMapper.toContactMessageResponse(contactMessageService.getContactMessageById(contactMessageId)), HttpStatus.OK);
 	}
 	
-	@PostMapping
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> saveContactMessage(@RequestBody ContactMessageRequest contactMessageRequest) {
 		contactMessageService.saveContactMessage(this.contactMessageMapper.toContactMessage(contactMessageRequest));
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/{contactMessageId}")
+	@DeleteMapping(value = "/{contactMessageId}")
 	public ResponseEntity<Void> deleteContactMessageById(@PathVariable("contactMessageId") Long contactMessageId) {
 		contactMessageService.deleteContactMessageById(contactMessageId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

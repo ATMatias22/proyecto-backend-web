@@ -29,19 +29,19 @@ public class AuthController {
 	private UserMapper userMapper;
 
 
-	@PostMapping("/login")
+	@PostMapping(value = "/login", consumes = { MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<JwtResponse> loginUser(@RequestBody LoginUserRequest loginUser) {
 		String jwt = this.authService.loginUser(this.userMapper.loginUserRequestToUserEntity(loginUser));
 		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
-	@PostMapping("/login-admin")
+	@PostMapping(value = "/login-admin", consumes = { MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<JwtResponse> loginAdminUser(@RequestBody LoginUserRequest loginUser) {
 		String jwt = this.authService.loginAdminUser(this.userMapper.loginUserRequestToUserEntity(loginUser));
 		return new ResponseEntity<>(new JwtResponse(jwt), HttpStatus.OK);
 	}
 
-	@PostMapping("/register")
+	@PostMapping(value = "/register", consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> registerUser(@RequestBody NewUserRequest newUserRequest) {
 		authService.registerUser(this.userMapper.newUserRequestToUserEntity(newUserRequest));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

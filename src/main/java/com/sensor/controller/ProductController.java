@@ -47,12 +47,12 @@ public class ProductController {
 
 
 
-	@GetMapping("/all")
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<ProductResponse>> getAllEnabledProducts() {
 		return new ResponseEntity<>(productService.getAllEnabledProducts().stream().map(productTransport -> this.productMapper.productTransportToControllerToProductProductResponse(productTransport)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
-	@GetMapping("/{productId}")
+	@GetMapping(value = "/{productId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<ProductResponse> getEnabledProductById(@PathVariable("productId") Long productId) {
 		return new ResponseEntity<>(this.productMapper.productTransportToControllerToProductProductResponse(productService.getEnabledProductById(productId)), HttpStatus.OK);
 	}
@@ -65,14 +65,14 @@ public class ProductController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/{productId}")
+	@DeleteMapping(value = "/{productId}")
 	public ResponseEntity<Void> deleteProductById(@PathVariable("productId") Long productId) {
 		productService.deleteProductById(productId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@PatchMapping("/{productId}")
+	@PatchMapping(value = "/{productId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> modifyProductById(@PathVariable("productId") Long productId, @RequestPart("product") @Valid ModifyProductRequest modifyProductRequest, @RequestPart("file") MultipartFile file) {
 		productService.modifyProductById(productId, this.productMapper.modifyProductRequestToProductTransportToService(modifyProductRequest,file));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
