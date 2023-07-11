@@ -2,18 +2,16 @@ package com.sensor.service.implementation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.sensor.entity.Product;
 import com.sensor.security.MainUser;
 import com.sensor.security.service.IUserService;
 import com.sensor.utils.directory.DirectoryHandler;
-import com.sensor.utils.transport.ProductTransportToController;
-import com.sensor.utils.transport.ProductTransportToService;
+import com.sensor.utils.transport.product.ProductTransportToController;
+import com.sensor.utils.transport.product.ProductTransportToService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

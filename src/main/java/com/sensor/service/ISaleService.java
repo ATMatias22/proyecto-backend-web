@@ -2,18 +2,19 @@ package com.sensor.service;
 
 import java.util.List;
 
-import com.sensor.dto.sale.request.SaleDTO;
+import com.sensor.entity.Sale;
+import com.sensor.utils.transport.Sale.SaleTransportToService;
 
 public interface ISaleService {
 
-	List<SaleDTO> getAllSales();
+	List<Sale> getAllSales();
 
-	SaleDTO getSaleById(Long saleId);
+	Sale getSaleById(Long saleId);
 
-	void saveSale(SaleDTO saleDTO);
+	void saveSale(SaleTransportToService saleTransportToService);
 
 	void deleteSaleById(Long saleId);
 
-	List<SaleDTO> getAllSalesByUserEmail(String email);
+	List<Sale> getAllSalesByUserLoggedIn();
 
 }
