@@ -18,6 +18,6 @@ public class ContactMessageResponse {
 	private String email;
 	private String message;
 	private String reasonForContact;
-	private Calendar created;
+	private String created;
 
 }
