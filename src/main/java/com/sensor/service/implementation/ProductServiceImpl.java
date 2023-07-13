@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import com.sensor.entity.Product;
 import com.sensor.security.MainUser;
 import com.sensor.security.service.IUserService;
+import com.sensor.utils.directory.DirectoryData;
 import com.sensor.utils.directory.DirectoryHandler;
 import com.sensor.utils.transport.product.ProductTransportToController;
 import com.sensor.utils.transport.product.ProductTransportToService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,22 +38,16 @@ public class ProductServiceImpl implements IProductService {
     @Autowired
     private ProductMapper productMapper;
 
-    @Value("${file.upload-dir-product-images}")
-    private String FILE_DIRECTORY_PRODUCT_IMAGES;
-
-    private static final String DEFAULT_IMAGE = "default.png";
-    private static final String PREFIX_DIRECTORY_NAME = "product_image";
-
     @Override
     public List<ProductTransportToController> getAllEnabledProducts() {
-        return productDao.getAllEnabledProducts().stream().map((product) -> new ProductTransportToController(product, FileHelper.filePathToBase64String(FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DEFAULT_IMAGE))).collect(Collectors.toList());
+        return productDao.getAllEnabledProducts().stream().map((product) -> new ProductTransportToController(product, FileHelper.filePathToBase64String(DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DirectoryData.PRODUCT_DEFAULT_IMAGE))).collect(Collectors.toList());
     }
 
     @Override
     public ProductTransportToController getEnabledProductById(Long productId) {
         Product product = productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
 
-        return new ProductTransportToController(product, FileHelper.filePathToBase64String(FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DEFAULT_IMAGE));
+        return new ProductTransportToController(product, FileHelper.filePathToBase64String(DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DirectoryData.PRODUCT_DEFAULT_IMAGE));
     }
 
     @Override
@@ -79,7 +73,7 @@ public class ProductServiceImpl implements IProductService {
         if(!productTransportToService.getFile().isEmpty()){
             Long savedProductId = savedProduct.getProductId();
             DirectoryHandler<Long> dh = new DirectoryHandler<>(savedProductId, savedProduct.getImage(),
-                    PREFIX_DIRECTORY_NAME, productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES);
+                    DirectoryData.PREFIX_PRODUCT_DIRECTORY_NAME, productTransportToService.getFile(), DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES);
             dh.prepareDirectoryForSave();
             savedProduct.setImage(dh.getNewPathForDB());
             this.productDao.saveProduct(savedProduct);
@@ -96,7 +90,7 @@ public class ProductServiceImpl implements IProductService {
         this.productDao.getEnabledProductById(productId).ifPresentOrElse
                 (product -> {
                     this.productDao.deleteProductById(productId);
-                    String path = FILE_DIRECTORY_PRODUCT_IMAGES
+                    String path = DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES
                             + productId;
                     FileHelper.deleteDirectory(new File(path));
                 }, () -> {
@@ -108,7 +102,7 @@ public class ProductServiceImpl implements IProductService {
     public ProductTransportToController getProductByName(String name) {
         Product product = productDao.getProductByName(name).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto: " + name));
 
-        return new ProductTransportToController(product, FileHelper.filePathToBase64String(product.getImage(), FILE_DIRECTORY_PRODUCT_IMAGES));
+        return new ProductTransportToController(product, FileHelper.filePathToBase64String(product.getImage(), DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES));
     }
 
     @Override
@@ -127,8 +121,8 @@ public class ProductServiceImpl implements IProductService {
         productToModify.setDescription(productWithNewData.getDescription());
 
         DirectoryHandler<Long> dh = new DirectoryHandler<>(productToModify.getProductId(),
-                productToModify.getImage(), PREFIX_DIRECTORY_NAME,
-                productTransportToService.getFile(), FILE_DIRECTORY_PRODUCT_IMAGES
+                productToModify.getImage(), DirectoryData.PREFIX_PRODUCT_DIRECTORY_NAME,
+                productTransportToService.getFile(), DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES
         );
         dh.prepareDirectoryForModify();
 
@@ -142,6 +136,5 @@ public class ProductServiceImpl implements IProductService {
         }
 
     }
-
 
 }
