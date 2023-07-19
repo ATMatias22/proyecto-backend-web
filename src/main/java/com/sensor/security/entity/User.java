@@ -11,6 +11,8 @@ import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "users")
@@ -50,10 +52,12 @@ public class User implements Cloneable{
 	private String password;
 
 
-	@Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
+	@CreationTimestamp
+	@Column(name = "create_date")
 	private LocalDateTime created;
 
-	@Column(name = "update_date", insertable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
+	@UpdateTimestamp
+	@Column(name = "update_date")
 	private LocalDateTime updated;
 
 	private Boolean enabled = false;

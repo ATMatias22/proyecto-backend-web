@@ -26,11 +26,11 @@ public class Role {
 	private ERole eRole;
 
 	@CreationTimestamp
-	@Column(name = "create_date", nullable = false)
+	@Column(name = "create_date")
 	private LocalDateTime created;
 
 	@UpdateTimestamp
-	@Column(name = "update_date", nullable = false)
+	@Column(name = "update_date")
 	private LocalDateTime updated;
 
 }
