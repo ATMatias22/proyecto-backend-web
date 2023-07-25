@@ -27,6 +27,8 @@ public abstract class UserMapper {
             @Mapping(target = "created", ignore = true ),
             @Mapping(target = "updated", ignore = true ),
             @Mapping(target = "enabled", ignore = true ),
+            @Mapping(target = "address", ignore = true ),
+            @Mapping(target = "carts", ignore = true )
     })
     public abstract User newUserRequestToUserEntity(NewUserRequest newUser);
 
@@ -42,6 +44,8 @@ public abstract class UserMapper {
             @Mapping(target = "created", ignore = true ),
             @Mapping(target = "updated", ignore = true ),
             @Mapping(target = "enabled", ignore = true ),
+            @Mapping(target = "address", ignore = true ),
+            @Mapping(target = "carts", ignore = true )
     })
     public abstract User loginUserRequestToUserEntity(LoginUserRequest loginUser);
 

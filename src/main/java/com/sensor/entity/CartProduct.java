@@ -1,8 +1,10 @@
 package com.sensor.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name ="Cart_Product")
@@ -25,5 +27,10 @@ public class CartProduct {
 
     @Column(name = "quantity", nullable = false)
     private Double quantity;
+
+    @Column(name = "created_date")
+    @CreationTimestamp
+    private LocalDateTime created;
+
 
 }

@@ -28,7 +28,7 @@ public class Cart {
     private User user;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 50, unique = true)
+    @Column(name = "state", nullable = false, length = 50)
     private CartState state = CartState.ESTADO_INICIAL;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -43,7 +43,7 @@ public class Cart {
     private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
-    private List<CartProduct> cartsProducts;
+    private List<CartProduct> cartProducts;
 
     @Column(name = "created_date")
     @CreationTimestamp
