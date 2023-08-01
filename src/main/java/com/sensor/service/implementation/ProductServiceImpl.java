@@ -40,14 +40,19 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public List<ProductTransportToController> getAllEnabledProducts() {
-        return productDao.getAllEnabledProducts().stream().map((product) -> new ProductTransportToController(product, FileHelper.filePathToBase64String(DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DirectoryData.PRODUCT_DEFAULT_IMAGE))).collect(Collectors.toList());
+        return productDao.getAllEnabledProducts().stream().map((product) ->
+        {
+            String pathFile = product.getImage() != null ? DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage() : null;
+            return new ProductTransportToController(product, FileHelper.filePathToBase64String(pathFile, DirectoryData.PRODUCT_DEFAULT_IMAGE));
+        }).collect(Collectors.toList());
     }
 
     @Override
     public ProductTransportToController getEnabledProductById(Long productId) {
         Product product = productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
+        String pathFile = product.getImage() != null ? DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage() : null;
 
-        return new ProductTransportToController(product, FileHelper.filePathToBase64String(DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + product.getImage(), DirectoryData.PRODUCT_DEFAULT_IMAGE));
+        return new ProductTransportToController(product, FileHelper.filePathToBase64String(pathFile, DirectoryData.PRODUCT_DEFAULT_IMAGE));
     }
 
     @Override
