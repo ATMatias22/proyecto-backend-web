@@ -33,7 +33,7 @@ public class CartController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CartInfoResponse> getCartThatAreNotTerminadoByUserLoggedIn() {
-        return new ResponseEntity<>(this.cartMapper.cartTransportToControllerToCartInfoResponse(this.cartService.getCartThatAreNotTerminadoByUserLoggedIn()), HttpStatus.OK);
+        return new ResponseEntity<>(this.cartMapper.cartTransportToControllerToCartInfoResponse(this.cartService.getCartThatAreNotTerminadoOrEntregaByUserLoggedIn()), HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -42,7 +42,7 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public CartInfoTransportToController getCartThatAreNotTerminadoByUserLoggedIn() {
+    public CartInfoTransportToController getCartThatAreNotTerminadoOrEntregaByUserLoggedIn() {
 
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

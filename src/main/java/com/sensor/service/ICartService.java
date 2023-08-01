@@ -2,13 +2,12 @@ package com.sensor.service;
 
 import com.sensor.entity.Cart;
 import com.sensor.entity.CartProduct;
-import com.sensor.entity.Product;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
 import com.sensor.utils.transport.cart.CartInfoTransportToService;
 
 public interface ICartService {
 
-    CartInfoTransportToController getCartThatAreNotTerminadoByUserLoggedIn();
+    CartInfoTransportToController getCartThatAreNotTerminadoOrEntregaByUserLoggedIn();
 
     void saveCart(Cart cart);
 
