@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
 
+import com.sensor.entity.Address;
+import com.sensor.entity.Cart;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -61,6 +64,12 @@ public class User implements Cloneable{
 	private LocalDateTime updated;
 
 	private Boolean enabled = false;
+
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
+	private List<Address> address;
+
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
+	private List<Cart> carts;
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

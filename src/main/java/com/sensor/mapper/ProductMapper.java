@@ -37,11 +37,13 @@ public interface ProductMapper {
             @Mapping(source = "productRequest.description", target = "description"),
             @Mapping(source = "productRequest.price", target = "price"),
             @Mapping(target = "productId", ignore = true),
+            @Mapping(target = "user", ignore = true),
             @Mapping(target = "enabled", constant = "true"),
+            @Mapping(target = "image", ignore = true),
+            @Mapping(target = "cartsProducts", ignore = true),
+            @Mapping(target = "stock", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
-            @Mapping(target = "user", ignore = true),
-            @Mapping(target = "image", ignore = true),
 
     })
     Product productRequestToProduct(ProductRequest productRequest);
@@ -61,11 +63,13 @@ public interface ProductMapper {
             @Mapping(source = "modifyProductRequest.description", target = "description"),
             @Mapping(source = "modifyProductRequest.price", target = "price"),
             @Mapping(target = "productId", ignore = true),
+            @Mapping(target = "user", ignore = true),
             @Mapping(target = "enabled", constant = "true"),
+            @Mapping(target = "image", ignore = true),
+            @Mapping(target = "cartsProducts", ignore = true),
+            @Mapping(target = "stock", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
-            @Mapping(target = "user", ignore = true),
-            @Mapping(target = "image", ignore = true),
 
     })
     Product modifyProductRequestToProduct(ModifyProductRequest modifyProductRequest);

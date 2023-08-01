@@ -46,7 +46,7 @@ public class UserController {
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping(value = "/email/{email}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<RegisteredUserResponse> getUserLoggedInByEmailInToken() {
 		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserLoggedInByEmailInToken());
 		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);

@@ -1,15 +1,10 @@
 package com.sensor.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import com.sensor.security.entity.User;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,6 +38,13 @@ public class Product {
 	
 	@Column(name = "image")
 	private String image;
+
+	@OneToMany(mappedBy="product", fetch = FetchType.LAZY)
+	private List<CartProduct> cartsProducts;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "fk_stock")
+	private Stock stock;
 
 	@Column(name = "created_date")
 	@CreationTimestamp

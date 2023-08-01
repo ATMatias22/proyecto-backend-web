@@ -46,13 +46,13 @@ public class CommentController {
 		return new ResponseEntity<>(this.commentMapper.toCommentResponse(this.commentService.getCommentById(commentId)), HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/product/{productId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value = "/products/{productId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<CommentResponse>> getCommentsForAProduct(@PathVariable("productId") Long productId) {
 		return new ResponseEntity<>(this.commentService.getAllCommentsForAProductById(productId).stream().map(comment -> this.commentMapper.toCommentResponse(comment)).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('USER')")
-	@PostMapping(value = "/productos/{productoId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping(value = "/products/{productId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Void> saveComment(@PathVariable("productId") Long productId, @RequestBody @Valid CommentRequest commentRequest) {
 		commentService.saveComment(this.commentMapper.toCommentEntity(commentRequest), productId );
 		return new ResponseEntity<>(HttpStatus.CREATED);

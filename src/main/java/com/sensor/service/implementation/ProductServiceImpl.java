@@ -51,6 +51,11 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    public Product getEnabledProductByIdWithoutBase64Image(Long productId) {
+        return productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
+    }
+
+    @Override
     @Transactional
     public void saveProduct(ProductTransportToService productTransportToService) {
 

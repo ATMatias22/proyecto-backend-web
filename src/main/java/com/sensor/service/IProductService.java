@@ -20,7 +20,10 @@ public interface IProductService {
 	List<ProductTransportToController> getAllEnabledProducts();
 
 	ProductTransportToController getEnabledProductById(Long productId);
-	
+
+	Product getEnabledProductByIdWithoutBase64Image(Long productId);
+
+
 	
 
 	
