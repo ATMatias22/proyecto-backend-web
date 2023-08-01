@@ -1,9 +1,14 @@
 package com.sensor.mapper;
 
 
+import com.sensor.dto.cart.request.CartInfoRequest;
 import com.sensor.dto.cart.response.CartInfoResponse;
 import com.sensor.dto.cart.response.CartResponse;
+import com.sensor.dto.cart.response.AddProductInCartResponse;
+import com.sensor.dto.cart.response.RemoveProductInCartResponse;
+import com.sensor.entity.CartProduct;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
+import com.sensor.utils.transport.cart.CartInfoTransportToService;
 import com.sensor.utils.transport.cart.CartTransportToController;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -34,5 +39,22 @@ public interface CartMapper {
             @Mapping(source = "cartTransportToController.cart.addresses", target = "addresses")
     })
     CartResponse cartToCartResponse(CartTransportToController cartTransportToController);
+
+    @Mappings({
+            @Mapping(source = "cartInfoRequest.shippingMethodAndAddress.shippingMethod", target = "chosenShippingMethod"),
+            @Mapping(source = "cartInfoRequest.shippingMethodAndAddress.addresses", target = "chosenAddresses"),
+            @Mapping(source = "cartInfoRequest.paymentMethod", target = "chosenPaymentMethod"),
+    })
+    CartInfoTransportToService cartInfoRequestToCartInfoTransportToService(CartInfoRequest cartInfoRequest);
+
+    @Mappings({
+            @Mapping(source = "cartProduct.quantity", target = "currentQuantity"),
+    })
+    AddProductInCartResponse cartProductToAddProductInCartResponse (CartProduct cartProduct);
+
+    @Mappings({
+            @Mapping(source = "cartProduct.quantity", target = "currentQuantity"),
+    })
+    RemoveProductInCartResponse cartProductToRemoveProductInCartResponse (CartProduct cartProduct);
 
 }

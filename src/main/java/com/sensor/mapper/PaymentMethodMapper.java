@@ -1,5 +1,6 @@
 package com.sensor.mapper;
 
+import com.sensor.dto.paymentMethod.request.PaymentMethodRequest;
 import com.sensor.dto.paymentMethod.response.PaymentMethodResponse;
 import com.sensor.entity.PaymentMethod;
 import org.mapstruct.Mapper;
@@ -19,6 +20,17 @@ public interface PaymentMethodMapper {
     PaymentMethodResponse toPaymentMethodResponse(PaymentMethod paymentMethod);
 
     List<PaymentMethodResponse> toPaymentMethodResponse(List<PaymentMethod> paymentMethod);
+
+
+    @Mappings({
+            @Mapping(source = "paymentMethodRequest.name", target = "name"),
+            @Mapping(target = "discount", ignore = true),
+            @Mapping(target = "paymentMethodId", ignore = true),
+            @Mapping(target = "created", ignore = true),
+            @Mapping(target = "updated", ignore = true)
+
+    })
+    PaymentMethod paymentMethodRequestToPaymentMethod(PaymentMethodRequest paymentMethodRequest);
 
 
 

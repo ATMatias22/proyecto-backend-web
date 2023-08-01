@@ -1,7 +1,6 @@
 package com.sensor.mapper;
 
 import com.sensor.dto.cartProduct.response.CartProductResponse;
-import com.sensor.entity.CartProduct;
 import com.sensor.utils.date.StringToLocalDateTimeAndViceVersa;
 import com.sensor.utils.transport.cartProduct.CartProductTransportToController;
 import org.mapstruct.Mapper;
@@ -27,6 +26,7 @@ public abstract class CartProductMapper {
     })
     public abstract CartProductResponse cartProductTransportToControllerToCartProductResponse(CartProductTransportToController cartProductTransportToController);
     public abstract List<CartProductResponse> cartProductTransportToControllerToCartProductResponse(List<CartProductTransportToController> cartProductTransportToController);
+
 
 
 

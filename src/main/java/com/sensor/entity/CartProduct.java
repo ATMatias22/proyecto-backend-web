@@ -1,6 +1,6 @@
 package com.sensor.entity;
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -8,7 +8,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name ="Cart_Product")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartProduct {
 
 
@@ -32,5 +35,9 @@ public class CartProduct {
     @CreationTimestamp
     private LocalDateTime created;
 
-
+    public CartProduct(Cart cart, Product product, Double quantity) {
+        this.cart = cart;
+        this.product = product;
+        this.quantity = quantity;
+    }
 }

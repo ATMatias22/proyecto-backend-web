@@ -44,10 +44,10 @@ public class PurchasedHardwareController {
 	}
 	
 	
-	@GetMapping(value = "/{purchasedHardwareServiceId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value = "/{purchasedHardwareId}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<PurchasedHardwareResponse> getPurchasedHardwareById(
-			@PathVariable("purchasedHardwareServiceId") Long purchasedHardwareServiceId) {
-		return new ResponseEntity<>(this.purchasedHardwareMapper.toPurchasedHardwareResponse(purchasedHardwareService.getPurchasedHardwareById(purchasedHardwareServiceId)), HttpStatus.OK);
+			@PathVariable("purchasedHardwareId") Long purchasedHardwareId) {
+		return new ResponseEntity<>(this.purchasedHardwareMapper.toPurchasedHardwareResponse(purchasedHardwareService.getPurchasedHardwareById(purchasedHardwareId)), HttpStatus.OK);
 	}
 	
 	

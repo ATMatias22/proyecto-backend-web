@@ -2,7 +2,7 @@ package com.sensor.entity;
 
 
 import com.sensor.security.entity.User;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,7 +13,10 @@ import java.util.Set;
 
 @Entity
 @Table(name ="Address")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Address {
 
 

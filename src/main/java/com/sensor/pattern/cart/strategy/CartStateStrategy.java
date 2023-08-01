@@ -1,14 +1,26 @@
 package com.sensor.pattern.cart.strategy;
 
 import com.sensor.entity.Cart;
+import com.sensor.entity.CartProduct;
+import com.sensor.entity.Product;
 import com.sensor.enums.CartState;
 import com.sensor.security.entity.User;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
+import com.sensor.utils.transport.cart.CartInfoTransportToService;
 import com.sensor.utils.transport.cart.CartTransportToController;
+import com.sensor.utils.transport.cartProduct.CartProductTransportToController;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface CartStateStrategy {
+public abstract class CartStateStrategy {
 
-    CartState getState();
-    CartInfoTransportToController getCartInfo(User user, CartTransportToController cart);
+    public abstract void verifyNecessaryData(CartInfoTransportToService cartDataRequest);
+    public abstract CartState getState();
+    protected abstract CartState getPreviousState();
+    protected abstract CartState getNextState();
+    public abstract CartInfoTransportToController getCartInfo(User user, CartTransportToController cart);
+    public abstract CartInfoTransportToController changeState(User user, CartTransportToController cartProducts, Cart cart, CartInfoTransportToService cartDataRequest);
+    protected abstract CartInfoTransportToController nextDataToReturn(User user, CartTransportToController cart);
+    public abstract CartProduct addProduct(Long productId, double quantity, User user, Cart cart);
+    public abstract CartProduct removeProduct(Long productId, double quantity, User user, Cart cart);
 
 }

@@ -3,7 +3,7 @@ package com.sensor.entity;
 
 import com.sensor.enums.CartState;
 import com.sensor.security.entity.User;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,7 +15,10 @@ import java.util.Set;
 
 @Entity
 @Table(name ="Cart")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cart {
 
     @Id
@@ -39,7 +42,7 @@ public class Cart {
     @JoinColumn(name = "fk_shipping_method")
     private ShippingMethod shippingMethod;
 
-    @ManyToMany(mappedBy = "carts", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "carts", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
