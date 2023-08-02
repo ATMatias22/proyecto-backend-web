@@ -3,8 +3,6 @@ package com.sensor.service.implementation;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.Cart;
 import com.sensor.entity.CartProduct;
-import com.sensor.entity.Product;
-import com.sensor.entity.Stock;
 import com.sensor.enums.CartState;
 import com.sensor.exception.GeneralException;
 import com.sensor.pattern.cart.strategy.CartStateStrategy;
@@ -13,7 +11,6 @@ import com.sensor.security.MainUser;
 import com.sensor.security.entity.User;
 import com.sensor.security.service.IUserService;
 import com.sensor.service.ICartService;
-import com.sensor.service.IProductService;
 import com.sensor.utils.directory.DirectoryData;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -135,6 +132,24 @@ public class CartServiceImpl implements ICartService {
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
 
         return strategy.removeProduct(idProduct,quantity,userLoggedIn,cart);
+    }
+
+    @Override
+    public List<Cart> getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn() {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+
+        return this.cartDao.getAllCartsByUserAndWhereTheStatusIsTerminado(userLoggedIn);
+    }
+
+    @Override
+    public List<Cart> getAllCartsWhereTheStatusIsEntregaByUserLoggedIn() {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+
+        return this.cartDao.getAllCartsByUserAndWhereTheStatusIsEntrega(userLoggedIn);
     }
 
 

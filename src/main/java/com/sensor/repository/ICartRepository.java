@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface ICartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findFirstByUserAndStateNotIn(User user, List<CartState> states);
 
-
+    List<Cart> findByState(CartState state);
+    List<Cart> findByUserAndState(User user, CartState state);
 }

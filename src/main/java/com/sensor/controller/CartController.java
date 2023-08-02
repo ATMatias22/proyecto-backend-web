@@ -3,6 +3,10 @@ package com.sensor.controller;
 
 import com.sensor.dto.cart.request.CartInfoRequest;
 import com.sensor.dto.cart.response.CartInfoResponse;
+import com.sensor.dto.cart.response.CartResponse;
+import com.sensor.dto.cart.response.cartentregaforuser.CartEntregaForUserLoggedInResponse;
+import com.sensor.dto.cart.response.cartterminadoforadmin.FinishedCartTerminadoForAdminResponse;
+import com.sensor.dto.cart.response.cartterminadoforuser.CartTerminadoForUserLoggedInResponse;
 import com.sensor.dto.cartProduct.request.AddProductInCartRequest;
 import com.sensor.dto.cartProduct.request.RemoveProductInCartRequest;
 import com.sensor.dto.cart.response.AddProductInCartResponse;
@@ -19,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/carts")
@@ -35,6 +40,25 @@ public class CartController {
     public ResponseEntity<CartInfoResponse> getCartThatAreNotTerminadoByUserLoggedIn() {
         return new ResponseEntity<>(this.cartMapper.cartTransportToControllerToCartInfoResponse(this.cartService.getCartThatAreNotTerminadoOrEntregaByUserLoggedIn()), HttpStatus.OK);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/all-terminado")
+    public ResponseEntity<List<CartTerminadoForUserLoggedInResponse>> getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn() {
+        return new ResponseEntity<>(this.cartMapper.cartToCartTerminadoForUserLoggedInResponse(this.cartService.getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/all-entrega")
+    public ResponseEntity<List<CartEntregaForUserLoggedInResponse>> getAllCartsWhereTheStatusIsEntregaByUserLoggedIn() {
+        return new ResponseEntity<>(this.cartMapper.cartToCartEntregaForUserLoggedInResponse(this.cartService.getAllCartsWhereTheStatusIsEntregaByUserLoggedIn()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/all")
+    public ResponseEntity<List<FinishedCartTerminadoForAdminResponse>> getAllCartsWhereTheStatusIsTerminado() {
+        return new ResponseEntity<>(this.cartMapper.cartToFinishedCartTerminadoForAdminResponse(this.cartService.getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn()), HttpStatus.OK);
+    }
+
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE}, value = "next-step")

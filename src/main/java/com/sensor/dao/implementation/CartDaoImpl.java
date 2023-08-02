@@ -27,4 +27,21 @@ public class CartDaoImpl implements ICartDao {
     public void saveCart(Cart cart) {
         this.cartRepository.save(cart);
     }
+
+    @Override
+    public List<Cart> getAllCartsWhereTheStatusIsTerminado() {
+        return this.cartRepository.findByState(CartState.TERMINADO);
+    }
+
+    @Override
+    public List<Cart> getAllCartsByUserAndWhereTheStatusIsEntrega(User user) {
+        return this.cartRepository.findByUserAndState(user, CartState.ENTREGA);
+    }
+
+    @Override
+    public List<Cart> getAllCartsByUserAndWhereTheStatusIsTerminado(User user) {
+        return this.cartRepository.findByUserAndState(user, CartState.TERMINADO);
+    }
+
+
 }
