@@ -42,8 +42,8 @@ public class Cart {
     @JoinColumn(name = "fk_shipping_method")
     private ShippingMethod shippingMethod;
 
-    @ManyToMany(mappedBy = "carts", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<Address> addresses = new HashSet<>();
+    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
+    private Set<CartAddress> cartAddresses;
 
     @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
     private List<CartProduct> cartProducts;

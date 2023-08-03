@@ -55,14 +55,16 @@ INSERT INTO cart_product (fk_cart, fk_product, quantity)
 VALUES (1,1, 10);
 
 
+INSERT INTO cart_address (fk_cart, street, street_number, floor, apartment_number, type_of_address)
+VALUES (1,'calle falsa', '123', null,null, 'Facturacion');
+
+
+
 INSERT INTO cart (fk_user, state, fk_payment_method, fk_shipping_method)
 VALUES ( 1, 'ESTADO_INICIAL', null, null);
 
 INSERT INTO cart_product ( fk_cart, fk_product, quantity)
 VALUES (2,1,5);
-
-INSERT INTO cart_address (fk_cart, fk_address)
-VALUES (1,1);
 
 
 

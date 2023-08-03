@@ -31,7 +31,6 @@ public interface AddressMapper {
             @Mapping(source = "addressRequest.typeOfAddress", target = "typeOfAddress"),
             @Mapping(target = "addressId", ignore = true),
             @Mapping(target = "user", ignore = true),
-            @Mapping(target = "carts", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
     })
