@@ -45,13 +45,6 @@ public class Address {
     @JoinColumn(name = "fk_type_of_address", nullable = false)
     private TypeOfAddress typeOfAddress;
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Cart_Address",
-            joinColumns = @JoinColumn(name = "fk_address"),
-            inverseJoinColumns = @JoinColumn(name = "fk_cart"))
-    private Set<Cart> carts = new HashSet<>();
-
     @Column(name = "created_date")
     @CreationTimestamp
     private LocalDateTime created;

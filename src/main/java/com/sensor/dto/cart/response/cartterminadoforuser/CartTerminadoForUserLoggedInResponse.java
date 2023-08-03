@@ -21,6 +21,6 @@ public class CartTerminadoForUserLoggedInResponse {
 
     private List<CartProductInCartTerminadoForUserLoggedInResponse> cartProducts;
 
-    private Set<AddressInCartTerminadoByUserLoggedInResponse> addresses;
+    private List<AddressInCartTerminadoByUserLoggedInResponse> addresses;
 
 }

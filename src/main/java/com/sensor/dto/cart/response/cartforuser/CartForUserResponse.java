@@ -1,9 +1,8 @@
-package com.sensor.dto.cart.response;
+package com.sensor.dto.cart.response.cartforuser;
 
 
 import com.sensor.dto.address.response.AddressResponse;
 import com.sensor.dto.cartProduct.response.CartProductResponse;
-import com.sensor.dto.paymentMethod.response.PaymentMethodResponse;
 import com.sensor.dto.shippingMethod.response.ShippingMethodResponse;
 import com.sensor.enums.CartState;
 import lombok.AllArgsConstructor;
@@ -16,17 +15,17 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartResponse {
+public class CartForUserResponse {
 
 
     private CartState state;
 
-    private PaymentMethodResponse paymentMethod;
+    private PaymentMethodInCartForUserResponse paymentMethod;
 
-    private ShippingMethodResponse shippingMethod;
+    private ShippingMethodInCartForUserResponse shippingMethod;
 
-    private List<CartProductResponse> cartProducts;
+    private List<CartProductInCartForUserResponse> cartProducts;
 
-    private Set<AddressResponse> addresses;
+    private List<AddressInCartForUserResponse> addresses;
 
 }

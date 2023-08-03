@@ -2,8 +2,7 @@ package com.sensor.controller;
 
 
 import com.sensor.dto.cart.request.CartInfoRequest;
-import com.sensor.dto.cart.response.CartInfoResponse;
-import com.sensor.dto.cart.response.CartResponse;
+import com.sensor.dto.cart.response.cartforuser.CartInfoForUserResponse;
 import com.sensor.dto.cart.response.cartentregaforuser.CartEntregaForUserLoggedInResponse;
 import com.sensor.dto.cart.response.cartterminadoforadmin.FinishedCartTerminadoForAdminResponse;
 import com.sensor.dto.cart.response.cartterminadoforuser.CartTerminadoForUserLoggedInResponse;
@@ -37,7 +36,7 @@ public class CartController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<CartInfoResponse> getCartThatAreNotTerminadoByUserLoggedIn() {
+    public ResponseEntity<CartInfoForUserResponse> getCartThatAreNotTerminadoByUserLoggedIn() {
         return new ResponseEntity<>(this.cartMapper.cartTransportToControllerToCartInfoResponse(this.cartService.getCartThatAreNotTerminadoOrEntregaByUserLoggedIn()), HttpStatus.OK);
     }
 
@@ -62,11 +61,11 @@ public class CartController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE}, value = "next-step")
-    public ResponseEntity<CartInfoResponse> nextStep(@RequestBody CartInfoRequest cartInfoRequest) {
+    public ResponseEntity<CartInfoForUserResponse> nextStep(@RequestBody CartInfoRequest cartInfoRequest) {
         CartInfoTransportToController cartInfoTransportToController = this.cartService.changeState(this.cartMapper.cartInfoRequestToCartInfoTransportToService(cartInfoRequest));
 
-        CartInfoResponse cartInfoResponse = this.cartMapper.cartTransportToControllerToCartInfoResponse(cartInfoTransportToController);
-        return new ResponseEntity<>(cartInfoResponse, HttpStatus.OK);
+        CartInfoForUserResponse cartInfoForUserResponse = this.cartMapper.cartTransportToControllerToCartInfoResponse(cartInfoTransportToController);
+        return new ResponseEntity<>(cartInfoForUserResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
