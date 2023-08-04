@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +42,7 @@ public class Cart {
     private ShippingMethod shippingMethod;
 
     @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
-    private Set<CartAddress> cartAddresses;
+    private Set<TemporaryCartAddress> temporaryCartAddresses;
 
     @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
     private List<CartProduct> cartProducts;

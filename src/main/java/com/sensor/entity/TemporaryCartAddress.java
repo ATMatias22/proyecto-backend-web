@@ -1,6 +1,5 @@
 package com.sensor.entity;
 
-import com.sensor.enums.CartState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartAddress {
+public class TemporaryCartAddress {
 
     @Id
     @Column(name = "id_cart_address")

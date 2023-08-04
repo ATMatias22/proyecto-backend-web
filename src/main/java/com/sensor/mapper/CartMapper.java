@@ -73,7 +73,7 @@ public abstract class CartMapper {
             @Mapping(source = "cartTransportToController.cart.paymentMethod", target = "paymentMethod"),
             @Mapping(source = "cartTransportToController.cart.shippingMethod", target = "shippingMethod"),
             @Mapping(source = "cartTransportToController.products", target = "cartProducts"),
-            @Mapping(source = "cartTransportToController.cart.cartAddresses", target = "addresses")
+            @Mapping(source = "cartTransportToController.cart.temporaryCartAddresses", target = "addresses")
     })
     public abstract CartForUserResponse cartTransportToControllerToCartResponse(CartTransportToController cartTransportToController);
 
@@ -102,8 +102,8 @@ public abstract class CartMapper {
             @Mapping(source = "address.apartmentNumber", target = "apartmentNumber"),
             @Mapping(source = "address.typeOfAddress", target = "typeOfAddress"),
     })
-    public abstract AddressInCartForUserResponse cartAddressToAddressInCartForUserResponse(CartAddress address);
-    public abstract List<AddressInCartForUserResponse> cartAddressToAddressInCartForUserResponse(List<CartAddress> address);
+    public abstract AddressInCartForUserResponse cartAddressToAddressInCartForUserResponse(TemporaryCartAddress address);
+    public abstract List<AddressInCartForUserResponse> cartAddressToAddressInCartForUserResponse(List<TemporaryCartAddress> address);
 
     @Mappings({
             @Mapping(source = "typeOfAddress", target = "name"),
@@ -171,7 +171,7 @@ public abstract class CartMapper {
             @Mapping(source = "cart.paymentMethod", target = "paymentMethod"),
             @Mapping(source = "cart.shippingMethod", target = "shippingMethod"),
             @Mapping(source = "cart.cartProducts", target = "cartProducts"),
-            @Mapping(source = "cart.cartAddresses", target = "addresses"),
+            @Mapping(source = "cart.temporaryCartAddresses", target = "addresses"),
     })
     public abstract CartEntregaForUserLoggedInResponse cartToCartEntregaForUserLoggedInResponse(Cart cart);
     public abstract List<CartEntregaForUserLoggedInResponse> cartToCartEntregaForUserLoggedInResponse(List<Cart> cart);
@@ -183,8 +183,8 @@ public abstract class CartMapper {
             @Mapping(source = "address.apartmentNumber", target = "apartmentNumber"),
             @Mapping(source = "address.typeOfAddress", target = "typeOfAddress"),
     })
-    public abstract AddressInCartEntregaByUserLoggedInResponse cartAddressToAddressInCartEntregaByUserLoggedInResponse(CartAddress address);
-    public abstract List<AddressInCartEntregaByUserLoggedInResponse> cartAddressToAddressInCartEntregaByUserLoggedInResponse(List<CartAddress> address);
+    public abstract AddressInCartEntregaByUserLoggedInResponse cartAddressToAddressInCartEntregaByUserLoggedInResponse(TemporaryCartAddress address);
+    public abstract List<AddressInCartEntregaByUserLoggedInResponse> cartAddressToAddressInCartEntregaByUserLoggedInResponse(List<TemporaryCartAddress> address);
 
     @Mappings({
             @Mapping(source = "typeOfAddress", target = "name"),
@@ -226,7 +226,7 @@ public abstract class CartMapper {
             @Mapping(source = "cart.paymentMethod", target = "paymentMethod"),
             @Mapping(source = "cart.shippingMethod", target = "shippingMethod"),
             @Mapping(source = "cart.cartProducts", target = "cartProducts"),
-            @Mapping(source = "cart.cartAddresses", target = "addresses"),
+            @Mapping(source = "cart.temporaryCartAddresses", target = "addresses"),
     })
     public abstract CartTerminadoForUserLoggedInResponse cartToCartTerminadoForUserLoggedInResponse(Cart cart);
     public abstract List<CartTerminadoForUserLoggedInResponse> cartToCartTerminadoForUserLoggedInResponse(List<Cart> cart);
