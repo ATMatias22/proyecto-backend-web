@@ -47,6 +47,9 @@ public class Cart {
     @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
     private List<CartProduct> cartProducts;
 
+    @OneToOne(mappedBy="cart", fetch = FetchType.LAZY)
+    private SaleOrder saleOrder;
+
     @Column(name = "created_date")
     @CreationTimestamp
     private LocalDateTime created;
