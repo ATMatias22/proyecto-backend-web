@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "SaleOrder")
@@ -49,12 +50,18 @@ public class SaleOrder {
     @Column(name = "state", nullable = false, length = 50)
     private SaleOrderState state;
 
-    @OneToMany(mappedBy="saleOrder", fetch = FetchType.EAGER)
-    private List<SaleAddress> addresses;
+    @OneToMany(mappedBy="saleOrder", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    private Set<SaleAddress> addresses;
+
+    @OneToMany(mappedBy="saleOrder", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    private List<SaleProduct> products;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="fk_cart")
     private Cart cart;
+
+    @Column(name = "subtotal", nullable = false)
+    private Double subtotal;
 
     @Column(name = "total", nullable = false)
     private Double total;

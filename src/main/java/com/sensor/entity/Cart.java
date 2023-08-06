@@ -33,21 +33,21 @@ public class Cart {
     @Column(name = "state", nullable = false, length = 50)
     private CartState state = CartState.ESTADO_INICIAL;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "fk_payment_method")
     private PaymentMethod paymentMethod;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "fk_shipping_method")
     private ShippingMethod shippingMethod;
 
-    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private Set<TemporaryCartAddress> temporaryCartAddresses;
 
-    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private List<CartProduct> cartProducts;
 
-    @OneToOne(mappedBy="cart", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy="cart", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     private SaleOrder saleOrder;
 
     @Column(name = "created_date")

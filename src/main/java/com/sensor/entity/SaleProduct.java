@@ -10,32 +10,30 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "SaleAddress")
+@Table(name = "SaleProduct")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaleAddress {
-
+public class SaleProduct {
     @Id
-    @Column(name = "id_sale_address")
+    @Column(name = "id_sale_product")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long saleAddressId;
+    private Long saleProductId;
 
-    @Column(name = "street", nullable = false, length = 150)
-    private String street;
+    @Column(name = "id_product", nullable = false)
+    private Long productId;
 
-    @Column(name = "street_number", nullable = false, length = 20)
-    private String streetNumber;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "floor", length = 20)
-    private String floor;
+    @Column(name = "quantity", nullable = false)
+    private Double quantity;
 
-    @Column(name = "apartment_number", length = 20)
-    private String apartmentNumber;
+    @Column(name ="description", columnDefinition = "TEXT", nullable = false)
+    private String description;
 
-
-    @Column(name = "name", length = 50, nullable = false)
-    private String typeOfAddress;
+    @Column(name = "price", nullable = false)
+    private Double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_sale_order")
@@ -48,9 +46,6 @@ public class SaleAddress {
     @Column(name = "updated_date")
     @UpdateTimestamp
     private LocalDateTime updated;
-
-
-
 
 
 
