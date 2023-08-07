@@ -14,5 +14,7 @@ public interface ICartProductService {
 
     void deleteCartProduct(CartProduct cartProduct);
 
+    void deleteCartProductByCart(Cart cart);
+
 
 }

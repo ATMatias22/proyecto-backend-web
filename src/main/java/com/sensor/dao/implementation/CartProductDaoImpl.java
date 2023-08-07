@@ -35,4 +35,9 @@ public class CartProductDaoImpl implements ICartProductDao {
     public void deleteCartProduct(CartProduct cartProduct) {
         this.cartProductRepository.delete(cartProduct);
     }
+
+    @Override
+    public void deleteCartProductByCart(Cart cart) {
+        this.cartProductRepository.deleteCartProductsByCart(cart);
+    }
 }

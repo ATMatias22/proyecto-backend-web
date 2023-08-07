@@ -1,11 +1,13 @@
 package com.sensor.pattern.cart.strategy;
 
 import com.sensor.dao.ICartDao;
+import com.sensor.dao.ICartProductDao;
 import com.sensor.entity.*;
 import com.sensor.enums.CartState;
 import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
 import com.sensor.security.entity.User;
+import com.sensor.service.ICartProductService;
 import com.sensor.service.ICartService;
 import com.sensor.service.IPaymentMethodService;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -26,6 +28,9 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Autowired
     private IPaymentMethodService paymentMethodService;
+
+    @Autowired
+    private ICartProductService cartProductService;
 
     @Autowired
     private ICartDao cartDao;
@@ -70,16 +75,36 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         //cartTransport es el carrito que se devolvera al usuario.
         PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName(cartDataRequest.getChosenPaymentMethod().getName());
 
-        //Agregamos al carrito los datos que nos trae (metodo de envio y a que direccioens)
+        //setemos el metodo de pago al carrito, para poder pasarle a la orden el metodo de pago
         cart.setPaymentMethod(paymentMethod);
-        cart.setState(getNextState());
+
+
+        //le seteamos al carrito que ira al controller y que tiene las imagenes en base 64 los mismos datos de direcciones, metodo de envio y metodode de pago.
+        cartTransport.getCart().setPaymentMethod(paymentMethod);
+
+        //se veran todos los datos que se fueron completando.
+        CartInfoTransportToController cartInfoTransportToController = this.nextDataToReturn(user,cartTransport);
+
+        //creamos la orden con los datos que tiene el carrito.
+        //y se lo seteamos al carrito para que cuando se guarde pueda crearse la orden
         cart.setSaleOrder(this.createSaleOrder(cart));
+
+        //seteamos en null al metodo de pago y metodo de envio porque ya no nos interesan los datos.
+        //todos estos datos estaran en el SaleOrder
         cart.setPaymentMethod(null);
         cart.setShippingMethod(null);
-        cart.getTemporaryCartAddresses().clear();
-        cart.getCartProducts().clear();
+
+
+        //eliminamos los productos del carrito, ya estan todos en la orden
+        this.cartProductService.deleteCartProductByCart(cart);
+
+        //seteamos el nuevo estado del carrito
+        cart.setState(getNextState());
+
         //guardamos el carrito con esta informacion
         this.cartDao.saveCart(cart);
+
+
 
         //Creamos el nuevo carrito para que el usuario pueda realizar mas compras.
         Cart newCartForUser = new Cart();
@@ -87,10 +112,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
         this.cartDao.saveCart(newCartForUser);
 
-        //le seteamos al carrito que ira al controller y que tiene las imagenes en base 64 los mismos datos de direcciones y metodo de envio y metodode  pago.
-        cartTransport.getCart().setPaymentMethod(paymentMethod);
-
-        return this.nextDataToReturn(user,cartTransport);
+        return cartInfoTransportToController;
     }
 
     @Override
