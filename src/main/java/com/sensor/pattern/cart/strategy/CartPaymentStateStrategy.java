@@ -10,6 +10,7 @@ import com.sensor.security.entity.User;
 import com.sensor.service.ICartProductService;
 import com.sensor.service.ICartService;
 import com.sensor.service.IPaymentMethodService;
+import com.sensor.service.ITemporaryCartAddressService;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
 import com.sensor.utils.transport.cart.CartInfoTransportToService;
 import com.sensor.utils.transport.cart.CartTransportToController;
@@ -31,6 +32,9 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Autowired
     private ICartProductService cartProductService;
+
+    @Autowired
+    private ITemporaryCartAddressService temporaryCartAddressService;
 
     @Autowired
     private ICartDao cartDao;
@@ -94,9 +98,11 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         cart.setPaymentMethod(null);
         cart.setShippingMethod(null);
 
-
         //eliminamos los productos del carrito, ya estan todos en la orden
         this.cartProductService.deleteCartProductByCart(cart);
+
+        //eliminamos las direcciones del carrito, ya estan todas en la orden
+        this.temporaryCartAddressService.deleteTemporaryCartAddressByCart(cart);
 
         //seteamos el nuevo estado del carrito
         cart.setState(getNextState());
