@@ -84,4 +84,12 @@ public class CartController {
         return new ResponseEntity<>(removeProductInCartResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/cancel")
+    public ResponseEntity<Void> cancelCart() {
+        this.cartService.cancelCart();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

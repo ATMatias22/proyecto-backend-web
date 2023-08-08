@@ -134,6 +134,14 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra");
     }
 
+    @Override
+    public void cancel(Cart cart) {
+        cart.setShippingMethod(null);
+        cart.setState(CartState.ESTADO_INICIAL);
+        this.temporaryCartAddressService.deleteTemporaryCartAddressByCart(cart);
+        this.cartDao.saveCart(cart);
+    }
+
     private SaleOrder createSaleOrder(Cart cart) {
 
         User user = cart.getUser();

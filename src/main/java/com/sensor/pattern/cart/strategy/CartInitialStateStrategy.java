@@ -151,4 +151,9 @@ public class CartInitialStateStrategy extends CartStateStrategy {
         return cartProduct;
 
     }
+
+    @Override
+    public void cancel(Cart cart) {
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede cancelar en el estado: "+ this.getState());
+    }
 }
