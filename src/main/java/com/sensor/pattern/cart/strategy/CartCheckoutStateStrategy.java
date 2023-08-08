@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class CartCheckoutStateStrategy extends CartStateStrategy{
     private IShippingMethodService shippingMethodService;
 
     @Autowired
-    private ICartAddressService cartAddressService;
+    private ITemporaryCartAddressService cartAddressService;
 
     @Autowired
     private ITypeOfAddressService typeOfAddressService;
@@ -81,20 +80,20 @@ public class CartCheckoutStateStrategy extends CartStateStrategy{
         System.out.println("Estoy en el estado de checkout y pronto en Pago");
 
         ShippingMethod shippingMethod = this.shippingMethodService.getShippingMethodByName(cartDataRequest.getChosenShippingMethod().getName());
-        Set<CartAddress> addresses = new HashSet<>();
+        Set<TemporaryCartAddress> addresses = new HashSet<>();
 
       cartDataRequest.getChosenAddresses().forEach( choosenAddress -> {
             //en caso de no existe el tipo de direccion se cancela  y no se realiza ningun cambio en el carrito.
             TypeOfAddress typeOfAddress = typeOfAddressService.getTypeOfAddressByName(choosenAddress.getTypeOfAddress().getName());
-            CartAddress cartAddress = new CartAddress();
-            cartAddress.setStreet(choosenAddress.getStreet());
-            cartAddress.setStreetNumber(choosenAddress.getStreetNumber());
-            cartAddress.setFloor(choosenAddress.getFloor());
-            cartAddress.setApartmentNumber(choosenAddress.getApartmentNumber());
-            cartAddress.setTypeOfAddress(typeOfAddress.getName());
-            cartAddress.setCart(cart);
-            this.cartAddressService.saveCartAddress(cartAddress);
-            addresses.add(cartAddress);
+            TemporaryCartAddress temporaryCartAddress = new TemporaryCartAddress();
+            temporaryCartAddress.setStreet(choosenAddress.getStreet());
+            temporaryCartAddress.setStreetNumber(choosenAddress.getStreetNumber());
+            temporaryCartAddress.setFloor(choosenAddress.getFloor());
+            temporaryCartAddress.setApartmentNumber(choosenAddress.getApartmentNumber());
+            temporaryCartAddress.setTypeOfAddress(typeOfAddress.getName());
+            temporaryCartAddress.setCart(cart);
+            this.cartAddressService.saveTemporaryCartAddress(temporaryCartAddress);
+            addresses.add(temporaryCartAddress);
         } );
 
         //Agregamos al carrito los datos que nos trae (metodo de envio y a que direccioens)
@@ -106,7 +105,7 @@ public class CartCheckoutStateStrategy extends CartStateStrategy{
 
         //le seteamos al carrito que ira al controller y que tiene las imagenes en base 64 los mismos datos de direcciones y metodo de envio.
         cartTransport.getCart().setState(getNextState());
-        cartTransport.getCart().setCartAddresses(addresses);
+        cartTransport.getCart().setTemporaryCartAddresses(addresses);
         cartTransport.getCart().setShippingMethod(shippingMethod);
 
 

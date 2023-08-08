@@ -35,4 +35,9 @@ public class CartProductServiceImpl implements ICartProductService {
     public void deleteCartProduct(CartProduct cartProduct) {
         this.cartProductDao.deleteCartProduct(cartProduct);
     }
+
+    @Override
+    public void deleteCartProductByCart(Cart cart) {
+        this.cartProductDao.deleteCartProductByCart(cart);
+    }
 }

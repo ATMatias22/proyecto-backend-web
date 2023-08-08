@@ -16,5 +16,7 @@ public interface ICartProductDao {
 
     void deleteCartProduct(CartProduct cartProduct);
 
+    void deleteCartProductByCart(Cart cart);
+
 
 }
