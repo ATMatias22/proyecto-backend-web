@@ -128,4 +128,10 @@ public class CartCheckoutStateStrategy extends CartStateStrategy{
     public CartProduct removeProduct(Long productId, double quantity, User user, Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: "+ getState() + " tendrias que cancelar el proceso de compra");
     }
+
+    @Override
+    public void cancel(Cart cart) {
+        cart.setState(CartState.ESTADO_INICIAL);
+        this.cartDao.saveCart(cart);
+    }
 }

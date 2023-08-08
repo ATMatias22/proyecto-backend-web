@@ -20,6 +20,7 @@ public interface ICartService {
 
     List<Cart> getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn();
     List<Cart> getAllCartsWhereTheStatusIsEntregaByUserLoggedIn();
+    void cancelCart();
 
 
 }

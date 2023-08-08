@@ -7,6 +7,7 @@ import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
 import com.sensor.security.entity.User;
 import com.sensor.service.ISaleOrderService;
+import com.sensor.service.ITemporaryCartAddressService;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
 import com.sensor.utils.transport.cart.CartInfoTransportToService;
 import com.sensor.utils.transport.cart.CartTransportToController;
@@ -51,7 +52,7 @@ public class CartDeliveryStateStrategy extends CartStateStrategy {
         //devolvemos lo necesario del carrito en este estado.
         //no tendria que ejecutarse nunca este metodo porque apenas llegue al estado ENTREGA, ya existira
         //otro carrito con estado inicial
-        return new CartInfoTransportToController(null, null, null, null);
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede obtener el carrito en estado: "+ this.getState());
     }
 
     @Override
@@ -78,6 +79,12 @@ public class CartDeliveryStateStrategy extends CartStateStrategy {
     @Override
     public CartProduct removeProduct(Long productId, double quantity, User user, Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: "+ getState() + " tendrias que cancelar el proceso de compra");
+    }
+
+    @Override
+    public void cancel(Cart cart) {
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede cancelar en el estado: "+ this.getState());
+
     }
 
 

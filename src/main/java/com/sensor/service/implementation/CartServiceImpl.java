@@ -152,5 +152,20 @@ public class CartServiceImpl implements ICartService {
         return this.cartDao.getAllCartsByUserAndWhereTheStatusIsEntrega(userLoggedIn);
     }
 
+    @Override
+    public void cancelCart() {
+
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+
+        Cart cart = this.cartDao.getCartByUserAndStateNotInTerminadoOrEntrega(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+
+        CartState state = cart.getState();
+        CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
+
+        strategy.cancel(cart);
+    }
+
 
 }

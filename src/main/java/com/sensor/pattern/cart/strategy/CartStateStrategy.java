@@ -23,4 +23,6 @@ public abstract class CartStateStrategy {
     public abstract CartProduct addProduct(Long productId, double quantity, User user, Cart cart);
     public abstract CartProduct removeProduct(Long productId, double quantity, User user, Cart cart);
 
+    public abstract void cancel(Cart cart);
+
 }
