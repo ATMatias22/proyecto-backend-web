@@ -58,13 +58,13 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     public CartInfoTransportToController getCartInfo(User user, CartTransportToController cart) {
         List<PaymentMethod> paymentMethods = this.paymentMethodService.getAllPaymentMethods();
 
-        return new CartInfoTransportToController(cart,null,paymentMethods,null);
+        return new CartInfoTransportToController(cart, null, paymentMethods, null);
     }
 
     @Override
     public void verifyNecessaryData(CartInfoTransportToService cartDataRequest) {
 
-        if(cartDataRequest.getChosenPaymentMethod() == null){
+        if (cartDataRequest.getChosenPaymentMethod() == null) {
             throw new GeneralException(HttpStatus.BAD_REQUEST, "Debe colocar un metodo de pago");
         }
 
@@ -87,7 +87,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         cartTransport.getCart().setPaymentMethod(paymentMethod);
 
         //se veran todos los datos que se fueron completando.
-        CartInfoTransportToController cartInfoTransportToController = this.nextDataToReturn(user,cartTransport);
+        CartInfoTransportToController cartInfoTransportToController = this.nextDataToReturn(user, cartTransport);
 
         //creamos la orden con los datos que tiene el carrito.
         //y se lo seteamos al carrito para que cuando se guarde pueda crearse la orden
@@ -110,8 +110,6 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         //guardamos el carrito con esta informacion
         this.cartDao.saveCart(cart);
 
-
-
         //Creamos el nuevo carrito para que el usuario pueda realizar mas compras.
         Cart newCartForUser = new Cart();
         newCartForUser.setUser(user);
@@ -123,20 +121,20 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Override
     protected CartInfoTransportToController nextDataToReturn(User user, CartTransportToController cart) {
-        return new CartInfoTransportToController(cart,null,null,null);
+        return new CartInfoTransportToController(cart, null, null, null);
     }
 
     @Override
     public CartProduct addProduct(Long productId, double quantity, User user, Cart cart) {
-        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede agregar un producto al carrito en el estado: "+ getState() + " tendrias que cancelar el proceso de compra, o terminar el proceso");
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede agregar un producto al carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra, o terminar el proceso");
     }
 
     @Override
     public CartProduct removeProduct(Long productId, double quantity, User user, Cart cart) {
-        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: "+ getState() + " tendrias que cancelar el proceso de compra");
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra");
     }
 
-    private SaleOrder createSaleOrder(Cart cart){
+    private SaleOrder createSaleOrder(Cart cart) {
 
         User user = cart.getUser();
         List<CartProduct> products = cart.getCartProducts();
@@ -155,8 +153,8 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         saleOrder.setPaymentMethodDiscount(paymentMethod.getDiscount());
         saleOrder.setShippingMethodName(shippingMethod.getName());
         saleOrder.setState(SaleOrderState.TERMINADO);
-        saleOrder.setAddresses(toSaleAddress(addresses));
-        saleOrder.setProducts(toSaleProduct(products));
+        saleOrder.setAddresses(toSaleAddress(addresses, saleOrder));
+        saleOrder.setProducts(toSaleProduct(products, saleOrder));
         saleOrder.setSubtotal(subtotal);
         saleOrder.setTotal(total);
         saleOrder.setCart(cart);
@@ -166,30 +164,30 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
 
-
-    private Double calculateSubtotal(List<CartProduct> products){
+    private Double calculateSubtotal(List<CartProduct> products) {
         return products.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getQuantity()).sum();
     }
 
-    private Double calculateTotal(Double subtotal, Double discount){
-        return subtotal * ((100-20)/100);
+    private Double calculateTotal(Double subtotal, Double discount) {
+        return subtotal * ((100 - discount) / 100);
     }
 
-    private Set<SaleAddress> toSaleAddress( Set<TemporaryCartAddress> temporaryCartAddress){
-        return temporaryCartAddress.stream().map( address -> {
+    private Set<SaleAddress> toSaleAddress(Set<TemporaryCartAddress> temporaryCartAddress, SaleOrder saleOrder) {
+        return temporaryCartAddress.stream().map(address -> {
             SaleAddress saleAddress = new SaleAddress();
             saleAddress.setStreet(address.getStreet());
             saleAddress.setStreetNumber(address.getStreetNumber());
             saleAddress.setFloor(address.getFloor());
             saleAddress.setApartmentNumber(address.getApartmentNumber());
             saleAddress.setTypeOfAddress(address.getTypeOfAddress());
+            saleAddress.setSaleOrder(saleOrder);
             return saleAddress;
         }).collect(Collectors.toSet());
     }
 
-    private List<SaleProduct> toSaleProduct(List<CartProduct> products) {
+    private List<SaleProduct> toSaleProduct(List<CartProduct> products, SaleOrder saleOrder) {
 
-        return products.stream().map( product -> {
+        return products.stream().map(product -> {
 
             SaleProduct saleProduct = new SaleProduct();
             Product prod = product.getProduct();
@@ -198,6 +196,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
             saleProduct.setDescription(prod.getDescription());
             saleProduct.setPrice(prod.getPrice());
             saleProduct.setQuantity(product.getQuantity());
+            saleProduct.setSaleOrder(saleOrder);
 
             return saleProduct;
 
