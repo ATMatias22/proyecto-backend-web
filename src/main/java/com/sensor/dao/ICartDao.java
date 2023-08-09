@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ICartDao {
 
-    Optional<Cart> getCartByUserAndStateNotInTerminadoOrEntrega(User user);
+    Optional<Cart> getCartByUser(User user);
 
     void saveCart(Cart cart);
 

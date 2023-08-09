@@ -45,7 +45,7 @@ public class CartServiceImpl implements ICartService {
 
         User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
-        Cart cart = this.cartDao.getCartByUserAndStateNotInTerminadoOrEntrega(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
         List<CartProductTransportToController> cartProductsTransport = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class CartServiceImpl implements ICartService {
 
         User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
-        Cart cart = this.cartDao.getCartByUserAndStateNotInTerminadoOrEntrega(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
         CartState state = cart.getState();
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
@@ -110,7 +110,7 @@ public class CartServiceImpl implements ICartService {
 
         User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
-        Cart cart = this.cartDao.getCartByUserAndStateNotInTerminadoOrEntrega(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
         CartState state = cart.getState();
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
@@ -126,7 +126,7 @@ public class CartServiceImpl implements ICartService {
 
         User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
-        Cart cart = this.cartDao.getCartByUserAndStateNotInTerminadoOrEntrega(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
         CartState state = cart.getState();
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
@@ -159,7 +159,7 @@ public class CartServiceImpl implements ICartService {
 
         User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
-        Cart cart = this.cartDao.getCartByUserAndStateNotInTerminadoOrEntrega(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
         CartState state = cart.getState();
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
