@@ -51,7 +51,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Override
     public CartState getNextState() {
-        return CartState.ENTREGA;
+        return null;
     }
 
     @Override
@@ -103,9 +103,6 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
         //eliminamos las direcciones del carrito, ya estan todas en la orden
         this.temporaryCartAddressService.deleteTemporaryCartAddressByCart(cart);
-
-        //seteamos el nuevo estado del carrito
-        cart.setState(getNextState());
 
         //guardamos el carrito con esta informacion
         this.cartDao.saveCart(cart);
@@ -160,7 +157,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         saleOrder.setPaymentMethodName(paymentMethod.getName());
         saleOrder.setPaymentMethodDiscount(paymentMethod.getDiscount());
         saleOrder.setShippingMethodName(shippingMethod.getName());
-        saleOrder.setState(SaleOrderState.TERMINADO);
+        saleOrder.setState(SaleOrderState.ENTREGAR_PRODUCTOS);
         saleOrder.setAddresses(toSaleAddress(addresses, saleOrder));
         saleOrder.setProducts(toSaleProduct(products, saleOrder));
         saleOrder.setSubtotal(subtotal);
@@ -205,6 +202,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
             saleProduct.setPrice(prod.getPrice());
             saleProduct.setQuantity(product.getQuantity());
             saleProduct.setSaleOrder(saleOrder);
+            saleProduct.setAddedToCart(prod.getCreated());
 
             return saleProduct;
 

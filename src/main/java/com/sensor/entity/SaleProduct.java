@@ -38,6 +38,9 @@ public class SaleProduct {
     @JoinColumn(name = "fk_sale_order")
     private SaleOrder saleOrder;
 
+    @Column(name = "added_to_cart", nullable = false)
+    private LocalDateTime addedToCart;
+
     @Column(name = "created_date")
     @CreationTimestamp
     private LocalDateTime created;
