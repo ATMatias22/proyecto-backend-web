@@ -66,11 +66,6 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public void saveCart(Cart cart) {
-        this.cartDao.saveCart(cart);
-    }
-
-    @Override
     @Transactional
     public CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService) {
 
@@ -134,23 +129,6 @@ public class CartServiceImpl implements ICartService {
         return strategy.removeProduct(idProduct,quantity,userLoggedIn,cart);
     }
 
-    @Override
-    public List<Cart> getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn() {
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
-
-        return this.cartDao.getAllCartsByUserAndWhereTheStatusIsTerminado(userLoggedIn);
-    }
-
-    @Override
-    public List<Cart> getAllCartsWhereTheStatusIsEntregaByUserLoggedIn() {
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
-
-        return this.cartDao.getAllCartsByUserAndWhereTheStatusIsEntrega(userLoggedIn);
-    }
 
     @Override
     public void cancelCart() {

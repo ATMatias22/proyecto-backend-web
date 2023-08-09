@@ -12,8 +12,4 @@ public interface ICartDao {
 
     void saveCart(Cart cart);
 
-    List<Cart> getAllCartsWhereTheStatusIsTerminado();
-    List<Cart> getAllCartsByUserAndWhereTheStatusIsEntrega(User user);
-    List<Cart> getAllCartsByUserAndWhereTheStatusIsTerminado(User user);
-
 }
