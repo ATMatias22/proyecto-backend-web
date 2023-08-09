@@ -12,4 +12,6 @@ public interface ICartDao {
 
     void saveCart(Cart cart);
 
+    void deleteCart(Cart cart);
+
 }

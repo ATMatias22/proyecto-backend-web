@@ -27,4 +27,9 @@ public class CartDaoImpl implements ICartDao {
         this.cartRepository.save(cart);
     }
 
+    @Override
+    public void deleteCart(Cart cart) {
+        this.cartRepository.delete(cart);
+    }
+
 }

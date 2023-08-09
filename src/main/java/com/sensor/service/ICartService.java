@@ -18,5 +18,4 @@ public interface ICartService {
 
     void cancelCart();
 
-
 }

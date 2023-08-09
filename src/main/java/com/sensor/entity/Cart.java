@@ -37,18 +37,15 @@ public class Cart {
     @JoinColumn(name = "fk_payment_method")
     private PaymentMethod paymentMethod;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "fk_shipping_method")
     private ShippingMethod shippingMethod;
 
-    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<TemporaryCartAddress> temporaryCartAddresses;
 
-    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy="cart", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<CartProduct> cartProducts;
-
-    @OneToOne(mappedBy="cart", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    private SaleOrder saleOrder;
 
     @Column(name = "created_date")
     @CreationTimestamp
