@@ -143,7 +143,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         saleOrder.setProducts(toSaleProduct(products, saleOrder));
         saleOrder.setSubtotal(subtotal);
         saleOrder.setTotal(total);
-        saleOrder.setCart(cart.getCartId());
+        saleOrder.setCartId(cart.getCartId());
 
         return saleOrder;
 
@@ -177,13 +177,14 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
             SaleProduct saleProduct = new SaleProduct();
             Product prod = product.getProduct();
+
             saleProduct.setProductId(prod.getProductId());
             saleProduct.setName(prod.getName());
             saleProduct.setDescription(prod.getDescription());
             saleProduct.setPrice(prod.getPrice());
             saleProduct.setQuantity(product.getQuantity());
+            saleProduct.setAddedToCart(product.getCreated());
             saleProduct.setSaleOrder(saleOrder);
-            saleProduct.setAddedToCart(prod.getCreated());
 
             return saleProduct;
 

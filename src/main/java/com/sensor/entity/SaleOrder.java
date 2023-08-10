@@ -57,7 +57,7 @@ public class SaleOrder {
     private List<SaleProduct> products;
 
     @Column(name = "cart", nullable = false)
-    private Long cart;
+    private Long cartId;
 
     @Column(name = "subtotal", nullable = false)
     private Double subtotal;

@@ -3,9 +3,6 @@ package com.sensor.controller;
 
 import com.sensor.dto.cart.request.CartInfoRequest;
 import com.sensor.dto.cart.response.cartforuser.CartInfoForUserResponse;
-import com.sensor.dto.cart.response.cartentregaforuser.CartEntregaForUserLoggedInResponse;
-import com.sensor.dto.cart.response.cartterminadoforadmin.FinishedCartTerminadoForAdminResponse;
-import com.sensor.dto.cart.response.cartterminadoforuser.CartTerminadoForUserLoggedInResponse;
 import com.sensor.dto.cartProduct.request.AddProductInCartRequest;
 import com.sensor.dto.cartProduct.request.RemoveProductInCartRequest;
 import com.sensor.dto.cart.response.AddProductInCartResponse;
@@ -22,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/carts")
