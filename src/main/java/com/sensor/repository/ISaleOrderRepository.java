@@ -10,6 +10,8 @@ public interface ISaleOrderRepository extends JpaRepository<SaleOrder,Long> {
 
     List<SaleOrder> findByUserIdAndState(Long cartId, SaleOrderState state);
 
+    List<SaleOrder> findByState(SaleOrderState state);
+
 
 
 }

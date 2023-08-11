@@ -10,5 +10,6 @@ public interface ISaleOrderService {
     void saveSaleOrder(SaleOrder saleOrder);
 
     List<SaleOrder> getSaleOrderByUserLoggedInAndState(SaleOrderState state);
+    List<SaleOrder> getSaleOrderByState(SaleOrderState state);
 
 }

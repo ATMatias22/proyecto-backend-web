@@ -1,5 +1,6 @@
 package com.sensor.controller;
 
+import com.sensor.dto.sale.response.saleforadmin.SaleForAdminResponse;
 import com.sensor.dto.sale.response.saleforuser.SaleForUserLoggedInResponse;
 import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
@@ -29,7 +30,7 @@ public class SaleOrderController {
 
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/user")
     public ResponseEntity<List<SaleForUserLoggedInResponse>> getSaleOrderByUserLoggedInAndStateEntregarProductos(@RequestParam String state) {
         SaleOrderState stateFound = Arrays.stream(SaleOrderState.values())
                 .filter(saleOrderState -> saleOrderState.name().equalsIgnoreCase(state))
@@ -37,5 +38,16 @@ public class SaleOrderController {
                 .orElseThrow(() ->new GeneralException(HttpStatus.BAD_REQUEST, "No se encuentra el estado que esta buscando"));
 
         return new ResponseEntity<>(this.saleOrderMapper.saleOrderToSaleForUserLoggedInResponse(this.saleOrderService.getSaleOrderByUserLoggedInAndState(stateFound)), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/admin")
+    public ResponseEntity<List<SaleForAdminResponse>> getSaleOrderByState(@RequestParam String state) {
+        SaleOrderState stateFound = Arrays.stream(SaleOrderState.values())
+                .filter(saleOrderState -> saleOrderState.name().equalsIgnoreCase(state))
+                .findFirst()
+                .orElseThrow(() ->new GeneralException(HttpStatus.BAD_REQUEST, "No se encuentra el estado que esta buscando"));
+
+        return new ResponseEntity<>(this.saleOrderMapper.saleOrderToSaleForAdminResponse(this.saleOrderService.getSaleOrderByState(stateFound)), HttpStatus.OK);
     }
 }

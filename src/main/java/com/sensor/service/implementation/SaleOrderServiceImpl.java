@@ -28,4 +28,9 @@ public class SaleOrderServiceImpl implements ISaleOrderService {
 
         return this.saleOrderDao.getSaleOrderByUserIdAndState(mu.getId(), state );
     }
+
+    @Override
+    public List<SaleOrder> getSaleOrderByState(SaleOrderState state) {
+        return this.saleOrderDao.getSaleOrderByState(state);
+    }
 }

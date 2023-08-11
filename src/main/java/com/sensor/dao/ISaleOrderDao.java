@@ -10,4 +10,6 @@ public interface ISaleOrderDao {
 
     List<SaleOrder> getSaleOrderByUserIdAndState(Long userId, SaleOrderState state);
 
+    List<SaleOrder> getSaleOrderByState(SaleOrderState state);
+
 }

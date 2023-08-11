@@ -22,4 +22,9 @@ public class SaleOrderDaoImpl implements ISaleOrderDao {
     public List<SaleOrder> getSaleOrderByUserIdAndState(Long userId, SaleOrderState state) {
         return this.saleOrderRepository.findByUserIdAndState(userId, state);
     }
+
+    @Override
+    public List<SaleOrder> getSaleOrderByState(SaleOrderState state) {
+        return this.saleOrderRepository.findByState(state);
+    }
 }

@@ -1,4 +1,4 @@
-package com.sensor.dto.cart.response.cartterminadoforadmin;
+package com.sensor.dto.sale.response.saleforadmin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInCartTerminadoByAdminResponse {
+public class UserInSaleForAdminResponse {
 
     private Long userId;
 
