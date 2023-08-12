@@ -12,4 +12,9 @@ public interface ISaleOrderService {
     List<SaleOrder> getSaleOrderByUserLoggedInAndState(SaleOrderState state);
     List<SaleOrder> getSaleOrderByState(SaleOrderState state);
 
+    void nextStep(Long saleId);
+
+    void cancelSaleOrder(Long saleId);
+
+
 }

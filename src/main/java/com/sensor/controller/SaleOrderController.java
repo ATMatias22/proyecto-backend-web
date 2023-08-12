@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,5 +48,19 @@ public class SaleOrderController {
                 .orElseThrow(() ->new GeneralException(HttpStatus.BAD_REQUEST, "No se encuentra el estado que esta buscando"));
 
         return new ResponseEntity<>(this.saleOrderMapper.saleOrderToSaleForAdminResponse(this.saleOrderService.getSaleOrderByState(stateFound)), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping(value = "/admin/cancel/{saleOrderId}")
+    public ResponseEntity<Void> cancelSaleOrder(@PathVariable("saleOrderId") Long saleOrderId) {
+        this.saleOrderService.cancelSaleOrder(saleOrderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping(value = "/admin/next-step/{saleOrderId}")
+    public ResponseEntity<Void> nextStepSaleOrder(@PathVariable("saleOrderId") Long saleOrderId) {
+        this.saleOrderService.nextStep(saleOrderId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
