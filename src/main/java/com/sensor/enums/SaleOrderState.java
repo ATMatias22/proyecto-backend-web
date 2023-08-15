@@ -2,5 +2,5 @@ package com.sensor.enums;
 
 public enum SaleOrderState {
 
-    CANCELADO, TERMINADO
+    CANCELADO, ENTREGAR_PRODUCTOS, TERMINADO
 }

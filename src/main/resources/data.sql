@@ -48,23 +48,11 @@ VALUES
 ('Sensor magnetico','Es un sensor que avisa cuando se cierra o abre algun objeto con estas caracteristicas',5000, true, null, 1,2),
 ('Sensor magnetico 2','Es un sensor que avisa cuando se cierra o abre algun objeto con estas caracteristicas',5000, true, null, 2,2);
 
-INSERT INTO cart ( fk_user, state, fk_payment_method, fk_shipping_method)
-VALUES (1, 'TERMINADO', 1, 1);
-
-INSERT INTO cart_product (fk_cart, fk_product, quantity)
-VALUES (1,1, 10);
-
-
-INSERT INTO cart_address (fk_cart, street, street_number, floor, apartment_number, type_of_address)
-VALUES (1,'calle falsa', '123', null,null, 'Facturacion');
-
-
-
 INSERT INTO cart (fk_user, state, fk_payment_method, fk_shipping_method)
 VALUES ( 1, 'ESTADO_INICIAL', null, null);
 
-INSERT INTO cart_product ( fk_cart, fk_product, quantity)
-VALUES (2,1,5);
+INSERT INTO cart_product ( fk_cart, fk_product, quantity,created_date)
+VALUES (1,1,5, '2023-08-10 18:39:12.543702');
 
 
 

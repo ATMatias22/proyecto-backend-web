@@ -1,5 +1,6 @@
-package com.sensor.dto.cart.response.cartterminadoforuser;
+package com.sensor.dto.sale.response.saleforadmin;
 
+import com.sensor.dto.sale.response.saleforuser.TypeOfAddressInSaleForUserLoggedInResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressInCartTerminadoByUserLoggedInResponse {
+public class SaleAddressInSaleForAdminResponse {
 
     private String street;
 
@@ -17,6 +18,6 @@ public class AddressInCartTerminadoByUserLoggedInResponse {
 
     private String apartmentNumber;
 
-    private TypeOfAddressInCartTerminadoByUserLoggedInResponse typeOfAddress;
+    private TypeOfAddressInSaleForAdminResponse typeOfAddress;
 
 }

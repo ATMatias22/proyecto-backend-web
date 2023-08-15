@@ -1,4 +1,4 @@
-package com.sensor.dto.cart.response.cartentregaforuser;
+package com.sensor.dto.sale.response.saleforuser;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressInCartEntregaByUserLoggedInResponse {
+public class SaleAddressInSaleForUserLoggedInResponse {
 
     private String street;
 
@@ -17,6 +17,6 @@ public class AddressInCartEntregaByUserLoggedInResponse {
 
     private String apartmentNumber;
 
-    private TypeOfAddressInCartEntregaByUserLoggedInResponse typeOfAddress;
+    private TypeOfAddressInSaleForUserLoggedInResponse typeOfAddress;
 
 }

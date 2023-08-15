@@ -56,9 +56,8 @@ public class SaleOrder {
     @OneToMany(mappedBy="saleOrder", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private List<SaleProduct> products;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="fk_cart")
-    private Cart cart;
+    @Column(name = "cart", nullable = false)
+    private Long cartId;
 
     @Column(name = "subtotal", nullable = false)
     private Double subtotal;

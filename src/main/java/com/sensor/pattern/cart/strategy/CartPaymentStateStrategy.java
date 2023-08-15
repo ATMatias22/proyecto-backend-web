@@ -7,10 +7,7 @@ import com.sensor.enums.CartState;
 import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
 import com.sensor.security.entity.User;
-import com.sensor.service.ICartProductService;
-import com.sensor.service.ICartService;
-import com.sensor.service.IPaymentMethodService;
-import com.sensor.service.ITemporaryCartAddressService;
+import com.sensor.service.*;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
 import com.sensor.utils.transport.cart.CartInfoTransportToService;
 import com.sensor.utils.transport.cart.CartTransportToController;
@@ -29,15 +26,13 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Autowired
     private IPaymentMethodService paymentMethodService;
-
-    @Autowired
-    private ICartProductService cartProductService;
-
     @Autowired
     private ITemporaryCartAddressService temporaryCartAddressService;
-
     @Autowired
     private ICartDao cartDao;
+
+    @Autowired
+    private ISaleOrderService saleOrderService;
 
     @Override
     public CartState getState() {
@@ -51,7 +46,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Override
     public CartState getNextState() {
-        return CartState.ENTREGA;
+        return null;
     }
 
     @Override
@@ -79,10 +74,6 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         //cartTransport es el carrito que se devolvera al usuario.
         PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName(cartDataRequest.getChosenPaymentMethod().getName());
 
-        //setemos el metodo de pago al carrito, para poder pasarle a la orden el metodo de pago
-        cart.setPaymentMethod(paymentMethod);
-
-
         //le seteamos al carrito que ira al controller y que tiene las imagenes en base 64 los mismos datos de direcciones, metodo de envio y metodode de pago.
         cartTransport.getCart().setPaymentMethod(paymentMethod);
 
@@ -90,25 +81,12 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         CartInfoTransportToController cartInfoTransportToController = this.nextDataToReturn(user, cartTransport);
 
         //creamos la orden con los datos que tiene el carrito.
-        //y se lo seteamos al carrito para que cuando se guarde pueda crearse la orden
-        cart.setSaleOrder(this.createSaleOrder(cart));
+        //y guardamos la orden
+        this.saleOrderService.saveSaleOrder(this.createSaleOrder(cart));
 
-        //seteamos en null al metodo de pago y metodo de envio porque ya no nos interesan los datos.
-        //todos estos datos estaran en el SaleOrder
-        cart.setPaymentMethod(null);
-        cart.setShippingMethod(null);
-
-        //eliminamos los productos del carrito, ya estan todos en la orden
-        this.cartProductService.deleteCartProductByCart(cart);
-
-        //eliminamos las direcciones del carrito, ya estan todas en la orden
-        this.temporaryCartAddressService.deleteTemporaryCartAddressByCart(cart);
-
-        //seteamos el nuevo estado del carrito
-        cart.setState(getNextState());
-
-        //guardamos el carrito con esta informacion
-        this.cartDao.saveCart(cart);
+        //eliminamos el carrito, como los atributos temporaryAddresses, shippingMethod y cartProducts tienen cascade remove, se eliminaran tambien
+        //asi que no es necesario eliminarlos a traves de sus servicios
+        this.cartDao.deleteCart(cart);
 
         //Creamos el nuevo carrito para que el usuario pueda realizar mas compras.
         Cart newCartForUser = new Cart();
@@ -160,12 +138,12 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         saleOrder.setPaymentMethodName(paymentMethod.getName());
         saleOrder.setPaymentMethodDiscount(paymentMethod.getDiscount());
         saleOrder.setShippingMethodName(shippingMethod.getName());
-        saleOrder.setState(SaleOrderState.TERMINADO);
+        saleOrder.setState(SaleOrderState.ENTREGAR_PRODUCTOS);
         saleOrder.setAddresses(toSaleAddress(addresses, saleOrder));
         saleOrder.setProducts(toSaleProduct(products, saleOrder));
         saleOrder.setSubtotal(subtotal);
         saleOrder.setTotal(total);
-        saleOrder.setCart(cart);
+        saleOrder.setCartId(cart.getCartId());
 
         return saleOrder;
 
@@ -199,11 +177,13 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
             SaleProduct saleProduct = new SaleProduct();
             Product prod = product.getProduct();
+
             saleProduct.setProductId(prod.getProductId());
             saleProduct.setName(prod.getName());
             saleProduct.setDescription(prod.getDescription());
             saleProduct.setPrice(prod.getPrice());
             saleProduct.setQuantity(product.getQuantity());
+            saleProduct.setAddedToCart(product.getCreated());
             saleProduct.setSaleOrder(saleOrder);
 
             return saleProduct;

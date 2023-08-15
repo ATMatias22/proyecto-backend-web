@@ -11,16 +11,11 @@ public interface ICartService {
 
     CartInfoTransportToController getCartThatAreNotTerminadoOrEntregaByUserLoggedIn();
 
-    void saveCart(Cart cart);
-
     CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService);
 
     CartProduct addProduct(Long idProduct, Double quantity);
     CartProduct removeProduct(Long idProduct, Double quantity);
 
-    List<Cart> getAllCartsWhereTheStatusIsTerminadoByUserLoggedIn();
-    List<Cart> getAllCartsWhereTheStatusIsEntregaByUserLoggedIn();
     void cancelCart();
-
 
 }

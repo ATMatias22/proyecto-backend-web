@@ -7,7 +7,6 @@ import com.sensor.repository.ICartRepository;
 import com.sensor.security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +18,8 @@ public class CartDaoImpl implements ICartDao {
     private ICartRepository cartRepository;
 
     @Override
-    public Optional<Cart> getCartByUserAndStateNotInTerminadoOrEntrega(User user) {
-        return this.cartRepository.findFirstByUserAndStateNotIn(user, List.of(CartState.TERMINADO, CartState.ENTREGA));
+    public Optional<Cart> getCartByUser(User user) {
+        return this.cartRepository.findFirstByUser(user);
     }
 
     @Override
@@ -29,19 +28,8 @@ public class CartDaoImpl implements ICartDao {
     }
 
     @Override
-    public List<Cart> getAllCartsWhereTheStatusIsTerminado() {
-        return this.cartRepository.findByState(CartState.TERMINADO);
+    public void deleteCart(Cart cart) {
+        this.cartRepository.delete(cart);
     }
-
-    @Override
-    public List<Cart> getAllCartsByUserAndWhereTheStatusIsEntrega(User user) {
-        return this.cartRepository.findByUserAndState(user, CartState.ENTREGA);
-    }
-
-    @Override
-    public List<Cart> getAllCartsByUserAndWhereTheStatusIsTerminado(User user) {
-        return this.cartRepository.findByUserAndState(user, CartState.TERMINADO);
-    }
-
 
 }
