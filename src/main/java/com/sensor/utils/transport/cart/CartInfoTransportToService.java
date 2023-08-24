@@ -18,6 +18,6 @@ public class CartInfoTransportToService {
 
     private List<Address> chosenAddresses;
 
-    private PaymentMethod chosenPaymentMethod;
+    private PaymentMethodInfo chosenPaymentMethod;
 
 }

@@ -72,7 +72,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         //cartDataRequest es el dato que viene por parte de la request
         //cart es el carrito en el estado actual
         //cartTransport es el carrito que se devolvera al usuario.
-        PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName(cartDataRequest.getChosenPaymentMethod().getName());
+        PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName(cartDataRequest.getChosenPaymentMethod().getPaymentMethod().getName());
 
         //le seteamos al carrito que ira al controller y que tiene las imagenes en base 64 los mismos datos de direcciones, metodo de envio y metodode de pago.
         cartTransport.getCart().setPaymentMethod(paymentMethod);

@@ -3,6 +3,7 @@ package com.sensor.mapper;
 import com.sensor.dto.paymentMethod.request.PaymentMethodRequest;
 import com.sensor.dto.paymentMethod.response.PaymentMethodResponse;
 import com.sensor.entity.PaymentMethod;
+import com.sensor.utils.transport.cart.PaymentMethodInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -23,14 +24,12 @@ public interface PaymentMethodMapper {
 
 
     @Mappings({
-            @Mapping(source = "paymentMethodRequest.name", target = "name"),
-            @Mapping(target = "discount", ignore = true),
-            @Mapping(target = "paymentMethodId", ignore = true),
-            @Mapping(target = "created", ignore = true),
-            @Mapping(target = "updated", ignore = true)
+            @Mapping(source = "paymentMethodRequest.paymentMethod.name", target = "name"),
+            @Mapping(source = "paymentMethodRequest.informationCard", target = "paymentInformation"),
+
 
     })
-    PaymentMethod paymentMethodRequestToPaymentMethod(PaymentMethodRequest paymentMethodRequest);
+    PaymentMethodInfo paymentMethodRequestToPaymentMethod(PaymentMethodRequest paymentMethodRequest);
 
 
 

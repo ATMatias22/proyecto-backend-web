@@ -1,5 +1,6 @@
 package com.sensor.dto.paymentMethod.request;
 
+import com.sensor.external.dto.CardPaymentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,7 @@ import lombok.NoArgsConstructor;
 public class PaymentMethodRequest {
 
     private String name;
+
+    private CardPaymentDTO informationCard;
 
 }
