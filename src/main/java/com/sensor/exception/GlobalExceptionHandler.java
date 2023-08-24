@@ -144,6 +144,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	protected ResponseEntity<HashMap<String, DetailsError>> methodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest webRequest) {
 		logger.info("estoy en MethodArgumentNotValidException");
+		logger.info(exception.getMessage());
 
 		HashMap<String, DetailsError> dataError = new HashMap<>();
 
