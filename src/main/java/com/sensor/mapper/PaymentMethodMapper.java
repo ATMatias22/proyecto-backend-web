@@ -24,10 +24,7 @@ public interface PaymentMethodMapper {
 
 
     @Mappings({
-            @Mapping(source = "paymentMethodRequest.paymentMethod.name", target = "name"),
             @Mapping(source = "paymentMethodRequest.informationCard", target = "paymentInformation"),
-
-
     })
     PaymentMethodInfo paymentMethodRequestToPaymentMethod(PaymentMethodRequest paymentMethodRequest);
 

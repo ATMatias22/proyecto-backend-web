@@ -165,6 +165,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<HashMap<String, DetailsError>> exceptionHandler(Exception exception, WebRequest webRequest) {
 
 		logger.info("estoy en Exception");
+		logger.info(exception.getMessage());
 
 
 		HashMap<String, DetailsError> dataError = new HashMap<>();

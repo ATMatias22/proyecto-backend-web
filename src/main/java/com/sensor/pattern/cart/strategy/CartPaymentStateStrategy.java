@@ -1,22 +1,32 @@
 package com.sensor.pattern.cart.strategy;
 
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.common.IdentificationRequest;
+import com.mercadopago.client.payment.PaymentClient;
+import com.mercadopago.client.payment.PaymentCreateRequest;
+import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.payment.Payment;
 import com.sensor.dao.ICartDao;
-import com.sensor.dao.ICartProductDao;
 import com.sensor.entity.*;
 import com.sensor.enums.CartState;
 import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
+import com.sensor.external.dto.CardPaymentDTO;
+import com.sensor.external.exception.MercadoPagoException;
 import com.sensor.security.entity.User;
 import com.sensor.service.*;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
 import com.sensor.utils.transport.cart.CartInfoTransportToService;
 import com.sensor.utils.transport.cart.CartTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +43,10 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Autowired
     private ISaleOrderService saleOrderService;
+    @Value("${MP}")
+    private String accessToken; // Coloca tu token de acceso aquí
+
+
 
     @Override
     public CartState getState() {
@@ -46,7 +60,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Override
     public CartState getNextState() {
-        return null;
+        return CartState.TERMINADO;
     }
 
     @Override
@@ -72,10 +86,31 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         //cartDataRequest es el dato que viene por parte de la request
         //cart es el carrito en el estado actual
         //cartTransport es el carrito que se devolvera al usuario.
-        PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName(cartDataRequest.getChosenPaymentMethod().getPaymentMethod().getName());
+        PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName("Tarjeta");
+
+
+        BigDecimal subtotalCart = BigDecimal.valueOf(this.calculateSubtotal(cart.getCartProducts()));
+
+        BigDecimal amountSent = cartDataRequest.getChosenPaymentMethod().getPaymentInformation().getTransactionAmount();
+        System.out.println(subtotalCart);
+
+        if(subtotalCart.compareTo(amountSent) != 0){
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "El monto enviado no es el mismo que el total del carrito");
+        }
+
+        //seteamos el metodo de pago elegido al carrito. para que cuando se cree la orden detecte que descuento tiene ese metodo de pago
+        cart.setPaymentMethod(paymentMethod);
+
+        CardPaymentDTO cardPaymentDTO = cartDataRequest.getChosenPaymentMethod().getPaymentInformation();
+
+        cardPaymentDTO.setTransactionAmount(BigDecimal.valueOf(this.calculateTotal(subtotalCart.doubleValue(), paymentMethod.getDiscount())));
+
+        //creamos el pago
+        this.makeCardPayment(cardPaymentDTO);
 
         //le seteamos al carrito que ira al controller y que tiene las imagenes en base 64 los mismos datos de direcciones, metodo de envio y metodode de pago.
         cartTransport.getCart().setPaymentMethod(paymentMethod);
+        cartTransport.getCart().setState(this.getNextState());
 
         //se veran todos los datos que se fueron completando.
         CartInfoTransportToController cartInfoTransportToController = this.nextDataToReturn(user, cartTransport);
@@ -110,6 +145,47 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     @Override
     public CartProduct removeProduct(Long productId, double quantity, User user, Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra");
+    }
+
+
+    public void makeCardPayment(CardPaymentDTO cardPaymentDTO){
+
+        try {
+            MercadoPagoConfig.setAccessToken(accessToken);
+
+            PaymentClient paymentClient = new PaymentClient();
+            System.out.println(cardPaymentDTO.getProductDescription());
+
+            PaymentCreateRequest paymentCreateRequest =
+                    PaymentCreateRequest.builder()
+                            .transactionAmount(cardPaymentDTO.getTransactionAmount())
+                            .token(cardPaymentDTO.getToken())
+                            .description(cardPaymentDTO.getProductDescription())
+                            .installments(cardPaymentDTO.getInstallments())
+                            .paymentMethodId(cardPaymentDTO.getPaymentMethodId())
+                            .payer(
+                                    PaymentPayerRequest.builder()
+                                            .email(cardPaymentDTO.getPayer().getEmail())
+                                            .identification(
+                                                    IdentificationRequest.builder()
+                                                            .type(cardPaymentDTO.getPayer().getIdentification().getType())
+                                                            .number(cardPaymentDTO.getPayer().getIdentification().getNumber())
+                                                            .build())
+                                            .build())
+                            .build();
+
+
+            Payment createdPayment = paymentClient.create(paymentCreateRequest);
+
+
+        } catch (MPApiException apiException) {
+            System.out.println(apiException.getApiResponse().getContent());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas para procesar el pago");
+        } catch (MPException exception) {
+            System.out.println(exception.getMessage());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR,"Problemas para procesar el pago");
+        }
+
     }
 
     @Override

@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentMethodInfo {
 
-    private PaymentMethod paymentMethod;
-
     private CardPaymentDTO paymentInformation;
 
 }
