@@ -5,16 +5,20 @@ import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.client.preference.PreferenceClient;
+import com.mercadopago.client.preference.PreferenceItemRequest;
+import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
+import com.mercadopago.resources.preference.Preference;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.*;
 import com.sensor.enums.CartState;
 import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.CardPaymentDTO;
-import com.sensor.external.exception.MercadoPagoException;
+import com.sensor.security.MainUser;
 import com.sensor.security.entity.User;
 import com.sensor.service.*;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -23,12 +27,12 @@ import com.sensor.utils.transport.cart.CartTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,6 +50,8 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     @Value("${MP}")
     private String accessToken; // Coloca tu token de acceso aquí
 
+    @Value("${mp-endpoint-notification}")
+    private String endpointNotification; // Coloca tu token de acceso aquí
 
 
     @Override
@@ -94,7 +100,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         BigDecimal amountSent = cartDataRequest.getChosenPaymentMethod().getPaymentInformation().getTransactionAmount();
         System.out.println(subtotalCart);
 
-        if(subtotalCart.compareTo(amountSent) != 0){
+        if (subtotalCart.compareTo(amountSent) != 0) {
             throw new GeneralException(HttpStatus.BAD_REQUEST, "El monto enviado no es el mismo que el total del carrito");
         }
 
@@ -148,7 +154,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
 
-    public void makeCardPayment(CardPaymentDTO cardPaymentDTO){
+    public void makeCardPayment(CardPaymentDTO cardPaymentDTO) {
 
         try {
             MercadoPagoConfig.setAccessToken(accessToken);
@@ -183,7 +189,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas para procesar el pago");
         } catch (MPException exception) {
             System.out.println(exception.getMessage());
-            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR,"Problemas para procesar el pago");
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas para procesar el pago");
         }
 
     }
@@ -196,14 +202,92 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         this.cartDao.saveCart(cart);
     }
 
+    @Override
+    public String getPreferenceId(Cart cart, User userLoggedIn) {
+
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+        List<CartProduct> cartProducts = cart.getCartProducts();
+
+
+        List<PreferenceItemRequest> preferenceItemRequests = cartProducts.stream().map(cartProduct ->
+                PreferenceItemRequest.builder()
+                .title(cartProduct.getProduct().getName())
+                .quantity(cartProduct.getQuantity().intValue())
+                .unitPrice(BigDecimal.valueOf(cartProduct.getProduct().getPrice()))
+                .description(cartProduct.getProduct().getDescription())
+                .build()
+        ).collect(Collectors.toList());
+
+        try {
+            MercadoPagoConfig.setAccessToken(accessToken);
+
+            PreferenceClient client = new PreferenceClient();
+
+            HashMap<String, Object> map = new HashMap<>();
+
+            map.put("cartId", cart.getCartId());
+            map.put("userId", userLoggedIn.getUserId());
+
+            PreferenceRequest request =
+                    PreferenceRequest.builder().items(preferenceItemRequests).purpose("wallet_purchase")
+                            .notificationUrl(endpointNotification)
+                            .metadata(map)
+                            .build();
+
+            Preference preference = client.create(request);
+
+            return preference.getId();
+        } catch (MPApiException apiException) {
+            System.out.println(apiException.getApiResponse().getContent());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas para procesar el pago");
+        } catch (MPException exception) {
+            System.out.println(exception.getMessage());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas para procesar el pago");
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas para procesar el pago");
+        }
+    }
+
+    @Override
+    public void preferenceNotification(Cart cart, User userLoggedIn) {
+        //creamos la orden con los datos que tiene el carrito.
+        //y guardamos la orden
+
+        PaymentMethod paymentMethod = this.paymentMethodService.getPaymentMethodByName("Mercado Pago");
+
+        cart.setPaymentMethod(paymentMethod);
+
+        this.saleOrderService.saveSaleOrder(this.createSaleOrder(cart));
+
+        //eliminamos el carrito, como los atributos temporaryAddresses, shippingMethod y cartProducts tienen cascade remove, se eliminaran tambien
+        //asi que no es necesario eliminarlos a traves de sus servicios
+        this.cartDao.deleteCart(cart);
+
+        //Creamos el nuevo carrito para que el usuario pueda realizar mas compras.
+        Cart newCartForUser = new Cart();
+        newCartForUser.setUser(userLoggedIn);
+
+        this.cartDao.saveCart(newCartForUser);
+
+    }
+
     private SaleOrder createSaleOrder(Cart cart) {
 
         User user = cart.getUser();
+
         List<CartProduct> products = cart.getCartProducts();
+
         Set<TemporaryCartAddress> addresses = cart.getTemporaryCartAddresses();
+
         PaymentMethod paymentMethod = cart.getPaymentMethod();
+
         ShippingMethod shippingMethod = cart.getShippingMethod();
+
         Double subtotal = this.calculateSubtotal(products);
+
         Double total = this.calculateTotal(subtotal, paymentMethod.getDiscount());
 
         SaleOrder saleOrder = new SaleOrder();

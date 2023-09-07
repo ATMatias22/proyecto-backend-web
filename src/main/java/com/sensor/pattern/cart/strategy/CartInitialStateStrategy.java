@@ -156,4 +156,14 @@ public class CartInitialStateStrategy extends CartStateStrategy {
     public void cancel(Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede cancelar en el estado: "+ this.getState());
     }
+
+    @Override
+    public String getPreferenceId(Cart cart, User userLoggedIn) {
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede obtener una preferencia en el estado: "+ this.getState());
+    }
+
+    @Override
+    public void preferenceNotification(Cart cart, User userLoggedIn) {
+        throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede obtener una notificacion en el estado: "+ this.getState());
+    }
 }

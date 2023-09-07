@@ -1,10 +1,14 @@
 package com.sensor.service.implementation;
 
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.payment.PaymentClient;
+import com.mercadopago.resources.payment.Payment;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.Cart;
 import com.sensor.entity.CartProduct;
 import com.sensor.enums.CartState;
 import com.sensor.exception.GeneralException;
+import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
 import com.sensor.pattern.cart.strategy.CartStateStrategy;
 import com.sensor.pattern.cart.strategy.CartStateStrategyFactory;
 import com.sensor.security.MainUser;
@@ -19,6 +23,7 @@ import com.sensor.utils.transport.cart.CartTransportToController;
 import com.sensor.utils.transport.cartProduct.CartProductTransportToController;
 import com.sensor.utils.transport.product.ProductTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CartServiceImpl implements ICartService {
@@ -36,6 +42,10 @@ public class CartServiceImpl implements ICartService {
     private IUserService userService;
     @Autowired
     private CartStateStrategyFactory cartStateStrategyFactory;
+
+    @Value("${MP}")
+    private String accessToken; // Coloca tu token de acceso aquí
+
 
 
     @Override
@@ -110,7 +120,7 @@ public class CartServiceImpl implements ICartService {
         CartState state = cart.getState();
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
 
-        return strategy.addProduct(idProduct,quantity,userLoggedIn,cart);
+        return strategy.addProduct(idProduct, quantity, userLoggedIn, cart);
     }
 
     @Override
@@ -126,7 +136,7 @@ public class CartServiceImpl implements ICartService {
         CartState state = cart.getState();
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
 
-        return strategy.removeProduct(idProduct,quantity,userLoggedIn,cart);
+        return strategy.removeProduct(idProduct, quantity, userLoggedIn, cart);
     }
 
 
@@ -143,6 +153,85 @@ public class CartServiceImpl implements ICartService {
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
 
         strategy.cancel(cart);
+    }
+
+    @Override
+    public String getPreferenceId() {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+
+        CartState state = cart.getState();
+
+        CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
+
+        return strategy.getPreferenceId(cart, userLoggedIn);
+    }
+
+    @Override
+    public void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
+
+        Long userLoggedInId = null;
+        Long cartId = null;
+
+        MercadoPagoConfig.setAccessToken(accessToken);
+
+        String idData = mercadoPagoWebhookDTO.getData().getId();
+
+        System.out.println("idData: " + idData);
+
+        try {
+
+            PaymentClient paymentClient = new PaymentClient();
+            Payment payment = paymentClient.get(Long.parseLong(idData));
+
+            if(!payment.getStatus().equals("approved")){
+                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "El pago no fue aprobado");
+            }
+
+            System.out.println("obteniendo pago");
+            System.out.println(payment.getStatus());
+
+            System.out.println(payment);
+
+            Map<String, Object> map = payment.getMetadata();
+
+            if(!map.containsKey("user_id")){
+                System.out.println("No se encontro el atributo userId");
+                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
+            }
+
+            if(!map.containsKey("cart_id")){
+                System.out.println("No se encontro el atributo cartId");
+                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
+            }
+
+
+            //los valores los toma como tipo double, y yo necesito Long por eso esta conversion.
+            Double b = Double.parseDouble(map.get("cart_id").toString());
+            userLoggedInId = b.longValue();
+
+            Double v = Double.parseDouble(map.get("cart_id").toString());
+            cartId = v.longValue();
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
+        }
+
+        User userLoggedIn = this.userService.getUserById(userLoggedInId);
+
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+
+        CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(cart.getState());
+
+        strategy.preferenceNotification(cart, userLoggedIn);
+
     }
 
 
