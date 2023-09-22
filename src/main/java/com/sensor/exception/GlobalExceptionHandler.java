@@ -31,6 +31,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<HashMap<String, DetailsError>> generalExceptionHandler(GeneralException exception, WebRequest webRequest) {
 
 		logger.info("estoy en GeneralException");
+		System.out.println(exception.getMessage());
 		HashMap<String, DetailsError> dataError = new HashMap<>();
 
 		DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),

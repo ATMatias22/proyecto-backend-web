@@ -50,9 +50,6 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     @Value("${MP}")
     private String accessToken; // Coloca tu token de acceso aquí
 
-    @Value("${mp-endpoint-notification}")
-    private String endpointNotification; // Coloca tu token de acceso aquí
-
 
     @Override
     public CartState getState() {
@@ -232,7 +229,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
             PreferenceRequest request =
                     PreferenceRequest.builder().items(preferenceItemRequests).purpose("wallet_purchase")
-                            .notificationUrl(endpointNotification)
+                            .notificationUrl("endpoint al que se quiere enviar")
                             .metadata(map)
                             .build();
 
