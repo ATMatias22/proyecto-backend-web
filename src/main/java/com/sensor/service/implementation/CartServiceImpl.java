@@ -191,10 +191,6 @@ public class CartServiceImpl implements ICartService {
                 throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "El pago no fue aprobado");
             }
 
-            System.out.println("obteniendo pago");
-            System.out.println(payment.getStatus());
-
-            System.out.println(payment);
 
             Map<String, Object> map = payment.getMetadata();
 
@@ -210,11 +206,11 @@ public class CartServiceImpl implements ICartService {
 
 
             //los valores los toma como tipo double, y yo necesito Long por eso esta conversion.
-            Double b = Double.parseDouble(map.get("cart_id").toString());
-            userLoggedInId = b.longValue();
+            Double parsedUserId = Double.parseDouble(map.get("user_id").toString());
+            userLoggedInId = parsedUserId.longValue();
 
-            Double v = Double.parseDouble(map.get("cart_id").toString());
-            cartId = v.longValue();
+            Double parsedCartId = Double.parseDouble(map.get("cart_id").toString());
+            cartId = parsedCartId.longValue();
 
 
         } catch (Exception e) {
