@@ -22,18 +22,17 @@ fk_user,fk_role
 ) VALUES (2,1), (2,2);
 
 
-INSERT INTO type_of_address(
-id_type_of_address,name
-) VALUES (1,'Facturacion'), (2, 'Envio');
+INSERT INTO type_of_address(name
+) VALUES ('Facturacion'), ( 'Envio');
 
-INSERT INTO payment_method(id_payment_method, name, discount)
+INSERT INTO payment_method(name, discount)
 VALUES
-(1, 'Tarjeta de credito', 0),
-(2, 'Tarjeta de debito', 0),
-(3, 'Efectivo', 10);
+('Tarjeta', 10),
+('Mercado Pago', 0),
+('Efectivo', 20);
 
-INSERT INTO shipping_method(id_shipping_method, name)
-VALUES (1, 'A domicilio'), (2, 'Retiro en local');
+INSERT INTO shipping_method(name)
+VALUES ('A domicilio'), ('Retiro en local');
 
 INSERT INTO address (street, street_number, floor, apartment_number, fk_type_of_address, fk_user)
 VALUES ('calle falsa', '123', null,null, 1, 1);

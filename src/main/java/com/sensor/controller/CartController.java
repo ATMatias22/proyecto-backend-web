@@ -8,6 +8,8 @@ import com.sensor.dto.cartProduct.request.RemoveProductInCartRequest;
 import com.sensor.dto.cart.response.AddProductInCartResponse;
 import com.sensor.dto.cart.response.RemoveProductInCartResponse;
 import com.sensor.entity.CartProduct;
+import com.sensor.external.dto.preference.PreferenceDTO;
+import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
 import com.sensor.mapper.CartMapper;
 import com.sensor.service.ICartService;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -45,6 +47,25 @@ public class CartController {
         CartInfoForUserResponse cartInfoForUserResponse = this.cartMapper.cartTransportToControllerToCartInfoResponse(cartInfoTransportToController);
         return new ResponseEntity<>(cartInfoForUserResponse, HttpStatus.OK);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "preference")
+    public ResponseEntity<PreferenceDTO> getPreference() {
+
+        String preferenceId = this.cartService.getPreferenceId();
+        PreferenceDTO preferenceDTO = new PreferenceDTO(preferenceId);
+
+        return new ResponseEntity<>(preferenceDTO, HttpStatus.OK);
+    }
+
+
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, value = "preference-notification")
+    public ResponseEntity<Void> preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
+        this.cartService.preferenceNotification(mercadoPagoWebhookDTO );
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/products/{productId}")

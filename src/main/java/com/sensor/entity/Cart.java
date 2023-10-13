@@ -37,7 +37,7 @@ public class Cart {
     @JoinColumn(name = "fk_payment_method")
     private PaymentMethod paymentMethod;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "fk_shipping_method")
     private ShippingMethod shippingMethod;
 

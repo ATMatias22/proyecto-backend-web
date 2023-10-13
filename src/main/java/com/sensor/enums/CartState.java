@@ -2,6 +2,6 @@ package com.sensor.enums;
 
 public enum CartState {
 
-    ESTADO_INICIAL,CHECKOUT,PAGO;
+    ESTADO_INICIAL,CHECKOUT,PAGO,TERMINADO;
 
 }
