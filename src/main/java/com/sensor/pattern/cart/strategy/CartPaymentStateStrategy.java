@@ -5,6 +5,7 @@ import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
@@ -202,9 +203,6 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     @Override
     public String getPreferenceId(Cart cart, User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-
         List<CartProduct> cartProducts = cart.getCartProducts();
 
 
@@ -231,6 +229,9 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
                     PreferenceRequest.builder().items(preferenceItemRequests).purpose("wallet_purchase")
                             .notificationUrl("endpoint al que se quiere enviar")
                             .metadata(map)
+                            .backUrls(PreferenceBackUrlsRequest.builder()
+                                    .success("http://localhost:3000/comprasrealizadas")
+                                    .build())
                             .build();
 
             Preference preference = client.create(request);
