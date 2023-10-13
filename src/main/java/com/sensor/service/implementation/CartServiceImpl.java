@@ -171,6 +171,11 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    public void saveCart(Cart cart) {
+        this.cartDao.saveCart(cart);
+    }
+
+    @Override
     public void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
 
         Long userLoggedInId = null;

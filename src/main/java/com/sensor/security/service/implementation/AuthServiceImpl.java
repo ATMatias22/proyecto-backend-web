@@ -1,5 +1,6 @@
 package com.sensor.security.service.implementation;
 
+import com.sensor.entity.Cart;
 import com.sensor.exception.GeneralException;
 import com.sensor.exception.constants.ExceptionMessage;
 import com.sensor.security.entity.ConfirmationToken;
@@ -8,6 +9,7 @@ import com.sensor.security.entity.Role;
 import com.sensor.security.entity.User;
 import com.sensor.security.jwt.JwtProvider;
 import com.sensor.security.service.*;
+import com.sensor.service.ICartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,9 @@ public class AuthServiceImpl implements IAuthService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private IEmailService emailService;
+
+    @Autowired
+    private ICartService cartService;
     @Autowired
     private IConfirmationTokenService confirmationTokenService;
 
@@ -136,6 +141,14 @@ public class AuthServiceImpl implements IAuthService {
 
         User user = confirmationToken.getFkUser();
         userService.enableUser(user.getEmail());
+
+
+        //Creamos el nuevo carrito para que el usuario pueda realizar compras.
+        Cart cart = new Cart();
+        cart.setUser(user);
+
+        this.cartService.saveCart(cart);
+
         this.confirmationTokenService.deleteConfirmationTokenById(id);
 
         return confirmationToken.getToken();

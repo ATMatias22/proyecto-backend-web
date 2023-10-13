@@ -19,6 +19,8 @@ public interface ICartService {
     void cancelCart();
     String getPreferenceId();
 
+    void saveCart(Cart cart);
+
     void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO);
 
 
