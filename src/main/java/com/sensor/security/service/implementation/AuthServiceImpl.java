@@ -128,7 +128,7 @@ public class AuthServiceImpl implements IAuthService {
         );
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-        emailService.sendEmail("Registro",user.getEmail(), buildEmail(user.getName(), id));
+        emailService.send("Registro",user.getEmail(), buildEmail(user.getName(), id));
     }
 
     @Override

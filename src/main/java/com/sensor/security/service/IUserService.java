@@ -12,6 +12,10 @@ public interface IUserService {
 
 	void saveUser(User user);
 
+	void modifyData(User modifiedUser);
+
+	void confirmTokenEmailChange(String token);
+
 	Integer enableUser(String email);
 	
 	User getUserByEmail(String email);

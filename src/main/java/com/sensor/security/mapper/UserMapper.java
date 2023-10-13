@@ -1,6 +1,7 @@
 package com.sensor.security.mapper;
 
 import com.sensor.security.dto.user.request.LoginUserRequest;
+import com.sensor.security.dto.user.request.ModifyDataRequest;
 import com.sensor.security.dto.user.request.NewUserRequest;
 import com.sensor.security.dto.user.response.RegisteredUserResponse;
 import com.sensor.security.entity.User;
@@ -61,6 +62,15 @@ public abstract class UserMapper {
     })
     public abstract RegisteredUserResponse userEntityToRegisteredUserResponse(User user);
 
+
+    @Mappings({
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "lastname", target = "lastname"),
+            @Mapping(source = "email", target = "email"),
+            @Mapping(target = "dateOfBirth", expression = "java(stdv.getLocalDate(modifyDataRequest.getDateOfBirth()))" ),
+            @Mapping(source = "nationality", target = "country"),
+    })
+    public abstract User modifyDataRequestToUserEntity(ModifyDataRequest modifyDataRequest);
 
 
 
