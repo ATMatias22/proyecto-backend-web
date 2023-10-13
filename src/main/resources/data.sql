@@ -2,15 +2,15 @@
 INSERT INTO role (id_role,role)
 VALUES (1,'ROLE_USER'), (2,'ROLE_ADMIN');
 
-/* la password es "password"*/
+/* la password es "Password123%"*/
 INSERT INTO users(
 	 country, date_of_birth, email, enabled, lastname, name, password)
-	VALUES ('Argentina','1998-05-22','matias.alejandro.torrez@gmail.com',true,'Torrez','Matias','$2a$10$zVOUymQGcepjILpBhfFareVX3zZhTLRc3PcAhIJ6krT.1nvQ5LKhK');
+	VALUES ('Argentina','1998-05-22','matias.alejandro.torrez@gmail.com',true,'Torrez','Matias','$2a$10$gTrVzE2JEKDnDyuD7vUOEeLF.4fdVJxP2EwwRax5Tz.guA6HpZ2Bq');
 
-/* la password es "password"*/
+/* la password es "Password123%"*/
 INSERT INTO users(
 	 country, date_of_birth, email, enabled, lastname, name, password)
-	VALUES ('Argentina','1998-05-22','matias@gmail.com',true,'Lopez','Juan','$2a$10$zVOUymQGcepjILpBhfFareVX3zZhTLRc3PcAhIJ6krT.1nvQ5LKhK');
+	VALUES ('Argentina','1998-05-22','matias@gmail.com',true,'Lopez','Juan','$2a$10$gTrVzE2JEKDnDyuD7vUOEeLF.4fdVJxP2EwwRax5Tz.guA6HpZ2Bq');
 
 
 INSERT INTO user_roles(

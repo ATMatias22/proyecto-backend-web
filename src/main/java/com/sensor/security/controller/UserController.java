@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sensor.security.dto.user.request.ConfirmChangeUserEmailRequest;
+import com.sensor.security.dto.user.request.ConfirmChangeUserPasswordRequest;
 import com.sensor.security.dto.user.request.ModifyDataRequest;
+import com.sensor.security.dto.user.request.ModifyPasswordRequest;
 import com.sensor.security.dto.user.response.RegisteredUserResponse;
 import com.sensor.security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,19 @@ public class UserController {
     @PostMapping(path = "/confirm-data", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> confirmData(@RequestBody @Valid ConfirmChangeUserEmailRequest confirmChangeUserEmailRequest) {
         this.userService.confirmTokenEmailChange(confirmChangeUserEmailRequest.getToken());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(path ="/modify-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> modifyPassword(@RequestBody @Valid ModifyPasswordRequest mpr) {
+        this.userService.modifyPassword(mpr.getPassword(), mpr.getNewPassword());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(path = "/confirm-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> confirmPassword(@RequestBody @Valid ConfirmChangeUserPasswordRequest confirmChangeUserPasswordRequest) {
+        this.userService.confirmTokenPasswordChange(confirmChangeUserPasswordRequest.getToken());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
