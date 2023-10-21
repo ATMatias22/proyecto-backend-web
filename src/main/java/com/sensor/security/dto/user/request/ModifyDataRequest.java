@@ -27,8 +27,8 @@ public class ModifyDataRequest {
     @NotBlank(message = "El email no puede ser nulo ni vacio")
     private String email;
 
-    @NotBlank(message = "La nacionalidad no puede ser nulo ni vacio")
-    private String nationality;
+    @NotBlank(message = "El pais no puede ser nulo ni vacio")
+    private String country;
 
     @ValidDate(message =  "Fecha de nacimiento mal colocada")
     private String dateOfBirth;

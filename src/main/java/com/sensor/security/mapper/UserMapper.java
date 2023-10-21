@@ -22,6 +22,7 @@ public abstract class UserMapper {
             @Mapping(source = "newUser.lastname", target = "lastname"),
             @Mapping(source = "newUser.email", target = "email"),
             @Mapping(source = "newUser.password", target = "password"),
+            @Mapping(source = "newUser.country", target = "country"),
             @Mapping(target = "dateOfBirth", expression = "java(stdv.getLocalDate(newUser.getDateOfBirth()))" ),
             @Mapping(target = "userId", ignore = true ),
             @Mapping(target = "roles", ignore = true ),
@@ -68,7 +69,15 @@ public abstract class UserMapper {
             @Mapping(source = "lastname", target = "lastname"),
             @Mapping(source = "email", target = "email"),
             @Mapping(target = "dateOfBirth", expression = "java(stdv.getLocalDate(modifyDataRequest.getDateOfBirth()))" ),
-            @Mapping(source = "nationality", target = "country"),
+            @Mapping(source = "country", target = "country"),
+            @Mapping(target = "password", ignore = true ),
+            @Mapping(target = "userId", ignore = true ),
+            @Mapping(target = "roles", ignore = true ),
+            @Mapping(target = "created", ignore = true ),
+            @Mapping(target = "updated", ignore = true ),
+            @Mapping(target = "enabled", ignore = true ),
+            @Mapping(target = "address", ignore = true ),
+            @Mapping(target = "carts", ignore = true )
     })
     public abstract User modifyDataRequestToUserEntity(ModifyDataRequest modifyDataRequest);
 
