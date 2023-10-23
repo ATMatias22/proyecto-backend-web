@@ -30,9 +30,6 @@ import com.sensor.service.IProductService;
 public class ProductServiceImpl implements IProductService {
 
     @Autowired
-    private IUserService userService;
-
-    @Autowired
     private IProductDao productDao;
 
     @Autowired
@@ -62,11 +59,9 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     @Transactional
-    public void saveProduct(ProductTransportToService productTransportToService) {
+    public void saveProduct(ProductTransportToService productTransportToService, User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
         Product product = productTransportToService.getProduct();
 
         boolean existProductWithName = productDao.getProductByName(product.getName()).isPresent();
