@@ -15,5 +15,8 @@ public interface IFavoriteRepository extends JpaRepository<Favorite, Long> {
     @Modifying
     void deleteFirstByUserAndProduct(User user, Product product);
 
+    @Modifying
+    void deleteByUser(User user);
+
     boolean existsByUserAndProduct(User user, Product product);
 }

@@ -76,4 +76,9 @@ public class FavoriteServiceImpl implements IFavoriteService {
 
         this.favoriteDao.deleteFirstFavoriteByUserAndProduct(userLoggedIn, product);
     }
+
+    @Override
+    public void deleteAllFavoritesByUser(User userLoggedIn) {
+        this.favoriteDao.deleteAllFavoritesByUser(userLoggedIn);
+    }
 }

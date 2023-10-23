@@ -16,5 +16,7 @@ public interface IFavoriteService {
 
     void deleteFirstFavoriteByUserAndProduct(FavoriteTransportToService favoriteTransportToService, User userLoggedIn);
 
+    void deleteAllFavoritesByUser(User userLoggedIn);
+
 
 }

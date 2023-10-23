@@ -35,4 +35,9 @@ public class FavoriteDaoImpl implements IFavoriteDao {
     public void deleteFirstFavoriteByUserAndProduct(User user, Product product) {
         this.favoriteRepository.deleteFirstByUserAndProduct(user,product);
     }
+
+    @Override
+    public void deleteAllFavoritesByUser(User user) {
+        this.favoriteRepository.deleteByUser(user);
+    }
 }
