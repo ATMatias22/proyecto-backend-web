@@ -11,7 +11,6 @@ import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
 import com.sensor.pattern.cart.strategy.CartStateStrategy;
 import com.sensor.pattern.cart.strategy.CartStateStrategyFactory;
-import com.sensor.security.MainUser;
 import com.sensor.security.entity.User;
 import com.sensor.security.service.IUserService;
 import com.sensor.service.ICartService;
@@ -25,7 +24,6 @@ import com.sensor.utils.transport.product.ProductTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +36,6 @@ public class CartServiceImpl implements ICartService {
 
     @Autowired
     private ICartDao cartDao;
-    @Autowired
-    private IUserService userService;
     @Autowired
     private CartStateStrategyFactory cartStateStrategyFactory;
 
@@ -153,8 +149,9 @@ public class CartServiceImpl implements ICartService {
 
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
 
-        return strategy.getPreferenceId(cart, userLoggedIn);
+        return strategy.getPreferenceId(cart);
     }
+
 
     @Override
     public void saveCart(Cart cart) {
@@ -164,7 +161,6 @@ public class CartServiceImpl implements ICartService {
     @Override
     public void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
 
-        Long userLoggedInId = null;
         Long cartId = null;
 
         MercadoPagoConfig.setAccessToken(accessToken);
@@ -185,11 +181,6 @@ public class CartServiceImpl implements ICartService {
 
             Map<String, Object> map = payment.getMetadata();
 
-            if(!map.containsKey("user_id")){
-                System.out.println("No se encontro el atributo userId");
-                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
-            }
-
             if(!map.containsKey("cart_id")){
                 System.out.println("No se encontro el atributo cartId");
                 throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
@@ -197,9 +188,6 @@ public class CartServiceImpl implements ICartService {
 
 
             //los valores los toma como tipo double, y yo necesito Long por eso esta conversion.
-            Double parsedUserId = Double.parseDouble(map.get("user_id").toString());
-            userLoggedInId = parsedUserId.longValue();
-
             Double parsedCartId = Double.parseDouble(map.get("cart_id").toString());
             cartId = parsedCartId.longValue();
 
@@ -211,9 +199,10 @@ public class CartServiceImpl implements ICartService {
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
         }
 
-        User userLoggedIn = this.userService.getUserById(userLoggedInId);
 
-        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartById(cartId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este pago "));
+
+        User userLoggedIn = cart.getUser();
 
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(cart.getState());
 

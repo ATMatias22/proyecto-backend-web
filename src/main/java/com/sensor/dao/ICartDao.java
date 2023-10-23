@@ -14,4 +14,6 @@ public interface ICartDao {
 
     void deleteCart(Cart cart);
 
+    Optional<Cart> getCartById(Long id);
+
 }

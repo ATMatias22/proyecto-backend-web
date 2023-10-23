@@ -201,7 +201,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
     @Override
-    public String getPreferenceId(Cart cart, User userLoggedIn) {
+    public String getPreferenceId(Cart cart) {
 
         List<CartProduct> cartProducts = cart.getCartProducts();
 
@@ -223,11 +223,10 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
             HashMap<String, Object> map = new HashMap<>();
 
             map.put("cartId", cart.getCartId());
-            map.put("userId", userLoggedIn.getUserId());
 
             PreferenceRequest request =
                     PreferenceRequest.builder().items(preferenceItemRequests).purpose("wallet_purchase")
-                            .notificationUrl("endpoint al que se quiere enviar")
+                            .notificationUrl("http://localhost:8080/sensor/api/carts/preference-notification")
                             .metadata(map)
                             .backUrls(PreferenceBackUrlsRequest.builder()
                                     .success("http://localhost:3000/comprasrealizadas")

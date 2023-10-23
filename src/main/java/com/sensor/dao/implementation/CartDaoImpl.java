@@ -32,4 +32,9 @@ public class CartDaoImpl implements ICartDao {
         this.cartRepository.delete(cart);
     }
 
+    @Override
+    public Optional<Cart> getCartById(Long id) {
+        return this.cartRepository.findById(id);
+    }
+
 }
