@@ -49,11 +49,7 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public CartInfoTransportToController getCartThatAreNotTerminadoOrEntregaByUserLoggedIn() {
-
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+    public CartInfoTransportToController getCartByUserLoggedIn(User userLoggedIn) {
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -77,12 +73,10 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService) {
+    public CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService, User userLoggedIn) {
 
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -109,11 +103,9 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct addProduct(Long idProduct, Double quantity) {
+    public CartProduct addProduct(Long idProduct, Double quantity, User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -125,11 +117,9 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct removeProduct(Long idProduct, Double quantity) {
+    public CartProduct removeProduct(Long idProduct, Double quantity, User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -141,11 +131,9 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public void cancelCart() {
+    public void cancelCart(User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -156,10 +144,8 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public String getPreferenceId() {
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public String getPreferenceId(User userLoggedIn) {
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 

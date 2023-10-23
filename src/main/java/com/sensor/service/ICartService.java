@@ -3,25 +3,25 @@ package com.sensor.service;
 import com.sensor.entity.Cart;
 import com.sensor.entity.CartProduct;
 import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
+import com.sensor.security.entity.User;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
 import com.sensor.utils.transport.cart.CartInfoTransportToService;
 
-import java.util.List;
-
 public interface ICartService {
 
-    CartInfoTransportToController getCartThatAreNotTerminadoOrEntregaByUserLoggedIn();
+    CartInfoTransportToController getCartByUserLoggedIn(User userLoggedIn);
 
-    CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService);
+    CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService, User userLoggedIn);
 
-    CartProduct addProduct(Long idProduct, Double quantity);
-    CartProduct removeProduct(Long idProduct, Double quantity);
-    void cancelCart();
-    String getPreferenceId();
+    CartProduct addProduct(Long idProduct, Double quantity, User userLoggedIn);
+    CartProduct removeProduct(Long idProduct, Double quantity, User userLoggedIn);
+    void cancelCart(User userLoggedIn);
+    String getPreferenceId(User userLoggedIn);
 
     void saveCart(Cart cart);
 
     void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO);
+
 
 
 }
