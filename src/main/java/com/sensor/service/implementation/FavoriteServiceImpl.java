@@ -31,9 +31,6 @@ public class FavoriteServiceImpl implements IFavoriteService {
     private IFavoriteDao favoriteDao;
 
     @Autowired
-    private IUserService userService;
-
-    @Autowired
     private IProductService productService;
 
     @Override
