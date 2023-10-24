@@ -22,6 +22,8 @@ public interface ICartService {
 
     void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO);
 
+    void deleteCart(User userLoggedIn);
+
 
 
 }

@@ -6,14 +6,16 @@ import com.mercadopago.resources.payment.Payment;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.Cart;
 import com.sensor.entity.CartProduct;
+import com.sensor.entity.Product;
+import com.sensor.entity.Stock;
 import com.sensor.enums.CartState;
 import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
 import com.sensor.pattern.cart.strategy.CartStateStrategy;
 import com.sensor.pattern.cart.strategy.CartStateStrategyFactory;
 import com.sensor.security.entity.User;
-import com.sensor.security.service.IUserService;
 import com.sensor.service.ICartService;
+import com.sensor.service.IStockService;
 import com.sensor.utils.directory.DirectoryData;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -38,6 +40,9 @@ public class CartServiceImpl implements ICartService {
     private ICartDao cartDao;
     @Autowired
     private CartStateStrategyFactory cartStateStrategyFactory;
+
+    @Autowired
+    private IStockService stockService;
 
     @Value("${MP}")
     private String accessToken; // Coloca tu token de acceso aquí
@@ -208,6 +213,22 @@ public class CartServiceImpl implements ICartService {
 
         strategy.preferenceNotification(cart, userLoggedIn);
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteCart(User userLoggedIn) {
+
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se puede borrar el carrito porque no existe"));
+
+        cart.getCartProducts().forEach( cartProduct -> {
+            Stock stock = cartProduct.getProduct().getStock();
+            Double quantity = cartProduct.getQuantity();
+            stock.setAvailableStock(stock.getAvailableStock() + quantity);
+            this.stockService.saveStock(stock);
+        });
+
+        this.cartDao.deleteCart(cart);
     }
 
 
