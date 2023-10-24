@@ -31,36 +31,29 @@ public class FavoriteServiceImpl implements IFavoriteService {
     private IFavoriteDao favoriteDao;
 
     @Autowired
-    private IUserService userService;
-
-    @Autowired
     private IProductService productService;
 
     @Override
-    public List<FavoriteTransportToController> getAllFavoritesByUserLoggedIn() {
+    public List<FavoriteTransportToController> getAllFavoritesByUserLoggedIn(User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userService.getUserByEmail(mu.getUsername());
-
-        return this.favoriteDao.getAllFavoritesByUser(user).stream().map(fav -> {
+        return this.favoriteDao.getAllFavoritesByUser(userLoggedIn).stream().map(fav -> {
             String pathFile = fav.getProduct().getImage() != null ? DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES + fav.getProduct().getImage() : null;
             return new FavoriteTransportToController(new ProductTransportToController(fav.getProduct(), FileHelper.filePathToBase64String(pathFile, DirectoryData.PRODUCT_DEFAULT_IMAGE)), fav.getCreated());
         }).collect(Collectors.toList());
     }
 
     @Override
-    public void saveFavorite(FavoriteTransportToService favoriteTransportToService) {
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userService.getUserByEmail(mu.getUsername());
+    public void saveFavorite(FavoriteTransportToService favoriteTransportToService, User userLoggedIn) {
+
         Product product = this.productService.getEnabledProductById(favoriteTransportToService.getProductId()).getProduct();
-        boolean exists = this.favoriteDao.existsFavoriteByUserAndProduct(user, product);
+        boolean exists = this.favoriteDao.existsFavoriteByUserAndProduct(userLoggedIn, product);
 
         if(exists){
             throw new GeneralException(HttpStatus.BAD_REQUEST, "Este producto ya fue agregado a favoritos");
         }
 
         Favorite favorite = new Favorite();
-        favorite.setUser(user);
+        favorite.setUser(userLoggedIn);
         favorite.setProduct(product);
 
         this.favoriteDao.saveFavorite(favorite);
@@ -69,16 +62,20 @@ public class FavoriteServiceImpl implements IFavoriteService {
 
     @Override
     @Transactional
-    public void deleteFirstFavoriteByUserAndProduct(FavoriteTransportToService favoriteTransportToService) {
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userService.getUserByEmail(mu.getUsername());
+    public void deleteFirstFavoriteByUserAndProduct(FavoriteTransportToService favoriteTransportToService, User userLoggedIn) {
+
         Product product = this.productService.getEnabledProductById(favoriteTransportToService.getProductId()).getProduct();
-        boolean existsFavorite = this.favoriteDao.existsFavoriteByUserAndProduct(user, product);
+        boolean existsFavorite = this.favoriteDao.existsFavoriteByUserAndProduct(userLoggedIn, product);
 
         if(!existsFavorite){
             throw new GeneralException(HttpStatus.BAD_REQUEST, "El producto que quiere eliminar de favoritos, no esta en favoritos");
         }
 
-        this.favoriteDao.deleteFirstFavoriteByUserAndProduct(user, product);
+        this.favoriteDao.deleteFirstFavoriteByUserAndProduct(userLoggedIn, product);
+    }
+
+    @Override
+    public void deleteAllFavoritesByUser(User userLoggedIn) {
+        this.favoriteDao.deleteAllFavoritesByUser(userLoggedIn);
     }
 }

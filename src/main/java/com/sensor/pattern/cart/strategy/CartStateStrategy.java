@@ -20,7 +20,7 @@ public abstract class CartStateStrategy {
     public abstract CartProduct addProduct(Long productId, double quantity, User user, Cart cart);
     public abstract CartProduct removeProduct(Long productId, double quantity, User user, Cart cart);
     public abstract void cancel(Cart cart);
-    public abstract String getPreferenceId(Cart cart, User userLoggedIn);
+    public abstract String getPreferenceId(Cart cart);
     public abstract void preferenceNotification(Cart cart, User userLoggedIn);
 
 }

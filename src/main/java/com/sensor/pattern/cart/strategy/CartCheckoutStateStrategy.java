@@ -136,7 +136,7 @@ public class CartCheckoutStateStrategy extends CartStateStrategy{
     }
 
     @Override
-    public String getPreferenceId(Cart cart, User userLoggedIn) {
+    public String getPreferenceId(Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede obtener una preferencia en el estado: "+ this.getState());
     }
 

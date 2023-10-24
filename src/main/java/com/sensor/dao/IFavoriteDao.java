@@ -17,4 +17,6 @@ public interface IFavoriteDao {
     void saveFavorite(Favorite favorite);
 
     void deleteFirstFavoriteByUserAndProduct(User user, Product product);
+
+    void deleteAllFavoritesByUser(User user);
 }

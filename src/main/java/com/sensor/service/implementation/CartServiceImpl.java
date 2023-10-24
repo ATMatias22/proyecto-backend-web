@@ -6,15 +6,16 @@ import com.mercadopago.resources.payment.Payment;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.Cart;
 import com.sensor.entity.CartProduct;
+import com.sensor.entity.Product;
+import com.sensor.entity.Stock;
 import com.sensor.enums.CartState;
 import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
 import com.sensor.pattern.cart.strategy.CartStateStrategy;
 import com.sensor.pattern.cart.strategy.CartStateStrategyFactory;
-import com.sensor.security.MainUser;
 import com.sensor.security.entity.User;
-import com.sensor.security.service.IUserService;
 import com.sensor.service.ICartService;
+import com.sensor.service.IStockService;
 import com.sensor.utils.directory.DirectoryData;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -25,7 +26,6 @@ import com.sensor.utils.transport.product.ProductTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +39,10 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private ICartDao cartDao;
     @Autowired
-    private IUserService userService;
-    @Autowired
     private CartStateStrategyFactory cartStateStrategyFactory;
+
+    @Autowired
+    private IStockService stockService;
 
     @Value("${MP}")
     private String accessToken; // Coloca tu token de acceso aquí
@@ -49,11 +50,7 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public CartInfoTransportToController getCartThatAreNotTerminadoOrEntregaByUserLoggedIn() {
-
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+    public CartInfoTransportToController getCartByUserLoggedIn(User userLoggedIn) {
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -77,12 +74,10 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService) {
+    public CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService, User userLoggedIn) {
 
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -109,11 +104,9 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct addProduct(Long idProduct, Double quantity) {
+    public CartProduct addProduct(Long idProduct, Double quantity, User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -125,11 +118,9 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct removeProduct(Long idProduct, Double quantity) {
+    public CartProduct removeProduct(Long idProduct, Double quantity, User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -141,11 +132,9 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public void cancelCart() {
+    public void cancelCart(User userLoggedIn) {
 
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -156,10 +145,8 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public String getPreferenceId() {
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public String getPreferenceId(User userLoggedIn) {
 
-        User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -167,8 +154,9 @@ public class CartServiceImpl implements ICartService {
 
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(state);
 
-        return strategy.getPreferenceId(cart, userLoggedIn);
+        return strategy.getPreferenceId(cart);
     }
+
 
     @Override
     public void saveCart(Cart cart) {
@@ -178,7 +166,6 @@ public class CartServiceImpl implements ICartService {
     @Override
     public void preferenceNotification(MercadoPagoWebhookDTO mercadoPagoWebhookDTO) {
 
-        Long userLoggedInId = null;
         Long cartId = null;
 
         MercadoPagoConfig.setAccessToken(accessToken);
@@ -199,11 +186,6 @@ public class CartServiceImpl implements ICartService {
 
             Map<String, Object> map = payment.getMetadata();
 
-            if(!map.containsKey("user_id")){
-                System.out.println("No se encontro el atributo userId");
-                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
-            }
-
             if(!map.containsKey("cart_id")){
                 System.out.println("No se encontro el atributo cartId");
                 throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
@@ -211,9 +193,6 @@ public class CartServiceImpl implements ICartService {
 
 
             //los valores los toma como tipo double, y yo necesito Long por eso esta conversion.
-            Double parsedUserId = Double.parseDouble(map.get("user_id").toString());
-            userLoggedInId = parsedUserId.longValue();
-
             Double parsedCartId = Double.parseDouble(map.get("cart_id").toString());
             cartId = parsedCartId.longValue();
 
@@ -225,14 +204,31 @@ public class CartServiceImpl implements ICartService {
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas al recibir las notificaciones");
         }
 
-        User userLoggedIn = this.userService.getUserById(userLoggedInId);
 
-        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
+        Cart cart = this.cartDao.getCartById(cartId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este pago "));
+
+        User userLoggedIn = cart.getUser();
 
         CartStateStrategy strategy = cartStateStrategyFactory.getStrategy(cart.getState());
 
         strategy.preferenceNotification(cart, userLoggedIn);
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteCart(User userLoggedIn) {
+
+        Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se puede borrar el carrito porque no existe"));
+
+        cart.getCartProducts().forEach( cartProduct -> {
+            Stock stock = cartProduct.getProduct().getStock();
+            Double quantity = cartProduct.getQuantity();
+            stock.setAvailableStock(stock.getAvailableStock() + quantity);
+            this.stockService.saveStock(stock);
+        });
+
+        this.cartDao.deleteCart(cart);
     }
 
 

@@ -17,6 +17,9 @@ public interface IUserDao {
 
 	Integer enableUser(String email);
 
+	void deleteUser(Long id);
+
+
 
 
 }

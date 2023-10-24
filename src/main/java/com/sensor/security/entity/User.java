@@ -65,7 +65,7 @@ public class User implements Cloneable{
 
 	private Boolean enabled = false;
 
-	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Address> address;
 
 	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
