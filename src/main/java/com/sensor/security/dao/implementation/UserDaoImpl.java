@@ -41,4 +41,9 @@ public class UserDaoImpl implements IUserDao {
 		return this.userRepository.enableUser(email);
 	}
 
+	@Override
+	public void deleteUser(Long id) {
+		this.userRepository.deleteById(id);
+	}
+
 }

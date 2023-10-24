@@ -3,10 +3,7 @@ package com.sensor.security.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.sensor.security.dto.user.request.ConfirmChangeUserEmailRequest;
-import com.sensor.security.dto.user.request.ConfirmChangeUserPasswordRequest;
-import com.sensor.security.dto.user.request.ModifyDataRequest;
-import com.sensor.security.dto.user.request.ModifyPasswordRequest;
+import com.sensor.security.dto.user.request.*;
 import com.sensor.security.dto.user.response.RegisteredUserResponse;
 import com.sensor.security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +78,13 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
+    @PostMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteUser(@RequestBody @Valid DeleteUserRequest du) {
+        this.userService.deleteUser(du.getPassword());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
 
 }

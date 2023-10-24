@@ -26,4 +26,7 @@ public interface IUserService {
 	User getUserByEmail(String email);
 
 	User getUserLoggedInByEmailInToken();
+
+	void deleteUser(String password);
+
 }

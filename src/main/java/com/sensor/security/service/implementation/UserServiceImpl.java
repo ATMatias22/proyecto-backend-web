@@ -11,6 +11,8 @@ import com.sensor.security.entity.ConfirmationTokenPasswordChange;
 import com.sensor.security.service.IConfirmationTokenEmailChangeService;
 import com.sensor.security.service.IConfirmationTokenPasswordChangeService;
 import com.sensor.security.service.IEmailService;
+import com.sensor.service.ICartService;
+import com.sensor.service.IFavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,12 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private IConfirmationTokenPasswordChangeService confirmationTokenPasswordChangeService;
+
+	@Autowired
+	private IFavoriteService favoriteService;
+
+	@Autowired
+	private ICartService cartService;
 
 	public UserServiceImpl(@Lazy PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
@@ -76,6 +84,25 @@ public class UserServiceImpl implements IUserService {
 	public User getUserLoggedInByEmailInToken() {
 		MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return  this.userDao.getUserById(mu.getId()).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario logueado por favor inicie sesion de vuelta"));
+	}
+
+	@Override
+	@Transactional
+	public void deleteUser(String password) {
+
+		MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = this.getUserByEmail(mu.getUsername());
+
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new GeneralException(HttpStatus.BAD_REQUEST, "La contraseña no es la del usuario logueado");
+		}
+
+		this.confirmationTokenPasswordChangeService.deleteByFkUser(user);
+		this.confirmationTokenEmailChangeService.deleteByFkUser(user);
+		this.favoriteService.deleteAllFavoritesByUser(user);
+		this.cartService.deleteCart(user);
+		this.userDao.deleteUser(user.getUserId());
+
 	}
 
 	@Override
