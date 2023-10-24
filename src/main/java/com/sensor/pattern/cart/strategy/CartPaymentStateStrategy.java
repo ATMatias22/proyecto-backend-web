@@ -275,7 +275,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
         User user = cart.getUser();
 
-        List<CartProduct> products = cart.getCartProducts();
+        Set<CartProduct> products = new HashSet<>(cart.getCartProducts());
 
         Set<TemporaryCartAddress> addresses = cart.getTemporaryCartAddresses();
 
@@ -307,7 +307,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
 
-    private Double calculateSubtotal(List<CartProduct> products) {
+    private Double calculateSubtotal(Collection<CartProduct> products) {
         return products.stream().mapToDouble(product -> product.getProduct().getPrice() * product.getQuantity()).sum();
     }
 
@@ -328,7 +328,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         }).collect(Collectors.toSet());
     }
 
-    private List<SaleProduct> toSaleProduct(List<CartProduct> products, SaleOrder saleOrder) {
+    private List<SaleProduct> toSaleProduct(Collection<CartProduct> products, SaleOrder saleOrder) {
 
         return products.stream().map(product -> {
 
