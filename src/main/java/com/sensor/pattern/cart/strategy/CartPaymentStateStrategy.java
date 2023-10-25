@@ -193,6 +193,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
     @Override
+    @Transactional
     public void cancel(Cart cart) {
         cart.setShippingMethod(null);
         cart.setState(CartState.ESTADO_INICIAL);
