@@ -7,7 +7,6 @@ build/
 
 ### Dev properties ###
 src/main/resources/application-dev.properties
-src/main/resources/application.properties
 src/main/resources/static/product_images/**
 
 ### STS ###
