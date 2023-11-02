@@ -48,6 +48,8 @@ dependencies {
 	
 }
 
+tasks.jar{enabled=false}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
