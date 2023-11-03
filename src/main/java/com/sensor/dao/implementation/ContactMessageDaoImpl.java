@@ -27,8 +27,8 @@ public class ContactMessageDaoImpl implements IContactMessageDao {
 	}
 
 	@Override
-	public ContactMessage saveContactMessage(ContactMessage contactMessage) {
-		return contactMessageRepository.save(contactMessage);
+	public void saveContactMessage(ContactMessage contactMessage) {
+		 contactMessageRepository.save(contactMessage);
 	}
 
 	@Override

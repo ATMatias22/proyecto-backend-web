@@ -1,35 +1,44 @@
 package com.sensor.mapper;
 
+import com.sensor.dto.contact.request.ContactMessageRequest;
+import com.sensor.dto.contact.response.ContactMessageResponse;
+import com.sensor.utils.date.StringToLocalDateTimeAndViceVersa;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import com.sensor.dto.contact.request.ContactMessageDTO;
 import com.sensor.entity.ContactMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Mapper(componentModel = "spring")
-public interface ContactMessageMapper {
+public abstract class ContactMessageMapper {
+    @Autowired
+    protected StringToLocalDateTimeAndViceVersa stdv;
 
-	
-	@Mappings({ 
-		@Mapping(source = "contactId", target = "id"), 
-		@Mapping(source = "name", target = "name"),
-		@Mapping(source = "lastName", target = "lastName"),
-		@Mapping(source = "email", target = "email"),
-		@Mapping(source = "reasonForContact", target = "reasonForContact"),
-		@Mapping(source = "message", target = "message"),
-		@Mapping(source = "created", target = "created")
-	})
-	ContactMessageDTO toContactMessageDTO (ContactMessage contactMessage); 
+    @Mappings({
+            @Mapping(source = "contactMessage.contactId", target = "id"),
+            @Mapping(source = "contactMessage.name", target = "name"),
+            @Mapping(source = "contactMessage.lastname", target = "lastname"),
+            @Mapping(source = "contactMessage.email", target = "email"),
+            @Mapping(source = "contactMessage.reasonForContact", target = "reasonForContact"),
+            @Mapping(source = "contactMessage.message", target = "message"),
+            @Mapping(target = "created", expression = "java(stdv.getString(contactMessage.getCreated()))")
+    })
+    public abstract ContactMessageResponse toContactMessageResponse(ContactMessage contactMessage);
 
-	@InheritInverseConfiguration
-	@Mappings({ 
-		@Mapping(target = "contactId", ignore = true),
-		@Mapping(target = "created", ignore = true)
-	})
-	ContactMessage toContactMessage(ContactMessageDTO contactMessageDTO);
+    @Mappings({
+            @Mapping(source = "contactMessageRequest.name", target = "name"),
+            @Mapping(source = "contactMessageRequest.lastname", target = "lastname"),
+            @Mapping(source = "contactMessageRequest.email", target = "email"),
+            @Mapping(source = "contactMessageRequest.reasonForContact", target = "reasonForContact"),
+            @Mapping(source = "contactMessageRequest.message", target = "message"),
+            @Mapping(target = "contactId", ignore = true),
+            @Mapping(target = "updated", ignore = true),
+            @Mapping(target = "created", ignore = true)
+    })
+    public abstract ContactMessage toContactMessage(ContactMessageRequest contactMessageRequest);
 
-	
+
 }

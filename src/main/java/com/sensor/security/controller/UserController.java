@@ -3,53 +3,88 @@ package com.sensor.security.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.sensor.security.dto.user.request.*;
 import com.sensor.security.dto.user.response.RegisteredUserResponse;
 import com.sensor.security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sensor.security.service.IUserService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
-	
-	@Autowired
-	private IUserService userSerivce;
 
-	@Autowired
-	private UserMapper userMapper;
-	
+    @Autowired
+    private IUserService userService;
 
-	@GetMapping("/all")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<RegisteredUserResponse>> getAllUsers() {
-		List<RegisteredUserResponse> registeredUsers = userSerivce.getAllUsers().stream().map( user -> userMapper.userEntityToRegisteredUserResponse(user)).collect(Collectors.toList());
-		return new ResponseEntity<>(registeredUsers, HttpStatus.OK);
-	}
-	
-	@GetMapping("/{userId}")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<RegisteredUserResponse> getUserById(
-			@PathVariable("userId") Long userId) {
-		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserById(userId));
-		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
-	}
-	
-	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/email/{email}")
-	public ResponseEntity<RegisteredUserResponse> getUserLoggedInByEmailInToken() {
-		RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userSerivce.getUserLoggedInByEmailInToken());
-		return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
+    @Autowired
+    private UserMapper userMapper;
 
-	}
+
+    @GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<RegisteredUserResponse>> getAllUsers() {
+        List<RegisteredUserResponse> registeredUsers = userService.getAllUsers().stream().map(user -> userMapper.userEntityToRegisteredUserResponse(user)).collect(Collectors.toList());
+        return new ResponseEntity<>(registeredUsers, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RegisteredUserResponse> getUserById(
+            @PathVariable("userId") Long userId) {
+        RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userService.getUserById(userId));
+        return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<RegisteredUserResponse> getUserLoggedInByEmailInToken() {
+        RegisteredUserResponse registeredUser = userMapper.userEntityToRegisteredUserResponse(userService.getUserLoggedInByEmailInToken());
+        return new ResponseEntity<RegisteredUserResponse>(registeredUser, HttpStatus.OK);
+
+    }
+
+    @PutMapping(path = "/modify-data", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> modifyData(@RequestBody @Valid ModifyDataRequest mdr) {
+        this.userService.modifyData(this.userMapper.modifyDataRequestToUserEntity(mdr));
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping(path = "/confirm-data", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> confirmData(@RequestBody @Valid ConfirmChangeUserEmailRequest confirmChangeUserEmailRequest) {
+        this.userService.confirmTokenEmailChange(confirmChangeUserEmailRequest.getToken());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(path ="/modify-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> modifyPassword(@RequestBody @Valid ModifyPasswordRequest mpr) {
+        this.userService.modifyPassword(mpr.getPassword(), mpr.getNewPassword());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(path = "/confirm-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> confirmPassword(@RequestBody @Valid ConfirmChangeUserPasswordRequest confirmChangeUserPasswordRequest) {
+        this.userService.confirmTokenPasswordChange(confirmChangeUserPasswordRequest.getToken());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PostMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteUser(@RequestBody @Valid DeleteUserRequest du) {
+        this.userService.deleteUser(du.getPassword());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
 
 }

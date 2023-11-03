@@ -2,24 +2,29 @@ package com.sensor.service;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.sensor.dto.product.request.ProductDTO;
+import com.sensor.entity.Product;
+import com.sensor.security.entity.User;
+import com.sensor.utils.file.FileHelper;
+import com.sensor.utils.transport.product.ProductTransportToController;
+import com.sensor.utils.transport.product.ProductTransportToService;
 
 public interface IProductService {
 
-	void saveProduct(String productDTOJSON, MultipartFile file);
+	void saveProduct(ProductTransportToService productTransportToService, User userLoggedIn);
 
 	void deleteProductById(Long productId);
 
-	ProductDTO getProductByName(String name);
+	ProductTransportToController getProductByName(String name);
 
-	void modifyProductById(Long productId, ProductDTO productDTO);
+	void modifyProductById(Long productId, ProductTransportToService productTransportToService);
 
-	List<ProductDTO> getAllEnabledProducts();
+	List<ProductTransportToController> getAllEnabledProducts();
 
-	ProductDTO getEnabledProductById(Long productId);
-	
+	ProductTransportToController getEnabledProductById(Long productId);
+
+	Product getEnabledProductByIdWithoutBase64Image(Long productId);
+
+
 	
 
 	

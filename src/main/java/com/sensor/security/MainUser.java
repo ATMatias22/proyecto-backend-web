@@ -62,7 +62,7 @@ public class MainUser implements UserDetails {
     }
 
     private static Collection<GrantedAuthority> mappingToGrantedAuthorities(Collection<Role> roles){
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getERole().toString())).collect(Collectors.toList());
     }
 
 }

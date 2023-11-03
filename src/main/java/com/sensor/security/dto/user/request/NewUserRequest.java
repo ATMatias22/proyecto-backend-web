@@ -27,7 +27,7 @@ public class NewUserRequest {
 	@NotNull(message = "El email no puede ser nulo")
 	private String password;
 
-	@NotBlank(message = "La nacionalidad no puede ser nulo ni vacio")
+	@NotBlank(message = "El pais no puede ser nulo ni vacio")
 	private String country;
 
 	@ValidDate(message =  "Fecha de nacimiento mal colocada")

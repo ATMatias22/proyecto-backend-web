@@ -1,34 +1,36 @@
 package com.sensor.mapper;
 
+import com.sensor.dto.comment.request.CommentRequest;
+import com.sensor.dto.comment.response.CommentResponse;
+import com.sensor.utils.date.StringToLocalDateTimeAndViceVersa;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import com.sensor.dto.comment.request.CommentDTO;
 import com.sensor.entity.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
-public interface CommentMapper {
+public abstract class CommentMapper {
+
+    @Autowired
+    protected StringToLocalDateTimeAndViceVersa stdv;
 
     @Mappings({
-            @Mapping(source = "commentId", target = "id"),
-            @Mapping(source = "comment", target = "comment"),
-            @Mapping(source = "userId", target = "idUser"),
-            @Mapping(source = "productId", target = "idProduct"),
-            @Mapping(source = "created", target = "created"),
-            @Mapping(source = "updated", target = "updated"),
-            @Mapping(source = "comment.user.email", target = "email")
+            @Mapping(source = "comment.user.email", target = "email"),
+            @Mapping(source = "comment.message", target = "comment"),
+            @Mapping(target = "created", expression = "java(stdv.getString(comment.getCreated()))"),
+            @Mapping(target = "updated", expression = "java(stdv.getString(comment.getUpdated()))")
     })
-    CommentDTO toCommentDTO(Comment comment);
+    public abstract CommentResponse toCommentResponse(Comment comment);
 
     @Mappings({
-            @Mapping(source = "idProduct", target = "productId"),
-            @Mapping(source = "comment", target = "comment"),
-            @Mapping(source = "idUser", target = "userId"),
+            @Mapping(source = "commentRequest.comment", target = "message"),
+            @Mapping(target = "product", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
             @Mapping(target = "commentId", ignore = true),
             @Mapping(target = "user", ignore = true)
     })
-    Comment toComment(CommentDTO commentDTO);
+    public abstract Comment toCommentEntity(CommentRequest commentRequest);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sensor.entity.Product;
 
-public interface IProductRepository extends CrudRepository<Product, Long> {
+public interface IProductRepository extends JpaRepository<Product, Long> {
 
-	public Optional<Product> findByName(String name);
+	Optional<Product> findByName(String name);
 
-	public List<Product> findByEnabledTrue();
+	List<Product> findByEnabledTrue();
 
-	public Optional<Product> findByEnabledTrueAndProductId(Long productId);
+	Optional<Product> findByEnabledTrueAndProductId(Long productId);
 
 	@Modifying
 	@Transactional

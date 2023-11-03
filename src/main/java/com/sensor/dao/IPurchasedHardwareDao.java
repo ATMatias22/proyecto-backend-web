@@ -12,7 +12,7 @@ public interface IPurchasedHardwareDao {
 
 	Optional<PurchasedHardware> getPurchasedHardwareById(Long purchasedHardwareId);
 
-	PurchasedHardware savePurchasedHardware(PurchasedHardware purchasedHardware);
+	void savePurchasedHardware(PurchasedHardware purchasedHardware);
 	
 	void deletePurchasedHardwareById(Long purchasedHardwareId);
 

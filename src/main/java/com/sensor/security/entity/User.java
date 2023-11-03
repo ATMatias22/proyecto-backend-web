@@ -4,13 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
 
+import com.sensor.entity.Address;
+import com.sensor.entity.Cart;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "users")
@@ -50,13 +55,21 @@ public class User implements Cloneable{
 	private String password;
 
 
-	@Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
+	@CreationTimestamp
+	@Column(name = "create_date")
 	private LocalDateTime created;
 
-	@Column(name = "update_date", insertable = false, nullable = false, columnDefinition="timestamp default current_timestamp")
+	@UpdateTimestamp
+	@Column(name = "update_date")
 	private LocalDateTime updated;
 
 	private Boolean enabled = false;
+
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	private List<Address> address;
+
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
+	private List<Cart> carts;
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

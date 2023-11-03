@@ -7,15 +7,18 @@ import com.sensor.security.entity.User;
 
 public interface IUserDao {
 
-	List<User> getAll();
+	List<User> getAllUsers();
 
-	Optional<User> getUser(Long userId);
+	Optional<User> getUserById(Long userId);
 
 	Optional<User> getUserByEmail(String email);
 
 	User saveUser(User user);
 
 	Integer enableUser(String email);
+
+	void deleteUser(Long id);
+
 
 
 

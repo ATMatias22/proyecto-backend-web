@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,8 +23,8 @@ public class ConfirmationToken {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String token;
 
-    @Column(nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Argentina/Buenos_Aires")
+    @Column(name = "created_date")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @ManyToOne

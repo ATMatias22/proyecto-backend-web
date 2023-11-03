@@ -11,7 +11,7 @@ public interface IContactMessageDao {
 
 	Optional<ContactMessage> getContactMessageById(Long contactMessageId);
 
-	ContactMessage saveContactMessage(ContactMessage contactMessage);
+	void saveContactMessage(ContactMessage contactMessage);
 
 	void deleteContactMessageById(Long contactMessageId);
 

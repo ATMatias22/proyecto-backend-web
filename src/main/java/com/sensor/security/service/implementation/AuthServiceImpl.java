@@ -1,12 +1,15 @@
 package com.sensor.security.service.implementation;
 
+import com.sensor.entity.Cart;
 import com.sensor.exception.GeneralException;
 import com.sensor.exception.constants.ExceptionMessage;
 import com.sensor.security.entity.ConfirmationToken;
+import com.sensor.security.enums.ERole;
 import com.sensor.security.entity.Role;
 import com.sensor.security.entity.User;
 import com.sensor.security.jwt.JwtProvider;
 import com.sensor.security.service.*;
+import com.sensor.service.ICartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,9 @@ public class AuthServiceImpl implements IAuthService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private IEmailService emailService;
+
+    @Autowired
+    private ICartService cartService;
     @Autowired
     private IConfirmationTokenService confirmationTokenService;
 
@@ -55,7 +61,7 @@ public class AuthServiceImpl implements IAuthService {
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_USER"));
+            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase(ERole.ROLE_USER.toString()));
             if(existRole){
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return jwtProvider.generateToken(authentication);
@@ -72,14 +78,14 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public String loginAdmin(User user) {
+    public String loginAdminUser(User user) {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+            boolean existRole = authorities.stream().anyMatch(authority -> authority.getAuthority().equalsIgnoreCase(ERole.ROLE_ADMIN.toString()));
             if(existRole){
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return jwtProvider.generateToken(authentication);
@@ -107,7 +113,7 @@ public class AuthServiceImpl implements IAuthService {
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el servidor");
         }
 
-        Role role = roleService.getRoleByName("ROLE_USER");
+        Role role = roleService.getRoleByERole(ERole.ROLE_USER);
         user.getRoles().add(role);
         this.userService.saveUser(user);
 
@@ -122,7 +128,7 @@ public class AuthServiceImpl implements IAuthService {
         );
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-        emailService.sendEmail("Registro",user.getEmail(), buildEmail(user.getName(), id));
+        emailService.send("Registro",user.getEmail(), buildEmail(user.getName(), id));
     }
 
     @Override
@@ -135,6 +141,14 @@ public class AuthServiceImpl implements IAuthService {
 
         User user = confirmationToken.getFkUser();
         userService.enableUser(user.getEmail());
+
+
+        //Creamos el nuevo carrito para que el usuario pueda realizar compras.
+        Cart cart = new Cart();
+        cart.setUser(user);
+
+        this.cartService.saveCart(cart);
+
         this.confirmationTokenService.deleteConfirmationTokenById(id);
 
         return confirmationToken.getToken();

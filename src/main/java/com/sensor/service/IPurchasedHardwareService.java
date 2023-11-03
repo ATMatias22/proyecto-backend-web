@@ -1,20 +1,19 @@
 package com.sensor.service;
 
 import java.util.List;
-
-import com.sensor.dto.purchasedHardware.request.PurchasedHardwareDTO;
+import com.sensor.entity.PurchasedHardware;
 
 public interface IPurchasedHardwareService {
 	
 
-	List<PurchasedHardwareDTO> getAllPurchasedHardware();
+	List<PurchasedHardware> getAllPurchasedHardware();
 
-	PurchasedHardwareDTO getPurchasedHardwareById(Long purchasedHardwareId);
+	PurchasedHardware getPurchasedHardwareById(Long purchasedHardwareId);
 
-	void savePurchasedHardware(PurchasedHardwareDTO purchasedHardwareDTO);
+	void savePurchasedHardware(PurchasedHardware purchasedHardware);
 	
 	void deletePurchasedHardwareById(Long purchasedHardwareId);
 
-	void modifyPurchasedHardwareById(Long purchasedHardwareId, PurchasedHardwareDTO purchasedHardwareDTO );
+	void modifyPurchasedHardwareById(Long purchasedHardwareId, PurchasedHardware purchasedHardware);
 
 }

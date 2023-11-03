@@ -1,9 +1,13 @@
 package com.sensor.security.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.sensor.security.dto.role.response.RoleResponse;
+import com.sensor.security.mapper.RoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,23 +25,14 @@ public class RoleController {
 	
 	@Autowired
 	private IRoleService roleService;
+
+	@Autowired
+	private RoleMapper roleMapper;
 	
-	@GetMapping("/all")
-	public ResponseEntity<List<Role>> getAllRoles() {
-		return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
+	@GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<RoleResponse>> getAllRoles() {
+		List<RoleResponse> roles = roleService.getAllRoles().stream().map(role -> roleMapper.rolToRolResponse(role)).collect(Collectors.toList());
+		return new ResponseEntity<>(roles, HttpStatus.OK);
 	}
-	
-	@GetMapping("/{roleId}")
-	public ResponseEntity<Role> getRoleById(
-			@PathVariable("roleId") Long roleId) {
-		return new ResponseEntity<Role>(roleService.getRoleById(roleId), HttpStatus.OK);
-	}
-	
-//	@GetMapping("/name/{typeUserByName}")
-//	public ResponseEntity<TypeUser> getTypeUserByName(
-//			@PathVariable("typeUserByName") String name) {
-//		return new ResponseEntity<TypeUser>(typeUserService.getTypeUserByName(name).get(), HttpStatus.OK);
-//	}
-	
 
 }

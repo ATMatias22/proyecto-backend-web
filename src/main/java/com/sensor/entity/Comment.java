@@ -1,25 +1,16 @@
 package com.sensor.entity;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.persistence.*;
 
 import com.sensor.security.entity.User;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name ="comment")
+@Table(name ="Comment")
 @Data
 public class Comment {
 
@@ -28,31 +19,25 @@ public class Comment {
 	@Column(name = "id_comment")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long commentId;
-	
-	
-	@Column(name="comment")
-	private String comment;
-	
-	@Column(name = "fk_user")
-	private Long userId;
-	
+
+	@Column(name="message", nullable = false)
+	private String message;
+
 	@ManyToOne
-	@JoinColumn(name="fk_user", insertable = false, updatable = false)
+	@JoinColumn(name="fk_user", nullable = false)
 	private User user;
 	
-	@Column(name = "fk_product")
-	private Long productId;
-
+	@ManyToOne
+	@JoinColumn(name="fk_product", nullable = false)
+	private Product product;
 	
-	@Column(name = "created", updatable = false, insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-	private Calendar created;
+	@Column(name = "created_date")
+	@CreationTimestamp
+	private LocalDateTime created;
 
-	@Column(name = "updated", insertable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-	private Calendar updated;
+	@Column(name = "updated_date")
+	@UpdateTimestamp
+	private LocalDateTime updated;
 	
 
 	
