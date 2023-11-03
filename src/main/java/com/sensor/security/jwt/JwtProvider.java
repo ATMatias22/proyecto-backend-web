@@ -30,7 +30,7 @@ public class JwtProvider {
 	private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
 
-	@Value("${app.jwt-secret}")
+	@Value("${app.jwt.secret}")
 	private String jwtSecret;
 
 	@Value("${app.jwt.issuer}")
