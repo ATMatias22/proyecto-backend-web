@@ -6,6 +6,8 @@ import com.sensor.repository.IStockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class StockDaoImpl implements IStockDao {
 
@@ -15,5 +17,14 @@ public class StockDaoImpl implements IStockDao {
     @Override
     public void saveStock(Stock stock) {
         this.stockRepository.save(stock);
+    }
+
+    public void saveManyStock(Iterable<Stock> stocks){
+        this.stockRepository.saveAll(stocks);
+    }
+
+    @Override
+    public boolean existsStockWithDeviceCode(String deviceCode) {
+        return this.stockRepository.existsByDeviceCode(deviceCode);
     }
 }

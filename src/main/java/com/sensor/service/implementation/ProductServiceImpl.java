@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.sensor.entity.Product;
 import com.sensor.security.MainUser;
 import com.sensor.security.service.IUserService;
+import com.sensor.service.IStockService;
 import com.sensor.utils.directory.DirectoryData;
 import com.sensor.utils.directory.DirectoryHandler;
 import com.sensor.utils.transport.product.ProductTransportToController;
@@ -35,6 +36,9 @@ public class ProductServiceImpl implements IProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private IStockService stockService;
+
     @Override
     public List<ProductTransportToController> getAllEnabledProducts() {
         return productDao.getAllEnabledProducts().stream().map((product) ->
@@ -55,6 +59,13 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public Product getEnabledProductByIdWithoutBase64Image(Long productId) {
         return productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el producto: " + productId));
+    }
+
+    @Override
+    public void addStockInProduct(Long productId, int quantity, User userLoggerIn) {
+        Product product = this.getEnabledProductByIdWithoutBase64Image(productId);
+        this.stockService.saveManyStock(quantity,product,userLoggerIn);
+
     }
 
     @Override

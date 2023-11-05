@@ -24,6 +24,8 @@ public interface IProductService {
 
 	Product getEnabledProductByIdWithoutBase64Image(Long productId);
 
+	void addStockInProduct(Long productId, int quantity, User userLoggerIn);
+
 
 	
 

@@ -2,6 +2,7 @@ package com.sensor.entity;
 
 
 import com.sensor.enums.StockState;
+import com.sensor.security.entity.User;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,12 +23,13 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long stockId;
 
-    @Column(name = "available_stock", nullable = false)
-    private Double availableStock;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_product", nullable = false)
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_user", nullable = false)
+    private User user;
 
     @Column(name = "device_code", nullable = false)
     private String deviceCode;
