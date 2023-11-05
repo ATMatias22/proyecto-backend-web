@@ -29,13 +29,13 @@ public class CartProduct {
     private Product product;
 
     @Column(name = "quantity", nullable = false)
-    private Double quantity;
+    private int quantity;
 
     @Column(name = "created_date")
     @CreationTimestamp
     private LocalDateTime created;
 
-    public CartProduct(Cart cart, Product product, Double quantity) {
+    public CartProduct(Cart cart, Product product, int quantity) {
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;

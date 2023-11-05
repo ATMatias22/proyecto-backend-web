@@ -31,6 +31,10 @@ public class Stock {
     @JoinColumn(name = "fk_user", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_cart")
+    private Cart cart;
+
     @Column(name = "device_code", nullable = false)
     private String deviceCode;
 
