@@ -3,6 +3,7 @@ package com.sensor.pattern.cart.strategy;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.*;
 import com.sensor.enums.CartState;
+import com.sensor.enums.StockState;
 import com.sensor.exception.GeneralException;
 import com.sensor.security.entity.User;
 import com.sensor.service.ICartProductService;
@@ -85,27 +86,30 @@ public class CartInitialStateStrategy extends CartStateStrategy {
     }
 
     @Override
-    public CartProduct addProduct(Long productId, double quantity, User user, Cart cart) {
+    public CartProduct addProduct(Long productId, int quantity, User user, Cart cart) {
 
         Product product = this.productService.getEnabledProductByIdWithoutBase64Image(productId);
-        Stock stock = product.getStock();
+        int quantityAvaibleStock = this.stockService.getAvailableStockQuantityByProduct(product);
         //verificamos que haya stock
-        if (stock.getAvailableStock() < quantity) {
-            throw new GeneralException(HttpStatus.BAD_REQUEST, "La cantidad de stock disponible es de: " + stock.getAvailableStock() + " y se esta queriendo agregar al carrito " + quantity);
+        if (quantityAvaibleStock < quantity) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "La cantidad de stock disponible es de: " + quantityAvaibleStock + " y se esta queriendo agregar al carrito " + quantity);
         }
         //sacamos del stock disponible la cantidad que quiere agregar el usuario.
-        stock.setAvailableStock(stock.getAvailableStock() - quantity);
+        List<Stock> stocks = this.stockService.getNAvailableStockQuantityByProduct(product, quantity);
+
+        stocks.forEach( stock -> {
+            stock.setStockState(StockState.EN_CARRITO);
+            stock.setCart(cart);
+        });
 
         CartProduct cartProduct = null;
-
         try {
             cartProduct = this.cartProductService.getCartProductByProductAndCart(product, cart);
             cartProduct.setQuantity( cartProduct.getQuantity() + quantity);
         } catch (GeneralException ge) {
             cartProduct = new CartProduct(cart, product, quantity);
         }finally {
-            //guardamos para actualizar el stock
-            this.stockService.saveStock(stock);
+            this.stockService.saveStockIterable(stocks);
             //guardamos el producto en el carrito
             cartProduct = this.cartProductService.saveCartProduct(cartProduct);
         }

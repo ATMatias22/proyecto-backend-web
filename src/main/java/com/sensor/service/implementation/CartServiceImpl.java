@@ -104,7 +104,7 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct addProduct(Long idProduct, Double quantity, User userLoggedIn) {
+    public CartProduct addProduct(Long idProduct, int quantity, User userLoggedIn) {
 
 
 

@@ -17,7 +17,7 @@ public abstract class CartStateStrategy {
     public abstract CartInfoTransportToController getCartInfo(User user, CartTransportToController cart);
     public abstract CartInfoTransportToController changeState(User user, CartTransportToController cartProducts, Cart cart, CartInfoTransportToService cartDataRequest);
     protected abstract CartInfoTransportToController nextDataToReturn(User user, CartTransportToController cart);
-    public abstract CartProduct addProduct(Long productId, double quantity, User user, Cart cart);
+    public abstract CartProduct addProduct(Long productId, int quantity, User user, Cart cart);
     public abstract CartProduct removeProduct(Long productId, double quantity, User user, Cart cart);
     public abstract void cancel(Cart cart);
     public abstract String getPreferenceId(Cart cart);

@@ -19,7 +19,6 @@ import com.sensor.enums.CartState;
 import com.sensor.enums.SaleOrderState;
 import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.CardPaymentDTO;
-import com.sensor.security.MainUser;
 import com.sensor.security.entity.User;
 import com.sensor.service.*;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -28,7 +27,6 @@ import com.sensor.utils.transport.cart.CartTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,7 +140,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
     @Override
-    public CartProduct addProduct(Long productId, double quantity, User user, Cart cart) {
+    public CartProduct addProduct(Long productId, int quantity, User user, Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede agregar un producto al carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra, o terminar el proceso");
     }
 

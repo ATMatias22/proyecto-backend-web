@@ -7,9 +7,11 @@ import com.sensor.enums.StockState;
 import com.sensor.security.entity.User;
 import com.sensor.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,23 @@ public class StockServiceImpl implements IStockService {
         }
 
         this.stockDao.saveManyStock(stocks);
+    }
+
+    @Override
+    public int getAvailableStockQuantityByProduct(Product product) {
+        return this.stockDao.getAvailableStockQuantityByProduct(product);
+    }
+
+    @Override
+    public List<Stock> getNAvailableStockQuantityByProduct(Product product, int quantity) {
+
+        Pageable pageable = (Pageable) PageRequest.of(0, quantity );
+        return this.stockDao.getNAvaibleStockQuantityByProduct(product, pageable);
+    }
+
+    @Override
+    public void saveStockIterable(Iterable<Stock> stocks) {
+        this.stockDao.saveStockIterable(stocks);
     }
 
     private String generateRandomCode(Random random) {

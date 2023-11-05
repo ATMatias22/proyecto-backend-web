@@ -13,7 +13,7 @@ public interface ICartService {
 
     CartInfoTransportToController changeState(CartInfoTransportToService cartInfoTransportToService, User userLoggedIn);
 
-    CartProduct addProduct(Long idProduct, Double quantity, User userLoggedIn);
+    CartProduct addProduct(Long idProduct, int quantity, User userLoggedIn);
     CartProduct removeProduct(Long idProduct, Double quantity, User userLoggedIn);
     void cancelCart(User userLoggedIn);
     String getPreferenceId(User userLoggedIn);
