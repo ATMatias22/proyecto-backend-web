@@ -19,4 +19,6 @@ public interface IStockRepository extends JpaRepository<Stock, Long> {
     List<Stock> findByStockStateAndCartIsNullAndPlacedOnAPhysicalDeviceIsTrueAndProduct(StockState stockState, Product product, Pageable pageable);
 
     List<Stock> findByStockStateAndPlacedOnAPhysicalDeviceIsTrueAndProductAndCart(StockState stockState, Product product, Cart cart, Pageable pageable);
+
+    List<Stock> findByProduct(Product product);
 }

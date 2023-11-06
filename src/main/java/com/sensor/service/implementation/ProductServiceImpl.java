@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sensor.entity.Product;
+import com.sensor.entity.Stock;
 import com.sensor.security.MainUser;
 import com.sensor.security.service.IUserService;
 import com.sensor.service.IStockService;
@@ -65,6 +66,15 @@ public class ProductServiceImpl implements IProductService {
     public void addStockInProduct(Long productId, int quantity, User userLoggerIn) {
         Product product = this.getEnabledProductByIdWithoutBase64Image(productId);
         this.stockService.saveManyStock(quantity,product,userLoggerIn);
+
+    }
+
+    @Override
+    public List<Stock> getProductStocksByProductId(Long productId) {
+
+        Product product = this.getEnabledProductByIdWithoutBase64Image(productId);
+
+        return this.stockService.getStocksByProduct(product);
 
     }
 

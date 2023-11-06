@@ -21,4 +21,6 @@ public interface IStockService {
 
     List<Stock> getNAvailableStockQuantityByProductAndCart(Product product, Cart cart, int quantity);
 
+    List<Stock> getStocksByProduct(Product product);
+
 }
