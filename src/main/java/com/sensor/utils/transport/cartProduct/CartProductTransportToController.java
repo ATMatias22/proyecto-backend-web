@@ -14,7 +14,7 @@ public class CartProductTransportToController {
 
     private ProductTransportToController product;
 
-    private Double quantity;
+    private int quantity;
 
     private LocalDateTime dateTimeAdded;
 }

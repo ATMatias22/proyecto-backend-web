@@ -37,21 +37,21 @@ VALUES ('A domicilio'), ('Retiro en local');
 INSERT INTO address (street, street_number, floor, apartment_number, fk_type_of_address, fk_user)
 VALUES ('calle falsa', '123', null,null, 1, 1);
 
-INSERT INTO stock (available_stock)
-VALUES (20), (30);
-
-
-
-INSERT INTO product (name,description,price,enabled,image,fk_stock,fk_user)
+INSERT INTO product (name,description,price,enabled,image,fk_user)
 VALUES
-('Sensor magnetico','Es un sensor que avisa cuando se cierra o abre algun objeto con estas caracteristicas',5000, true, null, 1,2),
-('Sensor magnetico 2','Es un sensor que avisa cuando se cierra o abre algun objeto con estas caracteristicas',5000, true, null, 2,2);
+('Sensor magnetico','Es un sensor que avisa cuando se cierra o abre algun objeto con estas caracteristicas',5000, true, null, 2),
+('Sensor magnetico 2','Es un sensor que avisa cuando se cierra o abre algun objeto con estas caracteristicas',5000, true, null, 2);
 
 INSERT INTO cart (fk_user, state, fk_payment_method, fk_shipping_method)
 VALUES ( 1, 'ESTADO_INICIAL', null, null);
 
 INSERT INTO cart_product ( fk_cart, fk_product, quantity,created_date)
 VALUES (1,1,5, '2023-08-10 18:39:12.543702');
+
+
+
+INSERT INTO stock (fk_product, fk_user, fk_cart, device_code, device_password, placed_on_a_physical_device, stock_state)
+VALUES (1,2,1,'asdasd','asdasd',true, 'EN_CARRITO'), (1,2,1,'BCD','BCD',true, 'EN_CARRITO');
 
 
 

@@ -1,5 +1,6 @@
 package com.sensor.service;
 
+import com.sensor.entity.Cart;
 import com.sensor.entity.Product;
 import com.sensor.entity.Stock;
 import com.sensor.security.entity.User;
@@ -17,4 +18,7 @@ public interface IStockService {
     List<Stock> getNAvailableStockQuantityByProduct(Product product, int quantity);
 
     void saveStockIterable(Iterable<Stock> stocks);
+
+    List<Stock> getNAvailableStockQuantityByProductAndCart(Product product, Cart cart, int quantity);
+
 }
