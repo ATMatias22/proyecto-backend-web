@@ -84,7 +84,7 @@ public class ProductController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@PatchMapping(value = "/{productId}", consumes = { MediaType.APPLICATION_JSON_VALUE})
+	@PatchMapping(value = "/{productId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<Void> modifyProductById(@PathVariable("productId") Long productId, @RequestPart("product") @Valid ModifyProductRequest modifyProductRequest, @RequestPart("file") MultipartFile file) {
 		productService.modifyProductById(productId, this.productMapper.modifyProductRequestToProductTransportToService(modifyProductRequest,file));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
