@@ -3,6 +3,7 @@ package com.sensor.service;
 import java.util.List;
 
 import com.sensor.entity.Product;
+import com.sensor.entity.Stock;
 import com.sensor.security.entity.User;
 import com.sensor.utils.file.FileHelper;
 import com.sensor.utils.transport.product.ProductTransportToController;
@@ -25,6 +26,9 @@ public interface IProductService {
 	Product getEnabledProductByIdWithoutBase64Image(Long productId);
 
 	void addStockInProduct(Long productId, int quantity, User userLoggerIn);
+
+	List<Stock> getProductStocksByProductId(Long productId);
+
 
 
 	

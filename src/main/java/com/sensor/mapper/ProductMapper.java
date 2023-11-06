@@ -3,16 +3,25 @@ package com.sensor.mapper;
 import com.sensor.dto.product.request.ModifyProductRequest;
 import com.sensor.dto.product.request.ProductRequest;
 import com.sensor.dto.product.response.ProductResponse;
+import com.sensor.dto.product.response.StockResponse;
 import com.sensor.entity.Product;
+import com.sensor.entity.Stock;
+import com.sensor.utils.date.StringToLocalDateTimeAndViceVersa;
 import com.sensor.utils.transport.product.ProductTransportToController;
 import com.sensor.utils.transport.product.ProductTransportToService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
-public interface ProductMapper {
+public abstract class ProductMapper {
+
+    @Autowired
+    protected StringToLocalDateTimeAndViceVersa stdv;
 
 
     @Mappings({
@@ -22,14 +31,14 @@ public interface ProductMapper {
             @Mapping(source = "productTransport.product.description", target = "description"),
             @Mapping(source = "productTransport.fileInBase64", target = "imageBase64"),
     })
-    ProductResponse productTransportToControllerToProductProductResponse(ProductTransportToController productTransport);
+    public abstract ProductResponse productTransportToControllerToProductProductResponse(ProductTransportToController productTransport);
 
 
     @Mappings({
             @Mapping(source = "productRequest", target = "product"),
             @Mapping(source = "file", target = "file"),
     })
-    ProductTransportToService productRequestToProductTransportToService(ProductRequest productRequest, MultipartFile file);
+    public abstract ProductTransportToService productRequestToProductTransportToService(ProductRequest productRequest, MultipartFile file);
 
 
     @Mappings({
@@ -46,7 +55,7 @@ public interface ProductMapper {
             @Mapping(target = "updated", ignore = true),
 
     })
-    Product productRequestToProduct(ProductRequest productRequest);
+    public abstract Product productRequestToProduct(ProductRequest productRequest);
 
 
 
@@ -55,7 +64,7 @@ public interface ProductMapper {
             @Mapping(source = "modifyProductRequest", target = "product"),
             @Mapping(source = "file", target = "file"),
     })
-    ProductTransportToService modifyProductRequestToProductTransportToService(ModifyProductRequest modifyProductRequest, MultipartFile file);
+    public abstract ProductTransportToService modifyProductRequestToProductTransportToService(ModifyProductRequest modifyProductRequest, MultipartFile file);
 
 
     @Mappings({
@@ -72,7 +81,21 @@ public interface ProductMapper {
             @Mapping(target = "updated", ignore = true),
 
     })
-    Product modifyProductRequestToProduct(ModifyProductRequest modifyProductRequest);
+    public abstract Product modifyProductRequestToProduct(ModifyProductRequest modifyProductRequest);
 
+
+    @Mappings({
+            @Mapping(source = "stock.stockId", target = "stockId"),
+            @Mapping(source = "stock.user.userId", target = "userId"),
+            @Mapping(source = "stock.cart.cartId", target = "cartId"),
+            @Mapping(source = "stock.deviceCode", target = "deviceCode"),
+            @Mapping(source = "stock.devicePassword", target = "devicePassword"),
+            @Mapping(source = "stock.placedOnAPhysicalDevice", target = "placedOnAPhysicalDevice"),
+            @Mapping(source = "stock.stockState", target = "stockState"),
+            @Mapping(target = "created", expression = "java(stdv.getString(stock.getCreated()))"),
+            @Mapping(target = "updated", expression = "java(stdv.getString(stock.getUpdated()))"),
+    })
+    public abstract StockResponse stockToStockResponse(Stock stock);
+    public abstract List<StockResponse> stockToStockResponse(List<Stock> stock);
 
 }

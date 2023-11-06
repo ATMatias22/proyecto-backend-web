@@ -9,6 +9,7 @@ import com.sensor.dto.product.request.AddStockInProductRequest;
 import com.sensor.dto.product.request.ModifyProductRequest;
 import com.sensor.dto.product.request.ProductRequest;
 import com.sensor.dto.product.response.ProductResponse;
+import com.sensor.dto.product.response.StockResponse;
 import com.sensor.exception.GeneralException;
 import com.sensor.mapper.ProductMapper;
 import com.sensor.security.MainUser;
@@ -97,6 +98,11 @@ public class ProductController {
 		User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
 		productService.addStockInProduct(productId, addStockInProductRequest.getQuantity(), userLoggedIn);
 		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+
+	@GetMapping(value = "/{productId}/stocks", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<List<StockResponse>> getProductStocksByProductId(@PathVariable("productId") Long productId) {
+		return new ResponseEntity<>(this.productMapper.stockToStockResponse(productService.getProductStocksByProductId(productId)), HttpStatus.OK);
 	}
 
 }

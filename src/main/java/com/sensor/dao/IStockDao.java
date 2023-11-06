@@ -24,4 +24,6 @@ public interface IStockDao {
 
     List<Stock> getNAvaibleStockQuantityByProductAndCart(Product product, Cart cart, Pageable pageable);
 
+    List<Stock> getStockByProduct(Product product);
+
 }

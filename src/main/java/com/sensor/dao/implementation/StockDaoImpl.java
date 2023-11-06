@@ -50,4 +50,9 @@ public class StockDaoImpl implements IStockDao {
     public List<Stock> getNAvaibleStockQuantityByProductAndCart(Product product, Cart cart, Pageable pageable) {
         return this.stockRepository.findByStockStateAndPlacedOnAPhysicalDeviceIsTrueAndProductAndCart(StockState.EN_CARRITO, product,cart,pageable);
     }
+
+    @Override
+    public List<Stock> getStockByProduct(Product product) {
+        return this.stockRepository.findByProduct(product);
+    }
 }

@@ -77,6 +77,11 @@ public class StockServiceImpl implements IStockService {
         return this.stockDao.getNAvaibleStockQuantityByProductAndCart(product, cart, pageable);
     }
 
+    @Override
+    public List<Stock> getStocksByProduct(Product product) {
+        return this.stockDao.getStockByProduct(product);
+    }
+
     private String generateRandomCode(Random random) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         return generateRandomString(characters, 8, random);
