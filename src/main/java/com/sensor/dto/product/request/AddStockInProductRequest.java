@@ -1,4 +1,4 @@
-package com.sensor.dto.cartProduct.request;
+package com.sensor.dto.product.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,11 +10,10 @@ import javax.validation.constraints.Positive;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RemoveProductInCartRequest {
+public class AddStockInProductRequest {
 
     @Positive(message = "La cantidad debe ser positivo")
     @NotNull(message = "La cantidad no puede ser nulo")
     private int quantity;
-
 
 }

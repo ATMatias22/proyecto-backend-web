@@ -3,6 +3,7 @@ package com.sensor.pattern.cart.strategy;
 import com.sensor.dao.ICartDao;
 import com.sensor.entity.*;
 import com.sensor.enums.CartState;
+import com.sensor.enums.StockState;
 import com.sensor.exception.GeneralException;
 import com.sensor.security.entity.User;
 import com.sensor.service.ICartProductService;
@@ -85,27 +86,29 @@ public class CartInitialStateStrategy extends CartStateStrategy {
     }
 
     @Override
-    public CartProduct addProduct(Long productId, double quantity, User user, Cart cart) {
+    public CartProduct addProduct(Long productId, int quantity, User user, Cart cart) {
 
         Product product = this.productService.getEnabledProductByIdWithoutBase64Image(productId);
-        Stock stock = product.getStock();
+        int quantityAvaibleStock = this.stockService.getAvailableStockQuantityByProduct(product);
         //verificamos que haya stock
-        if (stock.getAvailableStock() < quantity) {
-            throw new GeneralException(HttpStatus.BAD_REQUEST, "La cantidad de stock disponible es de: " + stock.getAvailableStock() + " y se esta queriendo agregar al carrito " + quantity);
+        if (quantityAvaibleStock < quantity) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "La cantidad de stock disponible es de: " + quantityAvaibleStock + " y se esta queriendo agregar al carrito " + quantity);
         }
-        //sacamos del stock disponible la cantidad que quiere agregar el usuario.
-        stock.setAvailableStock(stock.getAvailableStock() - quantity);
+        List<Stock> stocks = this.stockService.getNAvailableStockQuantityByProduct(product, quantity);
+
+        stocks.forEach( stock -> {
+            stock.setStockState(StockState.EN_CARRITO);
+            stock.setCart(cart);
+        });
 
         CartProduct cartProduct = null;
-
         try {
             cartProduct = this.cartProductService.getCartProductByProductAndCart(product, cart);
             cartProduct.setQuantity( cartProduct.getQuantity() + quantity);
         } catch (GeneralException ge) {
             cartProduct = new CartProduct(cart, product, quantity);
         }finally {
-            //guardamos para actualizar el stock
-            this.stockService.saveStock(stock);
+            this.stockService.saveStockIterable(stocks);
             //guardamos el producto en el carrito
             cartProduct = this.cartProductService.saveCartProduct(cartProduct);
         }
@@ -115,38 +118,34 @@ public class CartInitialStateStrategy extends CartStateStrategy {
     }
 
     @Override
-    public CartProduct removeProduct(Long productId, double quantity, User user, Cart cart) {
+    @Transactional
+    public CartProduct removeProduct(Long productId, int quantity, User user, Cart cart) {
 
         Product product = this.productService.getEnabledProductByIdWithoutBase64Image(productId);
 
-        //verificamos que no exista el producto en el carrito.
         CartProduct cartProduct = this.cartProductService.getCartProductByProductAndCart(product, cart);
 
-        Stock stock = product.getStock();
-        Double currentQuantityProduct = cartProduct.getQuantity();
+        int currentQuantityProduct = cartProduct.getQuantity();
 
         //verificamos que haya stock
         if (currentQuantityProduct < quantity) {
             throw new GeneralException(HttpStatus.BAD_REQUEST, "La cantidad del producto que tiene actualmente es: " + currentQuantityProduct + " unidades y usted quiere sacar " + quantity + " unidades");
         } else if (currentQuantityProduct == quantity) {
-
-            //agregamos el stock la misma cantidad que se saco del carrito
-            stock.setAvailableStock(stock.getAvailableStock() + quantity);
-            //borrar el cartproduct, lo borramos porque al estar restando la misma cantidad que tenemos en el carrito
-            //deberia sacar directamente el producto del carrito
             this.cartProductService.deleteCartProduct(cartProduct);
-            //seteamos al producto del carrito la cantidad actual que tiene en el carrito (siempre sera 0)
-            //para devolver la cantidad actual del carrito (0)
-            cartProduct.setQuantity(cartProduct.getQuantity() - quantity);
         }else{
-            //sacamos del stock disponible la cantidad que quiere agregar el usuario.
-            stock.setAvailableStock(stock.getAvailableStock() + quantity);
             cartProduct.setQuantity(cartProduct.getQuantity() - quantity);
             cartProduct = this.cartProductService.saveCartProduct(cartProduct);
         }
 
+        List<Stock> stocks = this.stockService.getNAvailableStockQuantityByProductAndCart(product, cart, quantity);
+
+        stocks.forEach( stock -> {
+            stock.setStockState(StockState.DISPONIBLE);
+            stock.setCart(null);
+        });
+
         //guardamos para actualizar el stock
-        this.stockService.saveStock(stock);
+        this.stockService.saveStockIterable(stocks);
 
         return cartProduct;
 

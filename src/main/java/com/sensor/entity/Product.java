@@ -2,6 +2,7 @@ package com.sensor.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -42,9 +43,8 @@ public class Product {
 	@OneToMany(mappedBy="product", fetch = FetchType.LAZY)
 	private List<CartProduct> cartsProducts;
 
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "fk_stock")
-	private Stock stock;
+	@OneToMany(mappedBy="product", fetch = FetchType.LAZY)
+	private Set<Stock> stocks;
 
 	@Column(name = "created_date")
 	@CreationTimestamp

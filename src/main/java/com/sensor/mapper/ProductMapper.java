@@ -41,7 +41,7 @@ public interface ProductMapper {
             @Mapping(target = "enabled", constant = "true"),
             @Mapping(target = "image", ignore = true),
             @Mapping(target = "cartsProducts", ignore = true),
-            @Mapping(target = "stock", ignore = true),
+            @Mapping(target = "stocks", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
 
@@ -67,7 +67,7 @@ public interface ProductMapper {
             @Mapping(target = "enabled", constant = "true"),
             @Mapping(target = "image", ignore = true),
             @Mapping(target = "cartsProducts", ignore = true),
-            @Mapping(target = "stock", ignore = true),
+            @Mapping(target = "stocks", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
 

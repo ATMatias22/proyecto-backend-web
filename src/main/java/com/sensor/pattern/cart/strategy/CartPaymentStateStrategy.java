@@ -17,9 +17,9 @@ import com.sensor.dao.ICartDao;
 import com.sensor.entity.*;
 import com.sensor.enums.CartState;
 import com.sensor.enums.SaleOrderState;
+import com.sensor.enums.StockState;
 import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.CardPaymentDTO;
-import com.sensor.security.MainUser;
 import com.sensor.security.entity.User;
 import com.sensor.service.*;
 import com.sensor.utils.transport.cart.CartInfoTransportToController;
@@ -28,7 +28,6 @@ import com.sensor.utils.transport.cart.CartTransportToController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +44,9 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     private ITemporaryCartAddressService temporaryCartAddressService;
     @Autowired
     private ICartDao cartDao;
+
+    @Autowired
+    private IStockService stockService;
 
     @Autowired
     private ISaleOrderService saleOrderService;
@@ -142,12 +144,12 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
     }
 
     @Override
-    public CartProduct addProduct(Long productId, double quantity, User user, Cart cart) {
+    public CartProduct addProduct(Long productId, int quantity, User user, Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede agregar un producto al carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra, o terminar el proceso");
     }
 
     @Override
-    public CartProduct removeProduct(Long productId, double quantity, User user, Cart cart) {
+    public CartProduct removeProduct(Long productId, int quantity, User user, Cart cart) {
         throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede eliminar un producto del carrito en el estado: " + getState() + " tendrias que cancelar el proceso de compra");
     }
 
@@ -210,7 +212,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
         List<PreferenceItemRequest> preferenceItemRequests = cartProducts.stream().map(cartProduct ->
                 PreferenceItemRequest.builder()
                 .title(cartProduct.getProduct().getName())
-                .quantity(cartProduct.getQuantity().intValue())
+                .quantity(cartProduct.getQuantity())
                 .unitPrice(BigDecimal.valueOf(cartProduct.getProduct().getPrice()))
                 .description(cartProduct.getProduct().getDescription())
                 .build()
@@ -262,7 +264,7 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
         //eliminamos el carrito, como los atributos temporaryAddresses, shippingMethod y cartProducts tienen cascade remove, se eliminaran tambien
         //asi que no es necesario eliminarlos a traves de sus servicios
-        this.cartDao.deleteCart(cart);
+        this.deleteCartWhenFinished(cart);
 
         //Creamos el nuevo carrito para que el usuario pueda realizar mas compras.
         Cart newCartForUser = new Cart();
@@ -347,5 +349,24 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
             return saleProduct;
 
         }).collect(Collectors.toList());
+    }
+
+
+
+    @Transactional
+    private void deleteCartWhenFinished(Cart cart) {
+
+        cart.getCartProducts().forEach( cartProduct -> {
+            Product product = cartProduct.getProduct();
+            int quantity = cartProduct.getQuantity();
+            List<Stock> stocks = this.stockService.getNAvailableStockQuantityByProductAndCart(product, cart, quantity);
+            stocks.forEach( stock -> {
+                stock.setStockState(StockState.COMPRADO);
+                stock.setCart(null);
+            });
+            //guardamos para actualizar el stock
+            this.stockService.saveStockIterable(stocks);
+        });
+        this.cartDao.deleteCart(cart);
     }
 }

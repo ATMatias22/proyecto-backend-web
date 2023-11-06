@@ -9,6 +9,7 @@ import com.sensor.entity.CartProduct;
 import com.sensor.entity.Product;
 import com.sensor.entity.Stock;
 import com.sensor.enums.CartState;
+import com.sensor.enums.StockState;
 import com.sensor.exception.GeneralException;
 import com.sensor.external.dto.webhook.MercadoPagoWebhookDTO;
 import com.sensor.pattern.cart.strategy.CartStateStrategy;
@@ -104,7 +105,7 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct addProduct(Long idProduct, Double quantity, User userLoggedIn) {
+    public CartProduct addProduct(Long idProduct, int quantity, User userLoggedIn) {
 
 
 
@@ -118,9 +119,7 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     @Transactional
-    public CartProduct removeProduct(Long idProduct, Double quantity, User userLoggedIn) {
-
-
+    public CartProduct removeProduct(Long idProduct, int quantity, User userLoggedIn) {
 
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró un carrito para este usuario"));
 
@@ -222,11 +221,18 @@ public class CartServiceImpl implements ICartService {
         Cart cart = this.cartDao.getCartByUser(userLoggedIn).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se puede borrar el carrito porque no existe"));
 
         cart.getCartProducts().forEach( cartProduct -> {
-            Stock stock = cartProduct.getProduct().getStock();
-            Double quantity = cartProduct.getQuantity();
-            stock.setAvailableStock(stock.getAvailableStock() + quantity);
-            this.stockService.saveStock(stock);
+            Product product = cartProduct.getProduct();
+            int quantity = cartProduct.getQuantity();
+            List<Stock> stocks = this.stockService.getNAvailableStockQuantityByProductAndCart(product, cart, quantity);
+            stocks.forEach( stock -> {
+                stock.setStockState(StockState.DISPONIBLE);
+                stock.setCart(null);
+            });
+            //guardamos para actualizar el stock
+            this.stockService.saveStockIterable(stocks);
         });
+
+
 
         this.cartDao.deleteCart(cart);
     }

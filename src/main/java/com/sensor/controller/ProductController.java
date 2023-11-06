@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sensor.dto.product.request.AddStockInProductRequest;
 import com.sensor.dto.product.request.ModifyProductRequest;
 import com.sensor.dto.product.request.ProductRequest;
 import com.sensor.dto.product.response.ProductResponse;
@@ -86,6 +87,16 @@ public class ProductController {
 	public ResponseEntity<Void> modifyProductById(@PathVariable("productId") Long productId, @RequestPart("product") @Valid ModifyProductRequest modifyProductRequest, @RequestPart("file") MultipartFile file) {
 		productService.modifyProductById(productId, this.productMapper.modifyProductRequestToProductTransportToService(modifyProductRequest,file));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping( value = "/{productId}/stock", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> addStockInProduct(@PathVariable("productId") Long productId, @RequestBody AddStockInProductRequest addStockInProductRequest) {
+		MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User userLoggedIn = this.userService.getUserByEmail(mu.getUsername());
+		productService.addStockInProduct(productId, addStockInProductRequest.getQuantity(), userLoggedIn);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 }

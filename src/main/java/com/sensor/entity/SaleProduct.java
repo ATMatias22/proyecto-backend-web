@@ -26,7 +26,7 @@ public class SaleProduct {
     private String name;
 
     @Column(name = "quantity", nullable = false)
-    private Double quantity;
+    private int quantity;
 
     @Column(name ="description", columnDefinition = "TEXT", nullable = false)
     private String description;
