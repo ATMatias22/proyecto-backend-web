@@ -14,7 +14,7 @@ public class RemoveProductInCartRequest {
 
     @Positive(message = "La cantidad debe ser positivo")
     @NotNull(message = "La cantidad no puede ser nulo")
-    private Double quantity;
+    private int quantity;
 
 
 }

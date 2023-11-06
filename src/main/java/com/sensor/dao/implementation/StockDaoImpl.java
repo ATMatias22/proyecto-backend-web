@@ -1,14 +1,14 @@
 package com.sensor.dao.implementation;
 
 import com.sensor.dao.IStockDao;
+import com.sensor.entity.Cart;
 import com.sensor.entity.Product;
 import com.sensor.entity.Stock;
 import com.sensor.enums.StockState;
 import com.sensor.repository.IStockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Repository
@@ -44,5 +44,10 @@ public class StockDaoImpl implements IStockDao {
     @Override
     public void saveStockIterable(Iterable<Stock> stocks) {
         this.stockRepository.saveAll(stocks);
+    }
+
+    @Override
+    public List<Stock> getNAvaibleStockQuantityByProductAndCart(Product product, Cart cart, Pageable pageable) {
+        return this.stockRepository.findByStockStateAndPlacedOnAPhysicalDeviceIsTrueAndProductAndCart(StockState.EN_CARRITO, product,cart,pageable);
     }
 }

@@ -1,6 +1,7 @@
 package com.sensor.service.implementation;
 
 import com.sensor.dao.IStockDao;
+import com.sensor.entity.Cart;
 import com.sensor.entity.Product;
 import com.sensor.entity.Stock;
 import com.sensor.enums.StockState;
@@ -8,10 +9,10 @@ import com.sensor.security.entity.User;
 import com.sensor.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,13 +62,19 @@ public class StockServiceImpl implements IStockService {
     @Override
     public List<Stock> getNAvailableStockQuantityByProduct(Product product, int quantity) {
 
-        Pageable pageable = (Pageable) PageRequest.of(0, quantity );
+        Pageable pageable = PageRequest.of(0, quantity );
         return this.stockDao.getNAvaibleStockQuantityByProduct(product, pageable);
     }
 
     @Override
     public void saveStockIterable(Iterable<Stock> stocks) {
         this.stockDao.saveStockIterable(stocks);
+    }
+
+    @Override
+    public List<Stock> getNAvailableStockQuantityByProductAndCart(Product product, Cart cart, int quantity) {
+        Pageable pageable = PageRequest.of(0, quantity );
+        return this.stockDao.getNAvaibleStockQuantityByProductAndCart(product, cart, pageable);
     }
 
     private String generateRandomCode(Random random) {
