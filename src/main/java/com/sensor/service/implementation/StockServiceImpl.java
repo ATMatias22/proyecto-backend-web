@@ -5,13 +5,24 @@ import com.sensor.entity.Cart;
 import com.sensor.entity.Product;
 import com.sensor.entity.Stock;
 import com.sensor.enums.StockState;
+import com.sensor.exception.GeneralException;
+import com.sensor.external.web_admin.dto.request.AddDeviceFromWebAdminRequest;
+import com.sensor.external.web_admin.jwt.AppMovilJwtProvider;
 import com.sensor.security.entity.User;
 import com.sensor.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -23,6 +34,13 @@ public class StockServiceImpl implements IStockService {
 
     @Autowired
     private IStockDao stockDao;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+
+    @Autowired
+    private AppMovilJwtProvider appMovilJwtProvider;
 
     @Override
     public void saveStock(Stock stock) {
@@ -41,6 +59,7 @@ public class StockServiceImpl implements IStockService {
             stock.setProduct(product);
             stock.setPlacedOnAPhysicalDevice(false);
             stock.setStockState(StockState.DISPONIBLE);
+            stock.setUser(userLoggerIn);
             String devicePassword = generateRandomPassword(random);
             String deviceCode;
             do {
@@ -62,7 +81,7 @@ public class StockServiceImpl implements IStockService {
     @Override
     public List<Stock> getNAvailableStockQuantityByProduct(Product product, int quantity) {
 
-        Pageable pageable = PageRequest.of(0, quantity );
+        Pageable pageable = PageRequest.of(0, quantity);
         return this.stockDao.getNAvaibleStockQuantityByProduct(product, pageable);
     }
 
@@ -73,7 +92,7 @@ public class StockServiceImpl implements IStockService {
 
     @Override
     public List<Stock> getNAvailableStockQuantityByProductAndCart(Product product, Cart cart, int quantity) {
-        Pageable pageable = PageRequest.of(0, quantity );
+        Pageable pageable = PageRequest.of(0, quantity);
         return this.stockDao.getNAvaibleStockQuantityByProductAndCart(product, cart, pageable);
     }
 
@@ -81,6 +100,34 @@ public class StockServiceImpl implements IStockService {
     public List<Stock> getStocksByProduct(Product product) {
         return this.stockDao.getStockByProduct(product);
     }
+
+    @Override
+    @Transactional
+    public void changePlacedOnAPhysicalDeviceInStock(Long stockId) {
+        Stock stock = this.stockDao.getStockById(stockId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontro el stock con este id: " + stockId));
+        if (stock.getPlacedOnAPhysicalDevice()) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "No se puede cambiar porque ya fue cambiado");
+        }
+        stock.setPlacedOnAPhysicalDevice(true);
+        this.stockDao.saveStock(stock);
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Backend-Token", this.appMovilJwtProvider.generateToken());
+        HttpEntity<AddDeviceFromWebAdminRequest> requestEntityDeviceStatus = new HttpEntity<>(new AddDeviceFromWebAdminRequest(stock.getDeviceCode(),stock.getDevicePassword()),headers);
+
+        try {
+            restTemplate.exchange("http://localhost:8081/app_movil_sensor/api/device", HttpMethod.POST, requestEntityDeviceStatus, new ParameterizedTypeReference<Void>() {
+            });
+
+        } catch (HttpClientErrorException enf) {
+            System.out.println(enf.getMessage());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo comunicar con el servicio de movil");
+        }
+
+
+    }
+
 
     private String generateRandomCode(Random random) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
