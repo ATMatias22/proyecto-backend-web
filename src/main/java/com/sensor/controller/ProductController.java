@@ -100,6 +100,7 @@ public class ProductController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value = "/{productId}/stocks", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<StockResponse>> getProductStocksByProductId(@PathVariable("productId") Long productId) {
 		return new ResponseEntity<>(this.productMapper.stockToStockResponse(productService.getProductStocksByProductId(productId)), HttpStatus.OK);

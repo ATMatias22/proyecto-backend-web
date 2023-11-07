@@ -23,4 +23,6 @@ public interface IStockService {
 
     List<Stock> getStocksByProduct(Product product);
 
+    void changePlacedOnAPhysicalDeviceInStock(Long stockId);
+
 }

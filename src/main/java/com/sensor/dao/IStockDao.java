@@ -6,6 +6,7 @@ import com.sensor.entity.Stock;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface IStockDao {
@@ -25,5 +26,7 @@ public interface IStockDao {
     List<Stock> getNAvaibleStockQuantityByProductAndCart(Product product, Cart cart, Pageable pageable);
 
     List<Stock> getStockByProduct(Product product);
+
+    Optional<Stock> getStockById(Long stockId);
 
 }

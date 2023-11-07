@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StockDaoImpl implements IStockDao {
@@ -54,5 +55,10 @@ public class StockDaoImpl implements IStockDao {
     @Override
     public List<Stock> getStockByProduct(Product product) {
         return this.stockRepository.findByProduct(product);
+    }
+
+    @Override
+    public Optional<Stock> getStockById(Long stockId) {
+        return this.stockRepository.findById(stockId);
     }
 }
