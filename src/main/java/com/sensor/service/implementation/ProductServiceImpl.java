@@ -145,25 +145,27 @@ public class ProductServiceImpl implements IProductService {
             }
         }
 
-
-
         productToModify.setName(productWithNewData.getName());
         productToModify.setPrice(productWithNewData.getPrice());
         productToModify.setDescription(productWithNewData.getDescription());
 
-        DirectoryHandler<Long> dh = new DirectoryHandler<>(productToModify.getProductId(),
-                productToModify.getImage(), DirectoryData.PREFIX_PRODUCT_DIRECTORY_NAME,
-                productTransportToService.getFile(), DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES
-        );
-        dh.prepareDirectoryForModify();
+        if(!productTransportToService.isKeepImage()){
+            DirectoryHandler<Long> dh = new DirectoryHandler<>(productToModify.getProductId(),
+                    productToModify.getImage(), DirectoryData.PREFIX_PRODUCT_DIRECTORY_NAME,
+                    productTransportToService.getFile(), DirectoryData.FILE_DIRECTORY_PRODUCT_IMAGES
+            );
+            dh.prepareDirectoryForModify();
 
-        productToModify.setImage(dh.getNewPathForDB());
-        productDao.saveProduct(productToModify);
+            productToModify.setImage(dh.getNewPathForDB());
+            productDao.saveProduct(productToModify);
 
-        try {
-            dh.ifIsNecessaryCreateOrDeleteThenDoIt();
-        } catch (IOException e) {
-            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el sistema de archivos del servidor");
+            try {
+                dh.ifIsNecessaryCreateOrDeleteThenDoIt();
+            } catch (IOException e) {
+                throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el sistema de archivos del servidor");
+            }
+        }else{
+            productDao.saveProduct(productToModify);
         }
 
     }

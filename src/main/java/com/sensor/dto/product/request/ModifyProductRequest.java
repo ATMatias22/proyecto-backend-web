@@ -25,4 +25,7 @@ public class ModifyProductRequest {
     @Positive(message = "El precio debe ser positivo")
     private Double price;
 
+    @NotNull(message = "La opcion de mantener imagen no puede ser nulo ni vacio")
+    private boolean keepImage;
+
 }

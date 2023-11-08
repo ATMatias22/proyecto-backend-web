@@ -14,4 +14,6 @@ public class ProductTransportToService {
     private Product product;
 
     private MultipartFile file;
+
+    private boolean keepImage;
 }
