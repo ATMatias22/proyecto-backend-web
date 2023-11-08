@@ -11,6 +11,7 @@ import com.sensor.external.web_admin.jwt.AppMovilJwtProvider;
 import com.sensor.security.entity.User;
 import com.sensor.service.IStockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
@@ -38,7 +38,8 @@ public class StockServiceImpl implements IStockService {
     @Autowired
     private RestTemplate restTemplate;
 
-
+    @Value("${app.movil.url.save-product}")
+    private String urlSaveProduct;
     @Autowired
     private AppMovilJwtProvider appMovilJwtProvider;
 
@@ -115,13 +116,16 @@ public class StockServiceImpl implements IStockService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Backend-Token", this.appMovilJwtProvider.generateToken());
         HttpEntity<AddDeviceFromWebAdminRequest> requestEntityDeviceStatus = new HttpEntity<>(new AddDeviceFromWebAdminRequest(stock.getDeviceCode(),stock.getDevicePassword()),headers);
-
+        System.out.println(urlSaveProduct);
         try {
-            restTemplate.exchange("http://localhost:8081/app_movil_sensor/api/device", HttpMethod.POST, requestEntityDeviceStatus, new ParameterizedTypeReference<Void>() {
+            restTemplate.exchange(urlSaveProduct, HttpMethod.POST, requestEntityDeviceStatus, new ParameterizedTypeReference<Void>() {
             });
 
         } catch (HttpClientErrorException enf) {
             System.out.println(enf.getMessage());
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo comunicar con el servicio de movil");
+        } catch (Exception ex ){
+            System.out.println(ex.getMessage());
             throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo comunicar con el servicio de movil");
         }
 
