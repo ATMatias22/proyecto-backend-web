@@ -63,6 +63,7 @@ public abstract class ProductMapper {
     @Mappings({
             @Mapping(source = "modifyProductRequest", target = "product"),
             @Mapping(source = "file", target = "file"),
+            @Mapping(source = "modifyProductRequest.keepImage", target = "keepImage"),
     })
     public abstract ProductTransportToService modifyProductRequestToProductTransportToService(ModifyProductRequest modifyProductRequest, MultipartFile file);
 
