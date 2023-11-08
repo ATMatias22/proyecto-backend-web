@@ -136,11 +136,16 @@ public class ProductServiceImpl implements IProductService {
 
         Product productWithNewData = productTransportToService.getProduct();
         Product productToModify = this.productDao.getEnabledProductById(productId).orElseThrow(() -> new GeneralException(HttpStatus.NOT_FOUND, "No se encontró el producto con id : " + productId));
-        boolean existProductWithName = productDao.getProductByName(productWithNewData.getName()).isPresent();
-        if (existProductWithName) {
-            throw new GeneralException(HttpStatus.CONFLICT,
-                    "Ya existe un producto con nombre : " + productWithNewData.getName());
+
+        if(!productToModify.getName().equals(productWithNewData.getName())){
+            boolean existProductWithName = productDao.getProductByName(productWithNewData.getName()).isPresent();
+            if (existProductWithName) {
+                throw new GeneralException(HttpStatus.CONFLICT,
+                        "Ya existe un producto con nombre : " + productWithNewData.getName());
+            }
         }
+
+
 
         productToModify.setName(productWithNewData.getName());
         productToModify.setPrice(productWithNewData.getPrice());
