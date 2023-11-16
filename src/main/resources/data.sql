@@ -46,7 +46,7 @@ INSERT INTO cart (fk_user, state, fk_payment_method, fk_shipping_method)
 VALUES ( 1, 'ESTADO_INICIAL', null, null);
 
 INSERT INTO cart_product ( fk_cart, fk_product, quantity,created_date)
-VALUES (1,1,5, '2023-08-10 18:39:12.543702');
+VALUES (1,1,2, '2023-08-10 18:39:12.543702');
 
 
 

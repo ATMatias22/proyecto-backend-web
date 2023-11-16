@@ -131,7 +131,8 @@ public class CartInitialStateStrategy extends CartStateStrategy {
         if (currentQuantityProduct < quantity) {
             throw new GeneralException(HttpStatus.BAD_REQUEST, "La cantidad del producto que tiene actualmente es: " + currentQuantityProduct + " unidades y usted quiere sacar " + quantity + " unidades");
         } else if (currentQuantityProduct == quantity) {
-            this.cartProductService.deleteCartProduct(cartProduct);
+            this.cartProductService.deleteCartProductByCart(cart);
+            cartProduct = new CartProduct(cartProduct.getCart(),cartProduct.getProduct(),0);
         }else{
             cartProduct.setQuantity(cartProduct.getQuantity() - quantity);
             cartProduct = this.cartProductService.saveCartProduct(cartProduct);
