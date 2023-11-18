@@ -50,9 +50,14 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
     @Autowired
     private ISaleOrderService saleOrderService;
-    @Value("${MP}")
+    @Value("${mp.secret}")
     private String accessToken; // Coloca tu token de acceso aquí
 
+    @Value("${mp.preference.notification.url}")
+    private String mpPreferenceNotificationUrl;
+
+    @Value("${mp.preference.notification.url.success}")
+    private String mpPreferenceNotificationUrlSuccess;
 
     @Override
     public CartState getState() {
@@ -229,10 +234,10 @@ public class CartPaymentStateStrategy extends CartStateStrategy {
 
             PreferenceRequest request =
                     PreferenceRequest.builder().items(preferenceItemRequests).purpose("wallet_purchase")
-                            .notificationUrl("http://localhost:8080/sensor/api/carts/preference-notification")
+                            .notificationUrl(mpPreferenceNotificationUrl)
                             .metadata(map)
                             .backUrls(PreferenceBackUrlsRequest.builder()
-                                    .success("http://localhost:3000/comprasrealizadas")
+                                    .success(mpPreferenceNotificationUrlSuccess)
                                     .build())
                             .build();
 
