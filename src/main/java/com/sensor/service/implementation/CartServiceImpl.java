@@ -45,7 +45,7 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private IStockService stockService;
 
-    @Value("${MP}")
+    @Value("${mp.secret}")
     private String accessToken; // Coloca tu token de acceso aquí
 
 
